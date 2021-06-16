@@ -59,11 +59,6 @@ mkfs.fat -F32 /dev/sda1
 # Set up time
 timedatectl set-ntp true
 
-# Initate pacman keyring
-pacman-key --init
-pacman-key --populate archlinux
-pacman-key --refresh-keys
-
 # Mount the partitions
 mount /dev/sda3 /mnt
 mkdir -pv /mnt/boot/efi
