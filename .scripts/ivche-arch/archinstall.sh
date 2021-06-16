@@ -14,6 +14,12 @@ then
     exit
 fi
 
+# Install dependencies
+pacman -Sy git curl wget
+wget https://raw.githubusercontent.com/Ivche1337/dotfiles/master/.scripts/ivche-arch/packages
+wget https://raw.githubusercontent.com/Ivche1337/dotfiles/master/.scripts/ivche-arch/postinstall.sh
+
+
 # Filesystem mount warning
 echo "This script will create and format the partitions as follows:"
 echo "/dev/sda1 - 512Mib will be mounted as /boot/efi"
