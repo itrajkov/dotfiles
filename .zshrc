@@ -71,10 +71,14 @@ alias i3conf='nvim ~/.config/i3/config'
 alias diskspace='ncdu'
 alias genpass='pass generate -c'
 alias serv='ssh root@candywatch.net'
+alias config='/usr/bin/git --git-dir=/home/ivche/.cfg/ --work-tree=/home/ivche'
 
 alias tl='todoist sync && todoist list'
 alias ta='todoist sync && todoist add'
 alias doomsync='~/.emacs.d/bin/doom sync && systemctl restart emacs --user'
+
+alias vpn='sudo wg-quick up wg0' 
+alias killvpn='sudo wg-quick down wg0'
 
 bindkey -M menuselect 'h' vi-backward-char
 bindkey -M menuselect 'l' vi-forward-char
@@ -94,4 +98,3 @@ export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
-alias config='/usr/bin/git --git-dir=/home/ivche/.cfg/ --work-tree=/home/ivche'
