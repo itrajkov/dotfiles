@@ -1,10 +1,6 @@
 (setq user-full-name "Ivan Trajkov"
       user-mail-address "itrajkov999@gmail.com")
 
-(setq default-tab-width 4)
-(setq company-minimum-prefix-length 2)
-(setq company-idle-delay 0)
-
 (defun greedily-do-daemon-setup ()
   (require 'org)
   (when (require 'mu4e nil t)
@@ -17,7 +13,11 @@
   (when (require 'elfeed nil t)))
 
 (when (daemonp)
-  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup))
+  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
+  (add-hook! 'server-after-make-frame-hook (switch-to-buffer +doom-dashboard-name)))
+
+(setq doom-fallback-buffer-name "► Doom"
+      +doom-dashboard-name "► Doom")
 
 (setq auth-sources '("~/.authinfo.gpg"))
 
@@ -36,23 +36,198 @@
       :desc "Start ERC"
       "o h n" #'hackernews)
 
-(setq +doom-dashboard-banner-file (expand-file-name "images/banner.png" doom-private-dir))
+(add-to-list 'load-path "~/.emacs.d/lisp")
+
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+(add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1))
+(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
+(defvar fancy-splash-image-template
+
+  (expand-file-name "misc/splash-images/emacs-template.svg" doom-private-dir)
+  "Default template svg used for the splash image, with substitutions from ")
+
+(defvar fancy-splash-sizes
+  `((:height 300 :min-height 50 :padding (0 . 2))
+    (:height 250 :min-height 42 :padding (2 . 4))
+    (:height 200 :min-height 35 :padding (3 . 3))
+    (:height 150 :min-height 28 :padding (3 . 3))
+    (:height 100 :min-height 20 :padding (2 . 2))
+    (:height 75  :min-height 15 :padding (2 . 1))
+    (:height 50  :min-height 10 :padding (1 . 0))
+    (:height 1   :min-height 0  :padding (0 . 0)))
+  "list of plists with the following properties
+  :height the height of the image
+  :min-height minimum `frame-height' for image
+  :padding `+doom-dashboard-banner-padding' (top . bottom) to apply
+  :template non-default template file
+  :file file to use instead of template")
+
+(defvar fancy-splash-template-colours
+  '(("$colour1" . keywords) ("$colour2" . type) ("$colour3" . base5) ("$colour4" . base8))
+  "list of colour-replacement alists of the form (\"$placeholder\" . 'theme-colour) which applied the template")
+
+(unless (file-exists-p (expand-file-name "theme-splashes" doom-cache-dir))
+  (make-directory (expand-file-name "theme-splashes" doom-cache-dir) t))
+
+(defun fancy-splash-filename (theme-name height)
+  (expand-file-name (concat (file-name-as-directory "theme-splashes")
+                            theme-name
+                            "-" (number-to-string height) ".svg")
+                    doom-cache-dir))
+
+(defun fancy-splash-clear-cache ()
+  "Delete all cached fancy splash images"
+  (interactive)
+  (delete-directory (expand-file-name "theme-splashes" doom-cache-dir) t)
+  (message "Cache cleared!"))
+
+(defun fancy-splash-generate-image (template height)
+  "Read TEMPLATE and create an image if HEIGHT with colour substitutions as
+   described by `fancy-splash-template-colours' for the current theme"
+  (with-temp-buffer
+    (insert-file-contents template)
+    (re-search-forward "$height" nil t)
+    (replace-match (number-to-string height) nil nil)
+    (dolist (substitution fancy-splash-template-colours)
+      (goto-char (point-min))
+      (while (re-search-forward (car substitution) nil t)
+        (replace-match (doom-color (cdr substitution)) nil nil)))
+    (write-region nil nil
+                  (fancy-splash-filename (symbol-name doom-theme) height) nil nil)))
+
+(defun fancy-splash-generate-images ()
+  "Perform `fancy-splash-generate-image' in bulk"
+  (dolist (size fancy-splash-sizes)
+    (unless (plist-get size :file)
+      (fancy-splash-generate-image (or (plist-get size :template)
+                                       fancy-splash-image-template)
+                                   (plist-get size :height)))))
+
+(defun ensure-theme-splash-images-exist (&optional height)
+  (unless (file-exists-p (fancy-splash-filename
+                          (symbol-name doom-theme)
+                          (or height
+                              (plist-get (car fancy-splash-sizes) :height))))
+    (fancy-splash-generate-images)))
+
+(defun get-appropriate-splash ()
+  (let ((height (frame-height)))
+    (cl-some (lambda (size) (when (>= height (plist-get size :min-height)) size))
+             fancy-splash-sizes)))
+
+(setq fancy-splash-last-size nil)
+(setq fancy-splash-last-theme nil)
+(defun set-appropriate-splash (&rest _)
+  (let ((appropriate-image (get-appropriate-splash)))
+    (unless (and (equal appropriate-image fancy-splash-last-size)
+                 (equal doom-theme fancy-splash-last-theme)))
+    (unless (plist-get appropriate-image :file)
+      (ensure-theme-splash-images-exist (plist-get appropriate-image :height)))
+    (setq fancy-splash-image
+          (or (plist-get appropriate-image :file)
+              (fancy-splash-filename (symbol-name doom-theme) (plist-get appropriate-image :height))))
+    (setq +doom-dashboard-banner-padding (plist-get appropriate-image :padding))
+    (setq fancy-splash-last-size appropriate-image)
+    (setq fancy-splash-last-theme doom-theme)
+    (+doom-dashboard-reload)))
+
+(add-hook 'window-size-change-functions #'set-appropriate-splash)
+(add-hook 'doom-load-theme-hook #'set-appropriate-splash)
+
+(defvar phrase-api-url
+  (nth (random 1)
+       '(("https://useless-facts.sameerkumar.website/api" :data))))
+
+(defmacro phrase-generate-callback (token &optional format-fn ignore-read-only callback buffer-name)
+  `(lambda (status)
+     (unless (plist-get status :error)
+       (goto-char url-http-end-of-headers)
+       (let ((phrase (plist-get (json-parse-buffer :object-type 'plist) (cadr phrase-api-url)))
+             (inhibit-read-only ,(when (eval ignore-read-only) t)))
+         (setq phrase-last (cons phrase (float-time)))
+         (with-current-buffer ,(or (eval buffer-name) (buffer-name (current-buffer)))
+           (save-excursion
+             (goto-char (point-min))
+             (when (search-forward ,token nil t)
+               (with-silent-modifications
+                 (replace-match "")
+                 (insert ,(if format-fn format-fn 'phrase)))))
+           ,callback)))))
+
+(defvar phrase-last nil)
+(defvar phrase-timeout 5)
+
+(defmacro phrase-insert-async (&optional format-fn token ignore-read-only callback buffer-name)
+  `(let ((inhibit-message t))
+     (if (and phrase-last
+              (> phrase-timeout (- (float-time) (cdr phrase-last))))
+         (let ((phrase (car phrase-last)))
+           ,(if format-fn format-fn 'phrase))
+       (url-retrieve (car phrase-api-url)
+                     (phrase-generate-callback ,(or token "\ufeff") ,format-fn ,ignore-read-only ,callback ,buffer-name))
+       ;; For reference, \ufeff = Zero-width no-break space / BOM
+       ,(or token "\ufeff"))))
+
+(defun doom-dashboard-phrase ()
+  (phrase-insert-async
+   (progn
+     (setq-local phrase-position (point))
+     (mapconcat
+      (lambda (line)
+        (+doom-dashboard--center
+         +doom-dashboard--width
+         (with-temp-buffer
+           (insert-text-button
+            line
+            'action
+            (lambda (_)
+              (setq phrase-last nil)
+              (+doom-dashboard-reload t))
+            'face 'doom-dashboard-menu-title
+            'mouse-face 'doom-dashboard-menu-title
+            'help-echo "Random phrase"
+            'follow-link t)
+           (buffer-string))))
+      (split-string
+       (with-temp-buffer
+         (insert phrase)
+         (setq fill-column (min 70 (/ (* 2 (window-width)) 3)))
+         (fill-region (point-min) (point-max))
+         (buffer-string))
+       "\n")
+      "\n"))
+   nil t
+   (progn
+     (goto-char phrase-position)
+     (forward-whitespace 1))
+   +doom-dashboard-name))
+
+(defadvice! doom-dashboard-widget-loaded-with-phrase ()
+  :override #'doom-dashboard-widget-loaded
+  (setq line-spacing 0.2)
+  (insert
+   "\n\n"
+   (propertize
+    (+doom-dashboard--center
+     +doom-dashboard--width
+     (doom-display-benchmark-h 'return))
+    'face 'doom-dashboard-loaded)
+   "\n"
+   (doom-dashboard-phrase)
+   "\n"))
 
 (setq doom-font (font-spec :family "FiraCode" :size 20))
 (setq doom-unicode-font (font-spec :family "FontAwesome" :size 15))
 
-(setq doom-line-numbers-style 'relative)
+(setq display-line-numbers-type 'relative)
 
 (setq doom-theme 'doom-nord)
 (setq doom-modeline-height 15)
 
 (add-hook 'vue-mode-hook #'lsp!)
 
-(add-hook `c++-mode-hook `irony-mode)
-(add-hook `c-mode-hook `irony-mode)
-(add-hook `irony-mode `irony-cdb-autosetup-compile-options)
-
-(setq inferior-lisp-program "sbcl")
+;; (setq inferior-lisp-program "sbcl")
+;; (slime-setup '(slime-fancy slime-company))
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 (setq mu4e-change-filename-when-moving t)
@@ -164,11 +339,11 @@
 
 ;; Join the a couple of interesting channels whenever connecting to Freenode.
 (setq erc-autojoin-channels-alist '(("freenode.net"
-                                     "#lugola" "#emacs")
+                                     "#osdev")
                                     ("myanonamouse.net"
                                      "#am-members")
                                     ("libera.chat"
-                                     "#commonlisp" "#erc")))
+                                     "#spodeli")))
 
  (add-hook 'window-configuration-change-hook
 	   '(lambda ()
@@ -283,8 +458,12 @@ the same person.")
   (unless (file-exists-p ispell-personal-dictionary)
   (write-region "" nil ispell-personal-dictionary nil 0))
 
-(add-hook 'org-mode-hook 'turn-on-flyspell)
+(setq default-tab-width 4)
+(setq company-minimum-prefix-length 2)
+(setq company-idle-delay 0)
+
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
+(setq org-directory "~/Dropbox/org")
 
 (cl-defmacro lsp-org-babel-enable (lang)
   "Support LANG in org source code block."
@@ -342,15 +521,25 @@ the same person.")
 
 (add-to-list 'org-modules 'org-habit t)
 
+(setq org-capture-templates
+      '(("n" "Personal note" item (file+headline "~/Dropbox/org/ivches-system/Personal/notes.org" "Inbox")"+ %?")
+        ("d" "Diet" entry (file+headline "~/Dropbox/org/ivches-system/Personal/diet.org" "Daily logs")
+            "* CAL-IN Diet for day %t
+            %^{Weight}kg
+            | Food / Exercise | Calories | Quantity | Total |
+            |-----------------+----------+----------+-------|
+            | %?              |          |          |       |
+            |-----------------+----------+----------+-------|
+            | Total           |          |          |       |
+            #+TBLFM: $4=$2*$3::$LR4=vsum(@2$4..@-I$4)")))
+
 (setq org-reveal-mathjax t)
 ;; (use-package ox-reveal
 ;;   :ensure ox-reveal)
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 ;;(setq org-reveal-root "file:///home/ivche/node_modules/reveal.js/")
 
-(setq org-directory "~/Dropbox/org")
-
-(setq org-agenda-files '("~/Dropbox/org"))
+(setq org-agenda-files '("~/Dropbox/org/Personal"))
 
 ;; (after! org (setq org-todo-keywords
                   ;; '((sequence "TODO" "DOING" "WAITING" "LATER" "DONE" "DELEGATED" "CANCELED"))))

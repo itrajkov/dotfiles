@@ -6,7 +6,7 @@
  '(ansi-color-names-vector
    ["#282c34" "#ff6c6b" "#98be65" "#ECBE7B" "#51afef" "#c678dd" "#46D9FF" "#bbc2cf"])
  '(custom-safe-themes
-   '("63bfcabeb44559c67d8827dc68cd6c4a6d3ce35ef4504343af12d42f24894e00" "bc2d88782b971d6c2736ba3089e10fb8ebe03c7b1609d2a1761a373bd8d34b71" default))
+   '("2c9dc3ab1cbde9d4a3cd129b945d39e19fe7107708edec589118b14d24c01dac" "aec3bfb4c203e41d155fef8becc095bc4997b8823520c0db34f0c894d30cd520" "63bfcabeb44559c67d8827dc68cd6c4a6d3ce35ef4504343af12d42f24894e00" "bc2d88782b971d6c2736ba3089e10fb8ebe03c7b1609d2a1761a373bd8d34b71" default))
  '(fci-rule-color "#5B6268")
  '(jdee-db-active-breakpoint-face-colors (cons "#1B2229" "#51afef"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#98be65"))

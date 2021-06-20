@@ -5,7 +5,6 @@
 (package! vue-mode)
 (package! hackernews)
 (package! hover)
-(package! slime)
 (package! mu4e-views)
 (package! mu4e-alert)
 (package! erc-hl-nicks)
