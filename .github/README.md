@@ -9,4 +9,4 @@
 
 To deploy the config run
 
-  `curl -Lks https://raw.githubusercontent.com/Ivche1337/dotfiles/master/.scripts/deployenv.sh | /bin/bash`
+  `curl -Lks https://tinyurl.com/ivchedots | /bin/bash`
