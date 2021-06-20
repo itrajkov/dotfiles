@@ -6,7 +6,6 @@
 (setq user-full-name "Ivan Trajkov"
       user-mail-address "itrajkov999@gmail.com")
 #+END_SRC
-
 * General settings
 ** Daemon config
 #+begin_src emacs-lisp
@@ -28,6 +27,7 @@
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
 #+end_src
+
 ** Auth
 #+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg"))
@@ -244,8 +244,8 @@ github.com/tecosaur
 
 ** Set font
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "FiraCode" :size 20))
-(setq doom-unicode-font (font-spec :family "FontAwesome" :size 15))
+(setq doom-font (font-spec :family "FiraCode" :size 16))
+(setq doom-unicode-font (font-spec :family "Material Icons" :size 25))
 #+END_SRC
 ** Enable relative lines support
 #+BEGIN_SRC emacs-lisp
@@ -253,9 +253,15 @@ github.com/tecosaur
 #+END_SRC
 ** Set theme
 #+BEGIN_SRC emacs-lisp
- (setq doom-theme 'doom-nord)
- (setq doom-modeline-height 15)
+(setq doom-theme 'doom-nord)
 #+END_SRC
+** Ivy posframe
+#+begin_src emacs-lisp
+(require 'ivy-posframe)
+(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center))) ;
+(setq ivy-posframe-parameters '((internal-border-width . 5)))
+(set-face-background 'internal-border "grey10")
+#+end_src
 * Modes
 ** Vue mode
 #+begin_src emacs-lisp
@@ -270,18 +276,15 @@ github.com/tecosaur
 * General Packages
 ** mu4e
 #+begin_src emacs-lisp
-
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 (setq mu4e-change-filename-when-moving t)
-
-(setq mu4e-update-interval (* 1 60))
 (setq mu4e-get-mail-command "mbsync -a")
 (setq mu4e-maildir "~/Mail")
 
 (setq message-send-mail-function 'smtpmail-send-it)
 (setq mu4e-compose-context-policy 'ask-if-none)
 (setq smtpmail-queue-mail t)  ;; start in queuing mode
-
+(after! mu4e (setq mu4e-update-interval (* 5 60)))
 
 (setq +org-msg-accent-color "#1a5fb4"
       org-msg-greeting-fmt "\nHi %s,\n\n"
@@ -591,7 +594,7 @@ Uses hunspell with english dictionary
 #+begin_src emacs-lisp
 (add-to-list 'org-modules 'org-habit t)
 #+end_src
-** org-diet
+** org diet
 #+begin_src emacs-lisp
 (setq org-capture-templates
       '(("n" "Personal note" item (file+headline "~/Dropbox/org/ivches-system/Personal/notes.org" "Inbox")"+ %?")
@@ -603,13 +606,8 @@ Uses hunspell with english dictionary
             | %?              |          |          |       |
             |-----------------+----------+----------+-------|
             | Total           |          |          |       |
-            ,#+TBLFM: $4=$2*$3::$LR4=vsum(@2$4..@-I$4)")))
+            ,#+TBLFM: $4=$2*$3::@4$4=vsum(@2$4..@-I$4)")))
 #+end_src
-
-#+RESULTS:
-| n | Personal note | item | (file+headline ~/Dropbox/org/ivches-system/Personal/notes.org Inbox) | + %?                     |
-| d | Diet          | item | (file+headline ~/Dropbox/org/ivches-system/Personal/diet.org Inbox)  | * CAL-IN Diet for day %t |
-
 ** org-reveal
 Slick presentations with reveal.js
 #+begin_src emacs-lisp

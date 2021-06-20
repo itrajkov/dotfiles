@@ -216,13 +216,17 @@
    (doom-dashboard-phrase)
    "\n"))
 
-(setq doom-font (font-spec :family "FiraCode" :size 20))
-(setq doom-unicode-font (font-spec :family "FontAwesome" :size 15))
+(setq doom-font (font-spec :family "FiraCode" :size 16))
+(setq doom-unicode-font (font-spec :family "Material Icons" :size 25))
 
 (setq display-line-numbers-type 'relative)
 
 (setq doom-theme 'doom-nord)
-(setq doom-modeline-height 15)
+
+(require 'ivy-posframe)
+(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center))) ;
+(setq ivy-posframe-parameters '((internal-border-width . 5)))
+(set-face-background 'internal-border "grey10")
 
 (add-hook 'vue-mode-hook #'lsp!)
 
@@ -231,15 +235,13 @@
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 (setq mu4e-change-filename-when-moving t)
-
-(setq mu4e-update-interval (* 1 60))
 (setq mu4e-get-mail-command "mbsync -a")
 (setq mu4e-maildir "~/Mail")
 
 (setq message-send-mail-function 'smtpmail-send-it)
 (setq mu4e-compose-context-policy 'ask-if-none)
 (setq smtpmail-queue-mail t)  ;; start in queuing mode
-
+(after! mu4e (setq mu4e-update-interval (* 5 60)))
 
 (setq +org-msg-accent-color "#1a5fb4"
       org-msg-greeting-fmt "\nHi %s,\n\n"
@@ -531,7 +533,7 @@ the same person.")
             | %?              |          |          |       |
             |-----------------+----------+----------+-------|
             | Total           |          |          |       |
-            #+TBLFM: $4=$2*$3::$LR4=vsum(@2$4..@-I$4)")))
+            #+TBLFM: $4=$2*$3::@4$4=vsum(@2$4..@-I$4)")))
 
 (setq org-reveal-mathjax t)
 ;; (use-package ox-reveal
@@ -544,8 +546,8 @@ the same person.")
 ;; (after! org (setq org-todo-keywords
                   ;; '((sequence "TODO" "DOING" "WAITING" "LATER" "DONE" "DELEGATED" "CANCELED"))))
 
-;; (after! org (setq +org-capture-notes-file (concat org-directory "/ivches_system/general/quick_notes.org")))
-;; (after! org (setq +org-capture-todo-file (concat org-directory "/ivches_system/mygtd.org")))
+ ;; (after! org (setq +org-capture-notes-file (concat org-directory "/ivches_system/general/quick_notes.org")))
+ ;; (after! org (setq +org-capture-todo-file (concat org-directory "/ivches_system/mygtd.org")))
 
 ;; (after! org (setq org-capture-templates
                   ;; '(("t" "Todo" entry (file+headline +org-capture-todo-file "Inbox")

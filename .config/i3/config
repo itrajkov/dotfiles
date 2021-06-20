@@ -253,7 +253,7 @@ bindsym $mod+shift+m exec emacsclient --eval '(mu4e)' -c
 bindsym $mod+n exec emacsclient -c ~/Dropbox/org/ivches-system/dashboard.org
 
 # Startup scripts
-exec_always xmodmap ~/.Xmodmap
+exec xmodmap ~/.Xmodmap
 exec ~/.scripts/battery-notif.sh
 exec_always ~/.config/polybar/launch.sh 
 
