@@ -1,3 +1,5 @@
+syntax on
+
 set tabstop=4 softtabstop=4
 set shiftwidth=4
 set expandtab
@@ -108,3 +110,4 @@ augroup highlight_yank
     autocmd!
     autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 40})
 augroup END
+
