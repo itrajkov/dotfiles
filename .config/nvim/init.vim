@@ -1,5 +1,4 @@
 syntax on
-
 set tabstop=4 softtabstop=4
 set shiftwidth=4
 set expandtab
@@ -12,12 +11,27 @@ set undodir=~/.config/nvim/undodir
 set undofile
 set incsearch
 set clipboard=unnamedplus
-nnoremap <silent> <esc> :noh<cr><esc>
 let mapleader = " "
 set t_Co=256
 set notermguicolors
 set encoding=utf-8
+set number relativenumber
 
+nnoremap <silent> <esc> :noh<cr><esc>
+nnoremap <leader><CR> :so ~/.config/nvim/init.vim<CR>
+nnoremap <leader>pf :Files<CR>
+nnoremap <C-p> :GFiles<CR>
+nnoremap <C-j> :cnext<CR>
+nnoremap <C-k> :cprev<CR>
+
+vnoremap <leader>p "_dP
+vnoremap <leader>y "+y
+nnoremap <leader>y "+y
+nnoremap <leader>Y gg"+yG
+
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
+map <leader>o- <cmd>vEx<cr>
 
 
 call plug#begin()
@@ -33,7 +47,6 @@ Plug 'anott03/nvim-lspinstall'
 Plug 'neovim/nvim-lspconfig'
 Plug 'glepnir/lspsaga.nvim'
 Plug 'nvim-lua/completion-nvim'
-
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-surround'
@@ -82,7 +95,6 @@ EOF
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
-
 " Or if you have Neovim >= 0.1.5
 if (has("termguicolors"))
  set termguicolors
@@ -95,16 +107,6 @@ nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
-map <leader>o- <cmd>Explore<cr>
-
-"Moving through splits
-nmap <silent> <C-h> :wincmd h<CR>
-nmap <silent> <C-j> :wincmd j<CR>
-nmap <silent> <C-k> :wincmd k<CR>
-nmap <silent> <C-l> :wincmd l<CR>
-
-" Relative numbers
-set number relativenumber
 
 augroup highlight_yank
     autocmd!
