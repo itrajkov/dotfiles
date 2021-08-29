@@ -27,13 +27,12 @@
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
 #+end_src
-
-** Auth
+** Authinfo
 #+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg"))
 #+end_src
 ** Custom Keybinds
-*** ERC Keybinds
+*** ERC
 #+begin_src emacs-lisp
 (map! :leader
       :desc "Start ERC"
@@ -46,13 +45,13 @@
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
 (map! :map erc-mode-map :n "c u" #'my/erc-count-users)
 #+end_src
-
 *** Hackernews
 #+begin_src emacs-lisp
 (map! :leader
       :desc "Hackernews"
       "o h n" #'hackernews)
 #+end_src
+<<<<<<< HEAD
 *** Registers
 #+begin_src emacs-lisp
 (map! :leader
@@ -265,6 +264,12 @@ github.com/tecosaur
 (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center))) ;
 (setq ivy-posframe-parameters '((internal-border-width . 5)))
 (set-face-background 'internal-border "grey10")
+*** evil-mode
+#+begin_src emacs-lisp
+(map! :map evil-motion-state-map "C-u" #'my/evil-scroll-up-and-center)
+(map! :map evil-motion-state-map "C-d" #'my/evil-scroll-down-and-center)
+(map! :map evil-normal-state-map "C-x" #'evil-numbers/dec-at-pt-incremental)
+(map! :map evil-normal-state-map "C-a" #'evil-numbers/inc-at-pt-incremental)
 #+end_src
 * Packages
 ** mu4e
@@ -286,6 +291,7 @@ github.com/tecosaur
 
 (after! mu4e (setq mu4e-contexts
                    (list
+
                     ;; Personal gmail account
                     (make-mu4e-context
                      :name "Main-Gmail"
@@ -311,8 +317,7 @@ github.com/tecosaur
                                                       ("/itrajkov999/[Gmail]/Drafts"    . ?d)
                                                       ("/itrajkov999/[Gmail]/All Mail"  . ?a)))))
 
-
-                    ;;Ivchepro gmail
+                    ;; Ivchepro gmail
                     (make-mu4e-context
                      :name "All-Gmail"
                      :match-func
@@ -336,7 +341,6 @@ github.com/tecosaur
                                                       ("/ivchepro/[Gmail]/Trash"     . ?t)
                                                       ("/ivchepro/[Gmail]/Drafts"    . ?d)
                                                       ("/ivchepro/[Gmail]/All Mail"  . ?a))))))))
-
 
 (map! (:map org-msg-edit-mode-map
        :n "<tab>" #'org-msg-tab
@@ -367,12 +371,8 @@ github.com/tecosaur
   (mu4e-views-mu4e-use-view-msg-method "gnus") ;; select the default
   (setq mu4e-views-next-previous-message-behaviour 'stick-to-current-window) ;; when pressing n and p stay in the current window
   (setq mu4e-views-auto-view-selected-message t)) ;; automatically open messages when moving in the headers view
-
-
-
 #+end_src
-
-** ERC
+** erc
 #+begin_src emacs-lisp
 (require 'erc)
 (require 'erc-log)
@@ -382,9 +382,7 @@ github.com/tecosaur
 (require 'erc-autoaway)
 
 ;; Join the a couple of interesting channels whenever connecting to Freenode.
-(setq erc-autojoin-channels-alist '(("freenode.net"
-                                     "#osdev")
-                                    ("myanonamouse.net"
+(setq erc-autojoin-channels-alist '(("myanonamouse.net"
                                      "#am-members")
                                     ("libera.chat"
                                      "#spodeli")))
@@ -426,8 +424,6 @@ github.com/tecosaur
 
 ;; enable spell checking
 (erc-spelling-mode 1)
-;; set different dictionaries by different servers/channels
-;;(setq erc-spelling-dictionaries '(("#emacs" "american")))
 
 (defvar erc-notify-timeout 10
   "Number of seconds that must elapse between notifications from
@@ -455,10 +451,9 @@ the same person.")
 (defun my/erc-start-or-switch ()
   "Connects to ERC, or switch to last active buffer."
   (interactive)
-  (if (get-buffer "irc.freenode.net:6697")
+  (if (get-buffer "irc.libera.chat:6697")
       (erc-track-switch-buffer 1)
     (when (y-or-n-p "Start ERC? ")
-      (erc-tls :server "irc.freenode.net" :port 6697 :nick "ivche")
       (erc-tls :server "irc.libera.chat" :port 6697 :nick "ivche")
       (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "Ivche1337")
       )))
@@ -466,7 +461,7 @@ the same person.")
 (defun my/erc-count-users ()
   "Displays the number of users connected on the current channel."
   (interactive)
-  (if (get-buffer "irc.freenode.net:6697")
+  (if (get-buffer "irc.libera.chat:6697")
       (let ((channel (erc-default-target)))
         (if (and channel (erc-channel-p channel))
             (message "%d users are online on %s"
@@ -487,20 +482,33 @@ the same person.")
   (dolist (buffer (filter-server-buffers))
     (message "Server buffer: %s" (buffer-name buffer))
     (with-current-buffer buffer
-      (erc-quit-server "Adios! - sent from ERC"))))
+      (erc-quit-server "cya nerds! - sent from ERC"))))
 
 (use-package erc-hl-nicks
   :after erc)
-
 #+end_src
-
-** Company
+** company
 #+BEGIN_SRC emacs-lisp
 (setq default-tab-width 4)
 (setq company-minimum-prefix-length 2)
 (setq company-idle-delay 0)
 #+END_SRC
-
+* User Interface
+** Font
+#+BEGIN_SRC emacs-lisp
+(setq doom-font (font-spec :family "FiraCode" :size 16))
+(setq doom-unicode-font (font-spec :family "Material Icons" :size 25))
+#+END_SRC
+** Lines
+#+BEGIN_SRC emacs-lisp
+(setq display-line-numbers-type 'relative)
+(setq truncate-lines nil)
+(setq scroll-margin 9)
+#+END_SRC
+** Theme
+#+BEGIN_SRC emacs-lisp
+(setq doom-theme 'doom-nord)
+#+END_SRC
 * Org Mode
 ** General
 #+begin_src emacs-lisp
@@ -605,65 +613,4 @@ it centers the page after the scroll.
   (interactive)
   (evil-scroll-up 0)
   (recenter nil))
-#+end_src
-** org-diet
-#+begin_src emacs-lisp
-(defun org-diet-move-today ()
-  "Move to today's entry in the org-diet file."
-  (interactive)
-  (beginning-of-buffer)
-
-  ;; Move to first heading (Daily Logs) and expand.
-  (outline-next-visible-heading 1)
-  (show-children)
-      (outline-next-visible-heading 1))
-
-(defun org-diet-move-last-entry ()
-  "Move to the last entry in the current diet table."
-  (interactive)
-
-  (search-forward "#+TBLFM")
-
-  ;; Move to start of final line.
-  (previous-line 1)
-  (previous-line 1)
-  (move-beginning-of-line 1))
-
-(defun org-diet-copy ()
-  "Copy the current table line to today.
-
-Copies the current table line and moves it to the bottom of
-today's diet table.  Changes the timestamp to the current time
-and day."
-  (interactive)
-
-  (let ((diet-line (thing-at-point 'line t)))
-    ;; Jump to today & last line.
-    (org-diet-move-today)
-    (org-diet-move-last-entry)
-
-    ;; Insert the copied line.
-    (insert diet-line)
-
-    ;; Move back to last line.
-    (org-diet-move-last-entry)
-    (forward-line -1)
-
-    ;; Replace the date.
-    (beginning-of-line)
-    (search-forward "| ")
-    (zap-to-char 1 93)
-    (insert (format-time-string "[%Y-%m-%d %a %H:%M]" (current-time)))
-
-    ;; Update the table.
-    (forward-line 2)
-    (org-table-recalculate)
-
-    ;; Move to inserted line.
-    (beginning-of-line)
-    (forward-line -2)))
-
-(map! :leader
-      :desc "Copy this food entry"
-      "i d" #'org-diet-copy)
 #+end_src
