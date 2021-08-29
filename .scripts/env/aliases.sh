@@ -12,6 +12,7 @@ alias dotfiles="cd ~/Dev/dotfiles"
 # Configs
 alias zshconf='nvim ~/.zshrc'
 alias i3conf='nvim ~/.config/i3/config'
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 # Programs
 alias d='ls'
