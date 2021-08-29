@@ -1,5 +1,6 @@
 # Base16 Nord
 # Author: arcticicestudio
+set selection-clipboard clipboard
 
 set default-bg                  "#2E3440"
 set default-fg                  "#3B4252"

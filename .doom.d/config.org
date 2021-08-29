@@ -6,8 +6,8 @@
 (setq user-full-name "Ivan Trajkov"
       user-mail-address "itrajkov999@gmail.com")
 #+END_SRC
-* General settings
-** Daemon config
+* Settings
+** Daemon
 #+begin_src emacs-lisp
 (defun greedily-do-daemon-setup ()
   (require 'org)
@@ -47,15 +47,17 @@
 (map! :map erc-mode-map :n "c u" #'my/erc-count-users)
 #+end_src
 
-*** Hackernews Keybinds
+*** Hackernews
 #+begin_src emacs-lisp
 (map! :leader
-      :desc "Start ERC"
+      :desc "Hackernews"
       "o h n" #'hackernews)
 #+end_src
-** Load path
+*** Registers
 #+begin_src emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/lisp")
+(map! :leader
+      :desc "Registers"
+      "o r" #'counsel-register)
 #+end_src
 
 * User Interface
@@ -242,16 +244,18 @@ github.com/tecosaur
    "\n"))
 #+end_src
 
-** Set font
+** Font
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "FiraCode" :size 16))
+(setq doom-font (font-spec :family "Hack Nerd Font" :size 14))
 (setq doom-unicode-font (font-spec :family "Material Icons" :size 25))
 #+END_SRC
-** Enable relative lines support
+** Lines
 #+BEGIN_SRC emacs-lisp
 (setq display-line-numbers-type 'relative)
+(setq truncate-lines nil)
+(setq scroll-margin 9)
 #+END_SRC
-** Set theme
+** Theme
 #+BEGIN_SRC emacs-lisp
 (setq doom-theme 'doom-nord)
 #+END_SRC
@@ -262,18 +266,7 @@ github.com/tecosaur
 (setq ivy-posframe-parameters '((internal-border-width . 5)))
 (set-face-background 'internal-border "grey10")
 #+end_src
-* Modes
-** Vue mode
-#+begin_src emacs-lisp
-(add-hook 'vue-mode-hook #'lsp!)
-#+end_src
-** lisp-mode
-#+begin_src emacs-lisp
-;; (setq inferior-lisp-program "sbcl")
-;; (slime-setup '(slime-fancy slime-company))
-#+end_src
-
-* General Packages
+* Packages
 ** mu4e
 #+begin_src emacs-lisp
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
@@ -501,20 +494,7 @@ the same person.")
 
 #+end_src
 
-** Flyspell config
-Uses hunspell with english dictionary
-#+begin_src emacs-lisp
-(with-eval-after-load "ispell"
-  (setenv "LANG" "en_US.UTF-8")
-  (setq ispell-program-name "hunspell")
-  (setq ispell-dictionary "en_US")
-  (ispell-set-spellchecker-params)
-  (ispell-hunspell-add-multi-dic "en_US")
-  (setq ispell-personal-dictionary "/usr/share/hunspell/"))
-  (unless (file-exists-p ispell-personal-dictionary)
-  (write-region "" nil ispell-personal-dictionary nil 0))
-#+end_src
-** Company config
+** Company
 #+BEGIN_SRC emacs-lisp
 (setq default-tab-width 4)
 (setq company-minimum-prefix-length 2)
@@ -522,48 +502,13 @@ Uses hunspell with english dictionary
 #+END_SRC
 
 * Org Mode
-** general
+** General
 #+begin_src emacs-lisp
-
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
 (setq org-directory "~/Dropbox/org")
-
 #+end_src
-** LSP in source blocks
-#+begin_src emacs-lisp
-(cl-defmacro lsp-org-babel-enable (lang)
-  "Support LANG in org source code block."
-  (setq centaur-lsp 'lsp-mode)
-  (cl-check-type lang stringp)
-  (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
-         (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
-    `(progn
-       (defun ,intern-pre (info)
-         (let ((file-name (->> info caddr (alist-get :file))))
-           (unless file-name
-             (setq file-name (make-temp-file "babel-lsp-")))
-           (setq buffer-file-name file-name)
-           (lsp-deferred)))
-       (put ',intern-pre 'function-documentation
-            (format "Enable lsp-mode in the buffer of org source block (%s)."
-                    (upcase ,lang)))
-       (if (fboundp ',edit-pre)
-           (advice-add ',edit-pre :after ',intern-pre)
-         (progn
-           (defun ,edit-pre (info)
-             (,intern-pre info))
-           (put ',edit-pre 'function-documentation
-                (format "Prepare local buffer environment for org source block (%s)."
-                        (upcase ,lang))))))))
-(defvar org-babel-lang-list
-  '("go" "python" "ipython" "bash" "sh"))
-(dolist (lang org-babel-lang-list)
-  (eval `(lsp-org-babel-enable ,lang)))
-#+end_src
-
 ** Visuals
 #+begin_src emacs-lisp
-
 (add-hook 'org-mode-hook #'+org-pretty-mode)
 
 (custom-set-faces!
@@ -579,34 +524,30 @@ Uses hunspell with english dictionary
 (custom-set-faces!
   '(org-document-title :height 1.2))
 
-
 (setq org-agenda-deadline-faces
       '((1.001 . error)
         (1.0 . org-warning)
         (0.5 . org-upcoming-deadline)
         (0.0 . org-upcoming-distant-deadline)))
 
-
 (setq org-fontify-quote-and-verse-blocks t)
 #+end_src
-
 ** org-habit
 #+begin_src emacs-lisp
 (add-to-list 'org-modules 'org-habit t)
 #+end_src
-** org diet
+** org-diet
 #+begin_src emacs-lisp
 (setq org-capture-templates
       '(("n" "Personal note" item (file+headline "~/Dropbox/org/ivches-system/Personal/notes.org" "Inbox")"+ %?")
         ("d" "Diet" entry (file+headline "~/Dropbox/org/ivches-system/Personal/diet.org" "Daily logs")
             "* CAL-IN Diet for day %t
-            %^{Weight}kg
-            | Food / Exercise | Calories | Quantity | Total |
-            |-----------------+----------+----------+-------|
-            | %?              |          |          |       |
-            |-----------------+----------+----------+-------|
-            | Total           |          |          |       |
-            ,#+TBLFM: $4=$2*$3::@4$4=vsum(@2$4..@-I$4)")))
+            %^{Weight}p
+            | Timestamp | Food | Calories | Quantity | Total |
+            |-----------+------+----------+----------+-------|
+            |-----------+------+----------+----------+-------|
+            | Total     |      |          |          |       |
+            ,#+TBLFM: $5=$3*$4::@>$5=vsum(@2$5..@-I$5)" :prepend t)))
 #+end_src
 ** org-reveal
 Slick presentations with reveal.js
@@ -617,51 +558,112 @@ Slick presentations with reveal.js
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 ;;(setq org-reveal-root "file:///home/ivche/node_modules/reveal.js/")
 #+end_src
-** Setup for org agenda
-*** Set agenda files
+** org-agenda
+*** Org agenda config
+#+begin_src emacs-lisp
+(setq org-agenda-files '("~/Dropbox/org/ivches-system/Personal"))
+(setq org-agenda-search-headline-for-time nil)
+(setq org-agenda-custom-commands
+      '(("h" "Daily habits"
+         ((agenda ""))
+         ((org-agenda-show-log t)
+          (org-agenda-ndays 11)
+          (org-agenda-log-mode-items '(state))
+          (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp ":DAILY:"))))
+        ))
+#+end_src
+*** Org super agenda
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-files '("~/Dropbox/org/Personal"))
+ (use-package! org-super-agenda
+   :after org-agenda
+   :init
+   (setq org-super-agenda-grous '((:name "Today"
+                                   :time-grid t
+                                   :scheduled today)
+                                  (:name "Due Today"
+                                   :deadline today)
+                                  (:name "Important"
+                                   :priority "A")
+                                  (:name "Overdue"
+                                   :deadline past)
+                                  (:name "Due soon"
+                                   :deadline future)))
+   :config
+   (org-super-agenda-mode))
 #+END_SRC
-*** Custom TODO keywords
-#+BEGIN_SRC emacs-lisp
-;; (after! org (setq org-todo-keywords
-                  ;; '((sequence "TODO" "DOING" "WAITING" "LATER" "DONE" "DELEGATED" "CANCELED"))))
-#+END_SRC
-*** Set default files for org capture
-#+BEGIN_SRC emacs-lisp
- ;; (after! org (setq +org-capture-notes-file (concat org-directory "/ivches_system/general/quick_notes.org")))
- ;; (after! org (setq +org-capture-todo-file (concat org-directory "/ivches_system/mygtd.org")))
-#+END_SRC
-*** Set custom org capture templates
-#+BEGIN_SRC emacs-lisp
-;; (after! org (setq org-capture-templates
-                  ;; '(("t" "Todo" entry (file+headline +org-capture-todo-file "Inbox")
-                     ;; "* TODO %? %i %a\n+ Added: %U"))))
-#+END_SRC
-*** Set org archive file location
-#+BEGIN_SRC emacs-lisp
-;; (after! org (setq org-archive-location (concat org-directory "/ivches_system/archive/task_archive.org::")))
-#+END_SRC
-*** Org super agenda configuration
-#+BEGIN_SRC emacs-lisp
-;; (use-package! org-super-agenda
-;;   :after org-agenda
-;;   :init
-;;   (setq org-super-agenda-grous '((:name "Today"
-;;                                   :time-grid t
-;;                                   :scheduled today)
-;;                                  (:name "Due Today"
-;;                                   :deadline today)
-;;                                  (:name "Important"
-;;                                   :priority "A")
-;;                                  (:name "Overdue"
-;;                                   :deadline past)
-;;                                  (:name "Due soon"
-;;                                   :deadline future)
-;;                                  (:name "Big Outcome"
-;;                                   :tag "bo")))
-;;   :config
-;;   (org-super-agenda-mode))
-#+END_SRC
+* Custom funcs
+** evil-mode
+Functions to make it so when i scroll up and down,
+it centers the page after the scroll.
+#+begin_src emacs-lisp
+(defun my/evil-scroll-down-and-center ()
+  (interactive)
+  (evil-scroll-down 0)
+  (recenter nil))
 
-* Custom Commands
+(defun my/evil-scroll-up-and-center ()
+  (interactive)
+  (evil-scroll-up 0)
+  (recenter nil))
+#+end_src
+** org-diet
+#+begin_src emacs-lisp
+(defun org-diet-move-today ()
+  "Move to today's entry in the org-diet file."
+  (interactive)
+  (beginning-of-buffer)
+
+  ;; Move to first heading (Daily Logs) and expand.
+  (outline-next-visible-heading 1)
+  (show-children)
+      (outline-next-visible-heading 1))
+
+(defun org-diet-move-last-entry ()
+  "Move to the last entry in the current diet table."
+  (interactive)
+
+  (search-forward "#+TBLFM")
+
+  ;; Move to start of final line.
+  (previous-line 1)
+  (previous-line 1)
+  (move-beginning-of-line 1))
+
+(defun org-diet-copy ()
+  "Copy the current table line to today.
+
+Copies the current table line and moves it to the bottom of
+today's diet table.  Changes the timestamp to the current time
+and day."
+  (interactive)
+
+  (let ((diet-line (thing-at-point 'line t)))
+    ;; Jump to today & last line.
+    (org-diet-move-today)
+    (org-diet-move-last-entry)
+
+    ;; Insert the copied line.
+    (insert diet-line)
+
+    ;; Move back to last line.
+    (org-diet-move-last-entry)
+    (forward-line -1)
+
+    ;; Replace the date.
+    (beginning-of-line)
+    (search-forward "| ")
+    (zap-to-char 1 93)
+    (insert (format-time-string "[%Y-%m-%d %a %H:%M]" (current-time)))
+
+    ;; Update the table.
+    (forward-line 2)
+    (org-table-recalculate)
+
+    ;; Move to inserted line.
+    (beginning-of-line)
+    (forward-line -2)))
+
+(map! :leader
+      :desc "Copy this food entry"
+      "i d" #'org-diet-copy)
+#+end_src
