@@ -243,8 +243,8 @@ bindcode 88 exec xrandr --output HDMI1 --auto --right-of eDP1 && i3-msg restart
 # Custom binds
 bindsym $mod+m exec kitty spt
 bindsym $mod+shift+x exec alacritty -e ranger
-bindsym $mod+shift+a exec ~/.scripts/lazyweeb.sh
-bindsym $mod+shift+f exec ~/.scripts/pdf-opener.sh
+bindsym $mod+shift+a exec ~/.scripts/utils/lazyweeb.sh
+bindsym $mod+shift+f exec ~/.scripts/utils/pdf-opener.sh
 bindsym $mod+shift+p exec rofi-pass
 bindsym $mod+shift+b exec qutebrowser
 
@@ -254,12 +254,12 @@ bindsym $mod+n exec emacsclient -c ~/Dropbox/org/ivches-system/dashboard.org
 
 # Startup scripts
 exec_always xmodmap ~/.Xmodmap
-exec ~/.scripts/battery-notif.sh
+exec ~/.scripts/utils/battery-notif.sh
 exec_always ~/.config/polybar/launch.sh 
 
 # Daemons
 exec redshift -l 41.99646:21.43141
-exec xautolock -locker ~/.scripts/lock.sh -time 10 -bell 0 -corners +00-
+exec xautolock -locker ~/.scripts/utils/lock.sh -time 10 -bell 0 -corners +00-
 exec pcmanfm -d
 exec lxpolkit
 exec spotifyd

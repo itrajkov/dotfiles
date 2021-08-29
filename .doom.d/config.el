@@ -1,14 +1,6 @@
-#+TITLE: Ivche's Config
-#+STARTUP: overview
-
-* Personal Info
-#+BEGIN_SRC emacs-lisp
 (setq user-full-name "Ivan Trajkov"
       user-mail-address "itrajkov999@gmail.com")
-#+END_SRC
-* Settings
-** Daemon
-#+begin_src emacs-lisp
+
 (defun greedily-do-daemon-setup ()
   (require 'org)
   (when (require 'mu4e nil t)
@@ -26,14 +18,9 @@
 
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
-#+end_src
-** Authinfo
-#+begin_src emacs-lisp
+
 (setq auth-sources '("~/.authinfo.gpg"))
-#+end_src
-** Custom Keybinds
-*** ERC
-#+begin_src emacs-lisp
+
 (map! :leader
       :desc "Start ERC"
       "o i" #'my/erc-start-or-switch
@@ -44,25 +31,16 @@
 (map! :map erc-mode-map :n "J" #'erc-join-channel)
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
 (map! :map erc-mode-map :n "c u" #'my/erc-count-users)
-#+end_src
-*** Hackernews
-#+begin_src emacs-lisp
+
 (map! :leader
       :desc "Hackernews"
       "o h n" #'hackernews)
-#+end_src
-*** evil-mode
-#+begin_src emacs-lisp
+
 (map! :map evil-motion-state-map "C-u" #'my/evil-scroll-up-and-center)
 (map! :map evil-motion-state-map "C-d" #'my/evil-scroll-down-and-center)
 (map! :map evil-normal-state-map "C-x" #'evil-numbers/dec-at-pt-incremental)
 (map! :map evil-normal-state-map "C-a" #'evil-numbers/inc-at-pt-incremental)
-#+end_src
-* User Interface
-** Splash
-Shamelessly stolen from teco cuz he's an icon.
-github.com/tecosaur
-#+begin_src emacs-lisp
+
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1))
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
@@ -240,32 +218,21 @@ github.com/tecosaur
    "\n"
    (doom-dashboard-phrase)
    "\n"))
-#+end_src
-** Font
-#+BEGIN_SRC emacs-lisp
+
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 15))
 (setq doom-unicode-font (font-spec :family "Material Icons" :size 25))
-#+END_SRC
-** Lines
-#+BEGIN_SRC emacs-lisp
+
 (setq display-line-numbers-type 'relative)
 (setq truncate-lines nil)
 (setq scroll-margin 9)
-#+END_SRC
-** Theme
-#+BEGIN_SRC emacs-lisp
+
 (setq doom-theme 'doom-nord)
-#+END_SRC
-** Ivy posframe
-#+begin_src emacs-lisp
+
 (require 'ivy-posframe)
 (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center))) ;
 (setq ivy-posframe-parameters '((internal-border-width . 5)))
 (set-face-background 'internal-border "grey10")
-#+end_src
-* Packages
-** mu4e
-#+begin_src emacs-lisp
+
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 (setq mu4e-change-filename-when-moving t)
 (setq mu4e-get-mail-command "mbsync -a")
@@ -363,9 +330,7 @@ github.com/tecosaur
   (mu4e-views-mu4e-use-view-msg-method "gnus") ;; select the default
   (setq mu4e-views-next-previous-message-behaviour 'stick-to-current-window) ;; when pressing n and p stay in the current window
   (setq mu4e-views-auto-view-selected-message t)) ;; automatically open messages when moving in the headers view
-#+end_src
-** erc
-#+begin_src emacs-lisp
+
 (require 'erc)
 (require 'erc-log)
 (require 'erc-notify)
@@ -478,37 +443,23 @@ the same person.")
 
 (use-package erc-hl-nicks
   :after erc)
-#+end_src
-** company
-#+BEGIN_SRC emacs-lisp
+
 (setq default-tab-width 4)
 (setq company-minimum-prefix-length 2)
 (setq company-idle-delay 0)
-#+END_SRC
-* User Interface
-** Font
-#+BEGIN_SRC emacs-lisp
+
 (setq doom-font (font-spec :family "FiraCode" :size 16))
 (setq doom-unicode-font (font-spec :family "Material Icons" :size 25))
-#+END_SRC
-** Lines
-#+BEGIN_SRC emacs-lisp
+
 (setq display-line-numbers-type 'relative)
 (setq truncate-lines nil)
 (setq scroll-margin 9)
-#+END_SRC
-** Theme
-#+BEGIN_SRC emacs-lisp
+
 (setq doom-theme 'doom-nord)
-#+END_SRC
-* Org Mode
-** General
-#+begin_src emacs-lisp
+
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
 (setq org-directory "~/Dropbox/org")
-#+end_src
-** Visuals
-#+begin_src emacs-lisp
+
 (add-hook 'org-mode-hook #'+org-pretty-mode)
 
 (custom-set-faces!
@@ -531,23 +482,15 @@ the same person.")
         (0.0 . org-upcoming-distant-deadline)))
 
 (setq org-fontify-quote-and-verse-blocks t)
-#+end_src
-** org-habit
-#+begin_src emacs-lisp
+
 (add-to-list 'org-modules 'org-habit t)
-#+end_src
-** org-reveal
-Slick presentations with reveal.js
-#+begin_src emacs-lisp
+
 (setq org-reveal-mathjax t)
 ;; (use-package ox-reveal
 ;;   :ensure ox-reveal)
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 ;;(setq org-reveal-root "file:///home/ivche/node_modules/reveal.js/")
-#+end_src
-** org-agenda
-*** Org agenda config
-#+begin_src emacs-lisp
+
 (setq org-agenda-files '("~/Dropbox/org/ivches-system/Personal"))
 (setq org-agenda-search-headline-for-time nil)
 (setq org-agenda-custom-commands
@@ -558,12 +501,7 @@ Slick presentations with reveal.js
           (org-agenda-log-mode-items '(state))
           (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp ":DAILY:"))))
         ))
-#+end_src
-* Custom funcs
-** evil-mode
-Functions to make it so when i scroll up and down,
-it centers the page after the scroll.
-#+begin_src emacs-lisp
+
 (defun my/evil-scroll-down-and-center ()
   (interactive)
   (evil-scroll-down 0)
@@ -573,4 +511,3 @@ it centers the page after the scroll.
   (interactive)
   (evil-scroll-up 0)
   (recenter nil))
-#+end_src
