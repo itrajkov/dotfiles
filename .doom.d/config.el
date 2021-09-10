@@ -6,11 +6,7 @@
   (when (require 'mu4e nil t)
     (setq mu4e-confirm-quit t)
     (setq +mu4e-lock-greedy t)
-    (setq +mu4e-lock-relaxed t)
-    (+mu4e-lock-add-watcher)
-    (when (+mu4e-lock-available t)
-      (mu4e~start)))
-  (when (require 'elfeed nil t)))
+    (setq +mu4e-lock-relaxed t)))
 
 (when (daemonp)
   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
@@ -40,184 +36,8 @@
 (map! :map evil-motion-state-map "C-d" #'my/evil-scroll-down-and-center)
 (map! :map evil-normal-state-map "C-x" #'evil-numbers/dec-at-pt-incremental)
 (map! :map evil-normal-state-map "C-a" #'evil-numbers/inc-at-pt-incremental)
-
-(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
-(add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1))
-(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
-(defvar fancy-splash-image-template
-
-  (expand-file-name "misc/splash-images/emacs-template.svg" doom-private-dir)
-  "Default template svg used for the splash image, with substitutions from ")
-
-(defvar fancy-splash-sizes
-  `((:height 300 :min-height 50 :padding (0 . 2))
-    (:height 250 :min-height 42 :padding (2 . 4))
-    (:height 200 :min-height 35 :padding (3 . 3))
-    (:height 150 :min-height 28 :padding (3 . 3))
-    (:height 100 :min-height 20 :padding (2 . 2))
-    (:height 75  :min-height 15 :padding (2 . 1))
-    (:height 50  :min-height 10 :padding (1 . 0))
-    (:height 1   :min-height 0  :padding (0 . 0)))
-  "list of plists with the following properties
-  :height the height of the image
-  :min-height minimum `frame-height' for image
-  :padding `+doom-dashboard-banner-padding' (top . bottom) to apply
-  :template non-default template file
-  :file file to use instead of template")
-
-(defvar fancy-splash-template-colours
-  '(("$colour1" . keywords) ("$colour2" . type) ("$colour3" . base5) ("$colour4" . base8))
-  "list of colour-replacement alists of the form (\"$placeholder\" . 'theme-colour) which applied the template")
-
-(unless (file-exists-p (expand-file-name "theme-splashes" doom-cache-dir))
-  (make-directory (expand-file-name "theme-splashes" doom-cache-dir) t))
-
-(defun fancy-splash-filename (theme-name height)
-  (expand-file-name (concat (file-name-as-directory "theme-splashes")
-                            theme-name
-                            "-" (number-to-string height) ".svg")
-                    doom-cache-dir))
-
-(defun fancy-splash-clear-cache ()
-  "Delete all cached fancy splash images"
-  (interactive)
-  (delete-directory (expand-file-name "theme-splashes" doom-cache-dir) t)
-  (message "Cache cleared!"))
-
-(defun fancy-splash-generate-image (template height)
-  "Read TEMPLATE and create an image if HEIGHT with colour substitutions as
-   described by `fancy-splash-template-colours' for the current theme"
-  (with-temp-buffer
-    (insert-file-contents template)
-    (re-search-forward "$height" nil t)
-    (replace-match (number-to-string height) nil nil)
-    (dolist (substitution fancy-splash-template-colours)
-      (goto-char (point-min))
-      (while (re-search-forward (car substitution) nil t)
-        (replace-match (doom-color (cdr substitution)) nil nil)))
-    (write-region nil nil
-                  (fancy-splash-filename (symbol-name doom-theme) height) nil nil)))
-
-(defun fancy-splash-generate-images ()
-  "Perform `fancy-splash-generate-image' in bulk"
-  (dolist (size fancy-splash-sizes)
-    (unless (plist-get size :file)
-      (fancy-splash-generate-image (or (plist-get size :template)
-                                       fancy-splash-image-template)
-                                   (plist-get size :height)))))
-
-(defun ensure-theme-splash-images-exist (&optional height)
-  (unless (file-exists-p (fancy-splash-filename
-                          (symbol-name doom-theme)
-                          (or height
-                              (plist-get (car fancy-splash-sizes) :height))))
-    (fancy-splash-generate-images)))
-
-(defun get-appropriate-splash ()
-  (let ((height (frame-height)))
-    (cl-some (lambda (size) (when (>= height (plist-get size :min-height)) size))
-             fancy-splash-sizes)))
-
-(setq fancy-splash-last-size nil)
-(setq fancy-splash-last-theme nil)
-(defun set-appropriate-splash (&rest _)
-  (let ((appropriate-image (get-appropriate-splash)))
-    (unless (and (equal appropriate-image fancy-splash-last-size)
-                 (equal doom-theme fancy-splash-last-theme)))
-    (unless (plist-get appropriate-image :file)
-      (ensure-theme-splash-images-exist (plist-get appropriate-image :height)))
-    (setq fancy-splash-image
-          (or (plist-get appropriate-image :file)
-              (fancy-splash-filename (symbol-name doom-theme) (plist-get appropriate-image :height))))
-    (setq +doom-dashboard-banner-padding (plist-get appropriate-image :padding))
-    (setq fancy-splash-last-size appropriate-image)
-    (setq fancy-splash-last-theme doom-theme)
-    (+doom-dashboard-reload)))
-
-(add-hook 'window-size-change-functions #'set-appropriate-splash)
-(add-hook 'doom-load-theme-hook #'set-appropriate-splash)
-
-(defvar phrase-api-url
-  (nth (random 1)
-       '(("https://useless-facts.sameerkumar.website/api" :data))))
-
-(defmacro phrase-generate-callback (token &optional format-fn ignore-read-only callback buffer-name)
-  `(lambda (status)
-     (unless (plist-get status :error)
-       (goto-char url-http-end-of-headers)
-       (let ((phrase (plist-get (json-parse-buffer :object-type 'plist) (cadr phrase-api-url)))
-             (inhibit-read-only ,(when (eval ignore-read-only) t)))
-         (setq phrase-last (cons phrase (float-time)))
-         (with-current-buffer ,(or (eval buffer-name) (buffer-name (current-buffer)))
-           (save-excursion
-             (goto-char (point-min))
-             (when (search-forward ,token nil t)
-               (with-silent-modifications
-                 (replace-match "")
-                 (insert ,(if format-fn format-fn 'phrase)))))
-           ,callback)))))
-
-(defvar phrase-last nil)
-(defvar phrase-timeout 5)
-
-(defmacro phrase-insert-async (&optional format-fn token ignore-read-only callback buffer-name)
-  `(let ((inhibit-message t))
-     (if (and phrase-last
-              (> phrase-timeout (- (float-time) (cdr phrase-last))))
-         (let ((phrase (car phrase-last)))
-           ,(if format-fn format-fn 'phrase))
-       (url-retrieve (car phrase-api-url)
-                     (phrase-generate-callback ,(or token "\ufeff") ,format-fn ,ignore-read-only ,callback ,buffer-name))
-       ;; For reference, \ufeff = Zero-width no-break space / BOM
-       ,(or token "\ufeff"))))
-
-(defun doom-dashboard-phrase ()
-  (phrase-insert-async
-   (progn
-     (setq-local phrase-position (point))
-     (mapconcat
-      (lambda (line)
-        (+doom-dashboard--center
-         +doom-dashboard--width
-         (with-temp-buffer
-           (insert-text-button
-            line
-            'action
-            (lambda (_)
-              (setq phrase-last nil)
-              (+doom-dashboard-reload t))
-            'face 'doom-dashboard-menu-title
-            'mouse-face 'doom-dashboard-menu-title
-            'help-echo "Random phrase"
-            'follow-link t)
-           (buffer-string))))
-      (split-string
-       (with-temp-buffer
-         (insert phrase)
-         (setq fill-column (min 70 (/ (* 2 (window-width)) 3)))
-         (fill-region (point-min) (point-max))
-         (buffer-string))
-       "\n")
-      "\n"))
-   nil t
-   (progn
-     (goto-char phrase-position)
-     (forward-whitespace 1))
-   +doom-dashboard-name))
-
-(defadvice! doom-dashboard-widget-loaded-with-phrase ()
-  :override #'doom-dashboard-widget-loaded
-  (setq line-spacing 0.2)
-  (insert
-   "\n\n"
-   (propertize
-    (+doom-dashboard--center
-     +doom-dashboard--width
-     (doom-display-benchmark-h 'return))
-    'face 'doom-dashboard-loaded)
-   "\n"
-   (doom-dashboard-phrase)
-   "\n"))
+(map! :map evil-normal-state-map "C--" #'doom/decrease-font-size)
+(map! :map evil-normal-state-map "C-+" #'doom/increase-font-size)
 
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 15))
 (setq doom-unicode-font (font-spec :family "Material Icons" :size 25))
@@ -226,12 +46,11 @@
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'doom-nord)
+(setq doom-theme 'doom-nord-light)
 
-(require 'ivy-posframe)
-(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center))) ;
-(setq ivy-posframe-parameters '((internal-border-width . 5)))
-(set-face-background 'internal-border "grey10")
+(custom-set-faces!
+  '(mode-line :family "Noto Sans" :height 0.9)
+  '(mode-line-inactive :family "Noto Sans" :height 0.9))
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 (setq mu4e-change-filename-when-moving t)
@@ -331,115 +150,119 @@
   (setq mu4e-views-next-previous-message-behaviour 'stick-to-current-window) ;; when pressing n and p stay in the current window
   (setq mu4e-views-auto-view-selected-message t)) ;; automatically open messages when moving in the headers view
 
-(require 'erc)
-(require 'erc-log)
-(require 'erc-notify)
-(require 'erc-nick-notify)
-(require 'erc-spelling)
-(require 'erc-autoaway)
+(use-package erc-log :after erc)
+(use-package erc-notify :after erc)
+(use-package erc-nick-notify :after erc)
+(use-package erc-spelling :after erc)
+(use-package erc-autoaway :after erc)
 
-;; Join the a couple of interesting channels whenever connecting to Freenode.
-(setq erc-autojoin-channels-alist '(("myanonamouse.net"
-                                     "#am-members")
-                                    ("libera.chat"
-                                     "#spodeli")))
 
- (add-hook 'window-configuration-change-hook
-	   '(lambda ()
-	      (setq erc-fill-column (- (window-width) 2))))
+(use-package erc
+  :commands erc erc-tls
+  :config
+    ;; Join the a couple of interesting channels whenever connecting to Freenode.
+    (setq erc-autojoin-channels-alist '(("myanonamouse.net"
+                                        "#am-members")
+                                        ("libera.chat"
+                                        "#spodeli")))
 
-;; Interpret mIRC-style color commands in IRC chats
-(setq erc-interpret-mirc-color t)
+    (add-hook 'window-configuration-change-hook
+        '(lambda ()
+            (setq erc-fill-column (- (window-width) 2))))
 
-;; The following are commented out by default, but users of other
-;; non-Emacs IRC clients might find them useful.
-;; Kill buffers for channels after /part
-(setq erc-kill-buffer-on-part t)
-;; Kill buffers for private queries after quitting the server
-(setq erc-kill-queries-on-quit t)
-;; Kill buffers for server messages after quitting the server
-(setq erc-kill-server-buffer-on-quit t)
+    ;; Interpret mIRC-style color commands in IRC chats
+    (setq erc-interpret-mirc-color t)
 
-;; open query buffers in the current window
-(setq erc-query-display 'buffer)
+    ;; The following are commented out by default, but users of other
+    ;; non-Emacs IRC clients might find them useful.
+    ;; Kill buffers for channels after /part
+    (setq erc-kill-buffer-on-part t)
+    ;; Kill buffers for private queries after quitting the server
+    (setq erc-kill-queries-on-quit t)
+    ;; Kill buffers for server messages after quitting the server
+    (setq erc-kill-server-buffer-on-quit t)
 
-(setq erc-track-shorten-function nil)
-;; exclude boring stuff from tracking
-(erc-track-mode t)
-(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-                                "324" "329" "332" "333" "353" "477"))
+    ;; open query buffers in the current window
+    (setq erc-query-display 'buffer)
 
-;; truncate long irc buffers
-(erc-truncate-mode +1)
+    (setq erc-track-shorten-function nil)
+    ;; exclude boring stuff from tracking
+    (erc-track-mode t)
+    (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                    "324" "329" "332" "333" "353" "477"))
 
-;; reconnecting
-(setq erc-server-reconnect-attempts 5)
-(setq erc-server-reconnect-timeout 30)
+    ;; truncate long irc buffers
+    (erc-truncate-mode +1)
 
-;; share my real name
-(setq erc-user-full-name "Ivan Trajkov")
+    ;; reconnecting
+    (setq erc-server-reconnect-attempts 5)
+    (setq erc-server-reconnect-timeout 30)
 
-;; enable spell checking
-(erc-spelling-mode 1)
+    ;; share my real name
+    (setq erc-user-full-name "Ivan Trajkov")
 
-(defvar erc-notify-timeout 10
-  "Number of seconds that must elapse between notifications from
-the same person.")
+    ;; enable spell checking
+    (erc-spelling-mode 1)
 
-(defun my/erc-notify (nickname message)
-  "Displays a notification message for ERC."
-  (let* ((channel (buffer-name))
-         (nick (erc-hl-nicks-trim-irc-nick nickname))
-         (title (if (string-match-p (concat "^" nickname) channel)
-                    nick
-                  (concat nick " (" channel ")")))
-         (msg (s-trim (s-collapse-whitespace message))))
-    (alert (concat nick ": " msg) :title title)))
+    (defvar erc-notify-timeout 10
+    "Number of seconds that must elapse between notifications from
+    the same person.")
 
-;; autoaway setup
-(setq erc-auto-discard-away t)
-(setq erc-autoaway-idle-seconds 600)
-(setq erc-autoaway-use-emacs-idle t)
-(setq erc-prompt-for-nickserv-password nil)
+    (defun my/erc-notify (nickname message)
+    "Displays a notification message for ERC."
+    (let* ((channel (buffer-name))
+            (nick (erc-hl-nicks-trim-irc-nick nickname))
+            (title (if (string-match-p (concat "^" nickname) channel)
+                        nick
+                    (concat nick " (" channel ")")))
+            (msg (s-trim (s-collapse-whitespace message))))
+        (alert (concat nick ": " msg) :title title)))
 
-;; utf-8 always and forever
-(setq erc-server-coding-system '(utf-8 . utf-8))
+    ;; autoaway setup
+    (setq erc-auto-discard-away t)
+    (setq erc-autoaway-idle-seconds 600)
+    (setq erc-autoaway-use-emacs-idle t)
+    (setq erc-prompt-for-nickserv-password nil)
 
-(defun my/erc-start-or-switch ()
-  "Connects to ERC, or switch to last active buffer."
-  (interactive)
-  (if (get-buffer "irc.libera.chat:6697")
-      (erc-track-switch-buffer 1)
-    (when (y-or-n-p "Start ERC? ")
-      (erc-tls :server "irc.libera.chat" :port 6697 :nick "ivche")
-      (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "Ivche1337")
-      )))
+    ;; utf-8 always and forever
+    (setq erc-server-coding-system '(utf-8 . utf-8))
 
-(defun my/erc-count-users ()
-  "Displays the number of users connected on the current channel."
-  (interactive)
-  (if (get-buffer "irc.libera.chat:6697")
-      (let ((channel (erc-default-target)))
-        (if (and channel (erc-channel-p channel))
-            (message "%d users are online on %s"
-                     (hash-table-count erc-channel-users)
-                     channel)
-          (user-error "The current buffer is not a channel")))
-    (user-error "You must first start ERC")))
+    (defun my/erc-start-or-switch ()
+    "Connects to ERC, or switch to last active buffer."
+    (interactive)
+    (if (get-buffer "irc.libera.chat:6697")
+        (erc-track-switch-buffer 1)
+        (when (y-or-n-p "Start ERC? ")
+        (erc-tls :server "irc.libera.chat" :port 6697 :nick "ivche")
+        (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "Ivche1337")
+        )))
 
-(defun filter-server-buffers ()
-  (delq nil
-        (mapcar
-         (lambda (x) (and (erc-server-buffer-p x) x))
-         (buffer-list))))
+    (defun my/erc-count-users ()
+    "Displays the number of users connected on the current channel."
+    (interactive)
+    (if (get-buffer "irc.libera.chat:6697")
+        (let ((channel (erc-default-target)))
+            (if (and channel (erc-channel-p channel))
+                (message "%d users are online on %s"
+                        (hash-table-count erc-channel-users)
+                        channel)
+            (user-error "The current buffer is not a channel")))
+        (user-error "You must first start ERC")))
 
-(defun my/erc-stop ()
-  "Disconnects from all irc servers"
-  (interactive)
-  (dolist (buffer (filter-server-buffers))
-    (message "Server buffer: %s" (buffer-name buffer))
-    (with-current-buffer buffer
-      (erc-quit-server "cya nerds! - sent from ERC"))))
+    (defun filter-server-buffers ()
+    (delq nil
+            (mapcar
+            (lambda (x) (and (erc-server-buffer-p x) x))
+            (buffer-list))))
+
+    (defun my/erc-stop ()
+    "Disconnects from all irc servers"
+    (interactive)
+    (dolist (buffer (filter-server-buffers))
+        (message "Server buffer: %s" (buffer-name buffer))
+        (with-current-buffer buffer
+        (erc-quit-server "cya nerds! - sent from ERC"))))
+)
 
 (use-package erc-hl-nicks
   :after erc)
@@ -447,15 +270,6 @@ the same person.")
 (setq default-tab-width 4)
 (setq company-minimum-prefix-length 2)
 (setq company-idle-delay 0)
-
-(setq doom-font (font-spec :family "FiraCode" :size 16))
-(setq doom-unicode-font (font-spec :family "Material Icons" :size 25))
-
-(setq display-line-numbers-type 'relative)
-(setq truncate-lines nil)
-(setq scroll-margin 9)
-
-(setq doom-theme 'doom-nord)
 
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
 (setq org-directory "~/Dropbox/org")
@@ -501,13 +315,3 @@ the same person.")
           (org-agenda-log-mode-items '(state))
           (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp ":DAILY:"))))
         ))
-
-(defun my/evil-scroll-down-and-center ()
-  (interactive)
-  (evil-scroll-down 0)
-  (recenter nil))
-
-(defun my/evil-scroll-up-and-center ()
-  (interactive)
-  (evil-scroll-up 0)
-  (recenter nil))

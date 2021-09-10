@@ -29,3 +29,6 @@ alias serv='ssh root@candywatch.net'
 alias tl='todoist sync && todoist list'
 alias ta='todoist sync && todoist add'
 alias jnb='jupyter notebook ~/Dev/notebooks'
+alias vpnup='sudo wg-quick up wg0'
+alias killvpn='sudo wg-quick down wg0'
+
