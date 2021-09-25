@@ -7,12 +7,7 @@ export DISABLE_AUTO_TITLE='true'
 export ZSH="/home/ivche/.oh-my-zsh"
 
 ZSH_THEME=clean
-plugins=(git archlinux copydir vi-mode web-search colorize copyfile extract z zsh-syntax-highlighting)
-
-# web-search plugin config
-ZSH_WEB_SEARCH_ENGINES=(reddit "https://www.reddit.com/search/?q="
-                        yt "https://www.youtube.com/results?search_query=")
-
+plugins=(git archlinux copydir vi-mode colorize copyfile extract z zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -24,5 +19,9 @@ bindkey -M menuselect 'j' vi-down-line-or-history
  
 # Sane defaults
 xset r rate 300 50
-curl https://wttr.in/Skopje\?0
 unsetopt BEEP
+neofetch
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

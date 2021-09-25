@@ -25,6 +25,7 @@ alias tb="nc termbin.com 9999"
 alias genpass='pass generate -c'
 alias doomsync='~/.emacs.d/bin/doom sync && systemctl restart emacs --user'
 alias serv='ssh root@candywatch.net'
+alias emacs='emacsclient -c --nw'
 
 alias tl='todoist sync && todoist list'
 alias ta='todoist sync && todoist add'

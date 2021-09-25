@@ -39,18 +39,20 @@
 (map! :map evil-normal-state-map "C--" #'doom/decrease-font-size)
 (map! :map evil-normal-state-map "C-+" #'doom/increase-font-size)
 
-(setq doom-font (font-spec :family "Hack Nerd Font" :size 15))
+(setq doom-font (font-spec :family "Iosevka Custom" :size 16))
 (setq doom-unicode-font (font-spec :family "Material Icons" :size 25))
 
 (setq display-line-numbers-type 'relative)
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'doom-nord-light)
+(setq doom-theme 'doom-opera)
+(set-frame-parameter (selected-frame) 'alpha '(95 . 95))
+(add-to-list 'default-frame-alist '(alpha . (95 . 95)))
 
-(custom-set-faces!
-  '(mode-line :family "Noto Sans" :height 0.9)
-  '(mode-line-inactive :family "Noto Sans" :height 0.9))
+(setq-default mode-line-format
+    (list mode-line-front-space mode-line-frame-identification mode-line-buffer-identification "line: %l (%p) "
+    "  " mode-line-misc-info mode-line-end-spaces))
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 (setq mu4e-change-filename-when-moving t)
@@ -150,11 +152,11 @@
   (setq mu4e-views-next-previous-message-behaviour 'stick-to-current-window) ;; when pressing n and p stay in the current window
   (setq mu4e-views-auto-view-selected-message t)) ;; automatically open messages when moving in the headers view
 
-(use-package erc-log :after erc)
-(use-package erc-notify :after erc)
-(use-package erc-nick-notify :after erc)
-(use-package erc-spelling :after erc)
-(use-package erc-autoaway :after erc)
+(require 'erc-log)
+(require 'erc-notify)
+(require 'erc-nick-notify)
+(require 'erc-spelling)
+(require 'erc-autoaway)
 
 
 (use-package erc
@@ -271,7 +273,6 @@
 (setq company-minimum-prefix-length 2)
 (setq company-idle-delay 0)
 
-(setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
 (setq org-directory "~/Dropbox/org")
 
 (add-hook 'org-mode-hook #'+org-pretty-mode)
@@ -298,12 +299,6 @@
 (setq org-fontify-quote-and-verse-blocks t)
 
 (add-to-list 'org-modules 'org-habit t)
-
-(setq org-reveal-mathjax t)
-;; (use-package ox-reveal
-;;   :ensure ox-reveal)
-(setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
-;;(setq org-reveal-root "file:///home/ivche/node_modules/reveal.js/")
 
 (setq org-agenda-files '("~/Dropbox/org/ivches-system/Personal"))
 (setq org-agenda-search-headline-for-time nil)
