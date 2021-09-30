@@ -10,6 +10,7 @@
 
 ;; Org packages
 (package! org-super-agenda)
+(package! org-fragtog)
 (package! ox-reveal)
 
 ;; Modes

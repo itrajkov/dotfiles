@@ -310,3 +310,6 @@
           (org-agenda-log-mode-items '(state))
           (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp ":DAILY:"))))
         ))
+
+(add-hook 'org-mode-hook 'org-fragtog-mode)
+(add-hook 'org-mode-hook #'turn-on-org-cdlatex)

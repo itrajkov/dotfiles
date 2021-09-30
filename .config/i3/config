@@ -192,7 +192,7 @@ smart_borders on
 #border_radius 12
 
 #Rofi binds
-bindsym $mod+d exec rofi -show drun -show-icons -font "Hack Nerd Font 16"
+bindsym $mod+d exec rofi -show drun -show-icons -font "Iosevka Custom 16"
 bindsym $mod+Shift+d exec rofi -show emoji -modi emoji
 bindsym $mod+g exec rofi -dmenu -p "Google" | xargs -I{} xdg-open https://www.google.de/search?q={}
 bindsym $mod+y exec rofi -dmenu -p "Youtube" | xargs -I{} xdg-open https://www.youtube.com/results?search_query={}
@@ -237,8 +237,8 @@ exec_always picom --config ~/.config/picom/picom.conf
 exec_always feh --bg-fill ~/.config/i3/wallpaper.png
 
 # Monitor binds
-bindcode 87 exec xrandr --output HDMI1 --off && i3-msg restart
-bindcode 88 exec xrandr --output HDMI1 --auto --right-of eDP1 && i3-msg restart 
+bindcode 87 exec xrandr --output DP1 --off && i3-msg restart
+bindcode 88 exec xrandr --output HDMI1 --left-of eDP1 && i3-msg restart 
 
 # Custom binds
 bindsym $mod+m exec kitty spt
