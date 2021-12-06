@@ -1,6 +1,2 @@
-if [[ "$(tty)" = "/dev/tty1" ]]; then
-    pgrep i3 || startx "~/.xinitrc"
-fi
-
-export EDITOR="emacsclient --nw"
-eval "$(gh completion -s zsh)"
+xset r rate 300 50
+unsetopt BEEP
