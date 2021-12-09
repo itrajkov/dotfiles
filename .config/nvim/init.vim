@@ -16,6 +16,10 @@ set t_Co=256
 set notermguicolors
 set encoding=utf-8
 set number relativenumber
+aug i3config_ft_detection
+  au!
+  au BufNewFile,BufRead ~/.config/i3/config set filetype=i3config
+aug end
 
 nnoremap <silent> <esc> :noh<cr><esc>
 nnoremap <leader><CR> :so ~/.config/nvim/init.vim<CR>
@@ -41,8 +45,6 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
-
-" Autocomplete
 Plug 'anott03/nvim-lspinstall'
 Plug 'neovim/nvim-lspconfig'
 Plug 'glepnir/lspsaga.nvim'
@@ -61,6 +63,7 @@ Plug 'srcery-colors/srcery-vim'
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'mboughaba/i3config.vim'
 call plug#end()
 
 lua require("ivche")

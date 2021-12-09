@@ -9,12 +9,12 @@
     show_age_threshold = 300
     word_wrap = yes
     ignore_newline = no
-    frame_width = 1
+    frame_width = 3
     stack_duplicates = true
     #geometry = "560+450-35"
     geometry = "270x20-10+40"
     shrink = no
-    transparency = 0
+    transparency = 20
     idle_threshold = 120
     monitor = 0
     follow = mouse
@@ -23,15 +23,16 @@
     show_indicators = yes
     line_height = 1
     separator_height = 2
-    padding = 2
-    horizontal_padding = 5
+    padding = 5
+    horizontal_padding = 4
     separator_color = auto
     startup_notification = false
     dmenu = /usr/bin/dmenu -p dunst:
     browser = /usr/bin/firefox -new-tab
     icon_position = left
+    icon_size = 16
     icon_folders = /usr/share/icons/breeze/apps/48/:/usr/share/icons/breeze/actions/48/:/usr/share/icons/breeze/places/48/:/usr/share/icons/breeze/status/48/
-    frame_color = "#3b4252"
+    frame_color = "#000000"
     separator_color = auto
 
 [shortcuts]
@@ -40,17 +41,21 @@
     history = ctrl+shift+h
     context = ctrl+shift+period
     
-[nord_low]
+[low]
     msg_urgency = low
-    background = "#4c566a"
-    foreground = "#2e3440"
+    background = "#222222"
+    foreground = "#FFFFFF"
+    frame_color = "#87081b"
+    timeout = 3
 
-[nord_normal]
+[normal]
     msg_urgency = normal
-    background = "#81a1c1"
-    foreground = "#2e3440"
+    background = "#222222"
+    foreground = "#FFFFFF"
+    timeout = 5
     
-[nord_critical]
+[critical]
     msg_urgency = critical
-    background = "#bf616a"
-    foreground = "#2e3440"
+    background = "#222222"
+    foreground = "#FFFFFF"
+    frame_color = "#87081b"

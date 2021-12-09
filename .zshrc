@@ -20,3 +20,4 @@ bindkey -M menuselect 'j' vi-down-line-or-history
 # Sane defaults
 xset r rate 300 50
 unsetopt BEEP
+ 

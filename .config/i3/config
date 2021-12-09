@@ -180,7 +180,7 @@ exec_always feh --bg-fill ~/.config/i3/wallpaper.png
 
 # Monitor binds
 bindcode 87 exec xrandr --output eDP1 --off && i3-msg restart
-bindcode 88 exec xrandr --output HDMI1 --left-of eDP1 && i3-msg restart 
+bindcode 88 exec xrandr --output HDMI1 --mode 1980x1080 --refresh 120 --left-of eDP1 && i3-msg restart 
 
 # Custom binds
 bindsym $mod+shift+x exec alacritty -e ranger

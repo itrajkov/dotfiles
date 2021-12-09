@@ -1,21 +1,20 @@
 (setq user-full-name "Ivan Trajkov"
       user-mail-address "itrajkov999@gmail.com")
 
-(defun greedily-do-daemon-setup ()
-  (require 'org)
-  (when (require 'mu4e nil t)
-    (setq mu4e-confirm-quit t)
-    (setq +mu4e-lock-greedy t)
-    (setq +mu4e-lock-relaxed t)))
-
 (when (daemonp)
-  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
   (add-hook! 'server-after-make-frame-hook (switch-to-buffer +doom-dashboard-name)))
 
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
 
 (setq auth-sources '("~/.authinfo.gpg"))
+
+(map! :map evil-motion-state-map "C-u" #'my/evil-scroll-up-and-center)
+(map! :map evil-motion-state-map "C-d" #'my/evil-scroll-down-and-center)
+(map! :map evil-normal-state-map "C-x" #'evil-numbers/dec-at-pt-incremental)
+(map! :map evil-normal-state-map "C-a" #'evil-numbers/inc-at-pt-incremental)
+(map! :map evil-normal-state-map "C--" #'doom/decrease-font-size)
+(map! :map evil-normal-state-map "C-+" #'doom/increase-font-size)
 
 (map! :leader
       :desc "Start ERC"
@@ -28,129 +27,94 @@
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
 (map! :map erc-mode-map :n "c u" #'my/erc-count-users)
 
-(map! :leader
-      :desc "Hackernews"
-      "o h n" #'hackernews)
-
-(map! :map evil-motion-state-map "C-u" #'my/evil-scroll-up-and-center)
-(map! :map evil-motion-state-map "C-d" #'my/evil-scroll-down-and-center)
-(map! :map evil-normal-state-map "C-x" #'evil-numbers/dec-at-pt-incremental)
-(map! :map evil-normal-state-map "C-a" #'evil-numbers/inc-at-pt-incremental)
-(map! :map evil-normal-state-map "C--" #'doom/decrease-font-size)
-(map! :map evil-normal-state-map "C-+" #'doom/increase-font-size)
-
-(setq doom-font (font-spec :family "Iosevka Custom" :size 16))
-(setq doom-unicode-font (font-spec :family "Material Icons" :size 25))
+(setq doom-font (font-spec :family "Fira Code Nerd Font" :size 18))
 
 (setq display-line-numbers-type 'relative)
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'doom-opera)
-(set-frame-parameter (selected-frame) 'alpha '(95 . 95))
-(add-to-list 'default-frame-alist '(alpha . (95 . 95)))
+(setq doom-theme 'doom-monokai-pro)
+(set-frame-parameter (selected-frame) 'alpha '(93 . 93))
+(add-to-list 'default-frame-alist '(alpha . (93 . 93)))
 
-(setq-default mode-line-format
-    (list mode-line-front-space mode-line-frame-identification mode-line-buffer-identification "line: %l (%p) "
-    "  " mode-line-misc-info mode-line-end-spaces))
+(set-email-account! "ivchepro@gmail.com"
+  '((user-mail-address . "ivchepro@gmail.com")
+    (user-full-name    . "Беден Буџи")
+    (smtpmail-smtp-server . "smtp.gmail.com")
+    (smtpmail-smtp-service . 465)
+    (smtpmail-stream-type . ssl)
+    (smtpmail-smtp-user . "ivchepro@gmail.com")
+    (mu4e-drafts-folder  . "/ivchepro/[Gmail]/Drafts")
+    (mu4e-sent-folder  . "/ivchepro/[Gmail]/Sent Mail")
+    (mu4e-refile-folder  . "/ivchepro/[Gmail]/All Mail")
+    (mu4e-trash-folder  . "/ivchepro/[Gmail]/Trash")
+    (smtpmail-queue-dir .  "~/Mail/ivchepro/queue/cur")
+    (mu4e-compose-signature . "---\nYours truly\nIvche.")
+    (mu4e-maildir-shortcuts .
+        (("/ivchepro/Inbox"             . ?i)
+        ("/ivchepro/[Gmail]/Sent Mail" . ?s)
+        ("/ivchepro/[Gmail]/Trash"     . ?t)
+        ("/ivchepro/[Gmail]/Drafts"    . ?d)
+        ("/ivchepro/[Gmail]/All Mail"  . ?a))))
+  t)
 
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-(setq mu4e-change-filename-when-moving t)
-(setq mu4e-get-mail-command "mbsync -a")
-(setq mu4e-maildir "~/Mail")
+(set-email-account! "itrajkov999@gmail.com"
+  '((user-mail-address . "itrajkov999@gmail.com")
+    (user-full-name    . "Ivan Trajkov")
+    (smtpmail-smtp-server . "smtp.gmail.com")
+    (smtpmail-smtp-service . 465)
+    (smtpmail-stream-type . ssl)
+    (smtpmail-smtp-user . "itrajkov999@gmail.com")
+    (mu4e-drafts-folder  . "/itrajkov999/[Gmail]/Drafts")
+    (mu4e-sent-folder  . "/itrajkov999/[Gmail]/Sent Mail")
+    (mu4e-refile-folder  . "/itrajkov999/[Gmail]/All Mail")
+    (mu4e-trash-folder  . "/itrajkov999/[Gmail]/Trash")
+    (smtpmail-queue-dir .  "~/Mail/itrajkov999/queue/cur")
+    (mu4e-compose-signature . "---\nYours truly\nIvan.")
+    (mu4e-maildir-shortcuts .
+        (("/itrajkov999/Inbox"             . ?i)
+        ("/itrajkov999/[Gmail]/Sent Mail" . ?s)
+        ("/itrajkov999/[Gmail]/Trash"     . ?t)
+        ("/itrajkov999/[Gmail]/Drafts"    . ?d)
+        ("/itrajkov999/[Gmail]/All Mail"  . ?a))))
+  t)
 
-(setq message-send-mail-function 'smtpmail-send-it)
-(setq mu4e-compose-context-policy 'ask-if-none)
-(setq smtpmail-queue-mail t)  ;; start in queuing mode
-(after! mu4e (setq mu4e-update-interval (* 5 60)))
+(setq mu4e-context-policy 'ask-if-none
+      mu4e-compose-context-policy 'always-ask)
 
-(setq +org-msg-accent-color "#1a5fb4"
-      org-msg-greeting-fmt "\nHi %s,\n\n"
-      org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n*Ivan*\n#+end_signature")
+;; don't need to run cleanup after indexing for gmail
+(setq mu4e-index-cleanup nil
+      ;; because gmail uses labels as folders we can use lazy check since
+      ;; messages don't really "move"
+      mu4e-index-lazy-check t)
 
+(setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
 
-(after! mu4e (setq mu4e-contexts
-                   (list
+(setq mu4e-headers-fields
+      '((:flags . 6)
+        (:account-stripe . 2)
+        (:from-or-to . 25)
+        (:folder . 10)
+        (:recipnum . 2)
+        (:subject . 80)
+        (:human-date . 8))
+      +mu4e-min-header-frame-width 142
+      mu4e-headers-date-format "%d/%m/%y"
+      mu4e-headers-time-format "⧖ %H:%M"
+      mu4e-headers-results-limit 1000
+      mu4e-index-cleanup t)
 
-                    ;; Personal gmail account
-                    (make-mu4e-context
-                     :name "Main-Gmail"
-                     :match-func
-                     (lambda (msg)
-                       (when msg
-                         (string-prefix-p "/itrajkov999" (mu4e-message-field msg :maildir))))
-                     :vars '((user-mail-address . "itrajkov999@gmail.com")
-                             (user-full-name    . "Ivan Trajkov")
-                             (smtpmail-smtp-server . "smtp.gmail.com")
-                             (smtpmail-smtp-service . 465)
-                             (smtpmail-stream-type . ssl)
-                             (smtpmail-smtp-user . "itrajkov999@gmail.com")
-                             (mu4e-drafts-folder  . "/itrajkov999/[Gmail]/Drafts")
-                             (mu4e-sent-folder  . "/itrajkov999/[Gmail]/Sent Mail")
-                             (mu4e-refile-folder  . "/itrajkov999/[Gmail]/All Mail")
-                             (mu4e-trash-folder  . "/itrajkov999/[Gmail]/Trash")
-                             (smtpmail-queue-dir .  "~/Mail/itrajkov999/queue/cur")
-                             (mu4e-maildir-shortcuts .
-                                                     (("/itrajkov999/Inbox"             . ?i)
-                                                      ("/itrajkov999/[Gmail]/Sent Mail" . ?s)
-                                                      ("/itrajkov999/[Gmail]/Trash"     . ?t)
-                                                      ("/itrajkov999/[Gmail]/Drafts"    . ?d)
-                                                      ("/itrajkov999/[Gmail]/All Mail"  . ?a)))))
+(add-to-list 'mu4e-bookmarks
+             '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
 
-                    ;; Ivchepro gmail
-                    (make-mu4e-context
-                     :name "All-Gmail"
-                     :match-func
-                     (lambda (msg)
-                       (when msg
-                         (string-prefix-p "/ivchepro" (mu4e-message-field msg :maildir))))
-                     :vars '((user-mail-address . "ivchepro@gmail.com")
-                             (user-full-name    . "Беден Буџи")
-                             (smtpmail-smtp-server . "smtp.gmail.com")
-                             (smtpmail-smtp-service . 465)
-                             (smtpmail-stream-type . ssl)
-                             (smtpmail-smtp-user . "ivchepro@gmail.com")
-                             (mu4e-drafts-folder  . "/ivchepro/[Gmail]/Drafts")
-                             (mu4e-sent-folder  . "/ivchepro/[Gmail]/Sent Mail")
-                             (mu4e-refile-folder  . "/ivchepro/[Gmail]/All Mail")
-                             (mu4e-trash-folder  . "/ivchepro/[Gmail]/Trash")
-                             (smtpmail-queue-dir .  "~/Mail/ivchepro/queue/cur")
-                             (mu4e-maildir-shortcuts .
-                                                     (("/ivchepro/Inbox"             . ?i)
-                                                      ("/ivchepro/[Gmail]/Sent Mail" . ?s)
-                                                      ("/ivchepro/[Gmail]/Trash"     . ?t)
-                                                      ("/ivchepro/[Gmail]/Drafts"    . ?d)
-                                                      ("/ivchepro/[Gmail]/All Mail"  . ?a))))))))
-
-(map! (:map org-msg-edit-mode-map
-       :n "<tab>" #'org-msg-tab
-       :localleader
-       (:prefix "m"
-        "k" #'org-msg-edit-kill-buffer
-        "s" #'message-goto-subject
-        "b" #'org-msg-goto-body
-        "a" #'org-msg-attach)))
-
-(mu4e-alert-set-default-style 'libnotify)
-(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
-(add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-(setq mu4e-alert-email-notification-types '(count))
-
-(use-package mu4e-views
-  :after mu4e
-  :defer nil
-  :bind (:map mu4e-headers-mode-map
-         ("M-a" . mu4e-views-mu4e-select-view-msg-method) ;; select viewing method
-         ("M-j" . mu4e-views-cursor-msg-view-window-down) ;; from headers window scroll the email view
-         ("M-k" . mu4e-views-cursor-msg-view-window-up) ;; from headers window scroll the email view
-         ("f" . mu4e-views-toggle-auto-view-selected-message) ;; toggle opening messages automatically when moving in the headers view
-         )
-  :config
-  (setq mu4e-views-completion-method 'ivy) ;; use ivy for completion
-  (setq mu4e-views-default-view-method "gnus") ;; make xwidgets default
-  (mu4e-views-mu4e-use-view-msg-method "gnus") ;; select the default
-  (setq mu4e-views-next-previous-message-behaviour 'stick-to-current-window) ;; when pressing n and p stay in the current window
-  (setq mu4e-views-auto-view-selected-message t)) ;; automatically open messages when moving in the headers view
+(defvar +mu4e-header--folder-colors nil)
+(appendq! mu4e-header-info-custom
+          '((:folder .
+             (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
+              (lambda (msg)
+                (+mu4e-colorize-str
+                 (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
+                 '+mu4e-header--folder-colors))))))
 
 (require 'erc-log)
 (require 'erc-notify)
@@ -311,5 +275,8 @@
           (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp ":DAILY:"))))
         ))
 
-(add-hook 'org-mode-hook 'org-fragtog-mode)
-(add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+(use-package! tree-sitter
+  :config
+  (require 'tree-sitter-langs)
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))

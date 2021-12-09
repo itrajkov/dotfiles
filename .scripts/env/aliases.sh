@@ -15,6 +15,7 @@ alias i3conf='nvim ~/.config/i3/config'
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 # Programs
+alias paru="paru --bottomup"
 alias d='ls'
 alias cat="bat"
 alias vim="nvim"
