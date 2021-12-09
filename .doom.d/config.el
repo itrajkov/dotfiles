@@ -1,11 +1,19 @@
 (setq user-full-name "Ivan Trajkov"
       user-mail-address "itrajkov999@gmail.com")
 
-(when (daemonp)
-  (add-hook! 'server-after-make-frame-hook (switch-to-buffer +doom-dashboard-name)))
+(defun greedily-do-daemon-setup ()
+  (require 'org)
+  (when (require 'mu4e nil t)
+    (setq mu4e-confirm-quit t)
+    (setq +mu4e-lock-greedy t)
+    (setq +mu4e-lock-relaxed t)
+    (mu4e~start)))
 
-(setq doom-fallback-buffer-name "► Doom"
-      +doom-dashboard-name "► Doom")
+(when (daemonp)
+  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
+  (add-hook! 'server-after-make-frame-hook
+    (unless (string-match-p "\\*draft" (buffer-name))
+      (switch-to-buffer +doom-dashboard-name))))
 
 (setq auth-sources '("~/.authinfo.gpg"))
 
@@ -103,18 +111,6 @@
       mu4e-headers-time-format "⧖ %H:%M"
       mu4e-headers-results-limit 1000
       mu4e-index-cleanup t)
-
-(add-to-list 'mu4e-bookmarks
-             '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
-
-(defvar +mu4e-header--folder-colors nil)
-(appendq! mu4e-header-info-custom
-          '((:folder .
-             (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
-              (lambda (msg)
-                (+mu4e-colorize-str
-                 (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
-                 '+mu4e-header--folder-colors))))))
 
 (require 'erc-log)
 (require 'erc-notify)
