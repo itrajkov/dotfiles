@@ -130,6 +130,9 @@
         ("/itrajkov999/[Gmail]/All Mail"  . ?a))))
   t)
 
+(setq smtpmail-queue-mail t)  ;; start in queuing mode
+(after! mu4e (setq mu4e-update-interval (* 5 60)))
+
 (setq mu4e-context-policy 'ask-if-none
       mu4e-compose-context-policy 'always-ask)
 
