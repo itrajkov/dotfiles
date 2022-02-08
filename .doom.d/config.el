@@ -12,8 +12,7 @@
 (when (daemonp)
   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
   (add-hook! 'server-after-make-frame-hook
-    (unless (string-match-p "\\*draft" (buffer-name))
-      (switch-to-buffer +doom-dashboard-name))))
+    (unless (string-match-p "\\*draft" (buffer-name)))))
 
 (setq auth-sources '("~/.authinfo.gpg"))
 
@@ -41,11 +40,12 @@
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'doom-monokai-pro)
-(set-frame-parameter (selected-frame) 'alpha '(93 . 93))
-(add-to-list 'default-frame-alist '(alpha . (93 . 93)))
+(setq doom-theme 'doom-gruvbox-light)
+(set-frame-parameter (selected-frame) 'alpha '(97 . 97))
+(add-to-list 'default-frame-alist '(alpha . (97 . 97)))
+(setq doom-modeline-height 9)
 
-(set-email-account! "ivchepro@gmail.com"
+(set-email-account! "All"
   '((user-mail-address . "ivchepro@gmail.com")
     (user-full-name    . "Беден Буџи")
     (smtpmail-smtp-server . "smtp.gmail.com")
@@ -66,7 +66,7 @@
         ("/ivchepro/[Gmail]/All Mail"  . ?a))))
   t)
 
-(set-email-account! "itrajkov999@gmail.com"
+(set-email-account! "Main"
   '((user-mail-address . "itrajkov999@gmail.com")
     (user-full-name    . "Ivan Trajkov")
     (smtpmail-smtp-server . "smtp.gmail.com")
@@ -261,18 +261,139 @@
 
 (setq org-fontify-quote-and-verse-blocks t)
 
+  (with-eval-after-load 'org
+    (setq org-todo-keywords
+         '((sequence "TODO" "DOING" "WAITING" "REVIEW" "|" "DONE" "ARCHIVED"))))
+
 (add-to-list 'org-modules 'org-habit t)
 
-(setq org-agenda-files '("~/Dropbox/org/ivches-system/Personal"))
-(setq org-agenda-search-headline-for-time nil)
-(setq org-agenda-custom-commands
-      '(("h" "Daily habits"
-         ((agenda ""))
-         ((org-agenda-show-log t)
-          (org-agenda-ndays 11)
-          (org-agenda-log-mode-items '(state))
-          (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp ":DAILY:"))))
-        ))
+(setq org-roam-dailies-directory "daily/")
+
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         "* %?"
+         :target (file+head "%<%Y-%m-%d>.org"
+                            "#+title: %<%Y-%m-%d>\n"))))
+
+(setq org-roam-capture-templates '(("d" "default" plain "%?"
+     :target (file+head "${slug}.org.gpg"
+                        "#+title: ${title}\n")
+     :unnarrowed t)))
+
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+(require 'org-protocol)
+
+(setq org-super-agenda-header-map (make-sparse-keymap))
+(use-package! org-super-agenda
+  :after org-agenda
+  :custom-face
+  (org-super-agenda-header ((default (:inherit propositum-agenda-heading))))
+
+  :init
+  (setq org-agenda-skip-scheduled-if-done t
+        org-agenda-file-regexp "\\`[^.].*\\.org.gpg\\'"
+        org-agenda-files `(,(concat org-directory "/roam"))
+        org-agenda-skip-deadline-if-done t
+        org-agenda-include-deadlines t
+        org-agenda-block-separator nil
+        org-agenda-compact-blocks t
+        org-agenda-start-day nil ;; i.e. today
+        org-agenda-span 1
+        org-agenda-start-on-weekday nil)
+  (setq org-agenda-custom-commands
+        '(("p" "Project view"
+           ((agenda "" ((org-agenda-overriding-header "")
+                        (org-super-agenda-groups
+                         '((:name "Today"
+                            :time-grid t
+                            :date today
+                            :order 1)))))
+            (alltodo "" ((org-agenda-overriding-header "")
+                         (org-super-agenda-groups
+                          '((:log t)
+                            (:name #(" due this week\n" 0 1 (rear-nonsticky t display (raise -0.24) font-lock-face (:family "Material Icons" :height 1.2) face (:family "Material Icons" :height 1.2)))
+                             :deadline past)
+                            (:name "Important"
+                             :priority "A"
+                             :order 6)
+                            (:name "Due soon"
+                             :deadline future)
+                            (:name "Due Today"
+                             :deadline today
+                             :order 2)
+                            (:name "Scheduled Soon"
+                             :scheduled future
+                             :order 8)
+                            (:name "Overdue"
+                             :deadline past
+                             :order 7)
+                            (:name "Meetings"
+                             :and (:todo "MEET" :scheduled future)
+                             :order 10)
+                            (:discard (:not (:todo "TODO"))))))))
+           ((org-agenda-tag-filter-preset '("+project"))))
+          ("i" "Inbox view"
+           ((agenda "" ((org-agenda-overriding-header "")
+                        (org-super-agenda-groups
+                         '((:name "Today"
+                            :time-grid t
+                            :date today
+                            :order 1)))))
+            (alltodo "" ((org-agenda-overriding-header "")
+                         (org-super-agenda-groups
+                          '((:log t)
+                            (:name #(" due this week\n" 0 1 (rear-nonsticky t display (raise -0.24) font-lock-face (:family "Material Icons" :height 1.2) face (:family "Material Icons" :height 1.2)))
+                             :deadline past)
+                            (:name "Important"
+                             :priority "A"
+                             :order 6)
+                            (:name "Due soon"
+                             :deadline future)
+                            (:name "Due Today"
+                             :deadline today
+                             :order 2)
+                            (:name "Scheduled Soon"
+                             :scheduled future
+                             :order 8)
+                            (:name "Overdue"
+                             :deadline past
+                             :order 7)
+                            (:name "Meetings"
+                             :and (:todo "MEET" :scheduled future)
+                             :order 10)
+                            (:discard (:not (:todo "TODO"))))))))
+           ((org-agenda-tag-filter-preset '("+inbox"))))
+          ))
+
+  :config
+  (org-super-agenda-mode))
+
+(setq org-capture-templates `(
+    ("p" "Protocol" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Quotes")
+        "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+    ("L" "Protocol Link" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Links")
+        "* %? [[%:link][%:description]] \nCaptured On: %U")
+    ("i" "Inbox" entry (file ,(concat org-directory "/roam/inbox.org.gpg"))
+        "* %? \n+ Captured on: %T")
+))
+
+(setq org-archive-location (concat org-directory "/roam/archive.org.gpg::* 2022"))
+
+(add-hook! 'elfeed-search-mode-hook 'elfeed-update)
 
 (use-package! tree-sitter
   :config

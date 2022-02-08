@@ -11,3 +11,6 @@
 
 ;; Tools
 (package! nvm)
+
+(unpin! org-roam)
+(package! org-roam-ui)
