@@ -6,11 +6,13 @@ source $HOME/.scripts/env/funcs.sh
 export DISABLE_AUTO_TITLE='true'
 export ZSH="/home/ivche/.oh-my-zsh"
 
-ZSH_THEME=clean
+ZSH_THEME=af-magic
 plugins=(git archlinux copydir vi-mode colorize copyfile extract z)
 
 source $ZSH/oh-my-zsh.sh
 
+bindkey -s ^f ".scripts/utils/tmux-sessionizer\n"
+bindkey -s ^p ".scripts/utils/tmux-projector\n"
 # Vim keys
 bindkey -M menuselect 'h' vi-backward-char
 bindkey -M menuselect 'l' vi-forward-char
@@ -20,4 +22,5 @@ bindkey -M menuselect 'j' vi-down-line-or-history
 # Sane defaults
 xset r rate 300 50
 unsetopt BEEP
+afetch
  

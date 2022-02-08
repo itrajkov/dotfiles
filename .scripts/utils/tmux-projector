@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+tmuxp load `ls .tmuxp | sed 's/\.[^.]*$//' | fzf` > /dev/null

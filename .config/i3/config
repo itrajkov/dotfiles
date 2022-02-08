@@ -7,6 +7,9 @@ floating_modifier $mod
 # start a terminal
 bindsym $mod+Return exec alacritty
 
+# Run dmenu
+bindsym $mod+d exec "dmenu_run -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'Hack Nerd Font-12' -p 'Run'"
+
 # kill focused window
 bindsym $mod+Shift+q kill
 
@@ -72,18 +75,20 @@ set $workspace9 9
 set $workspace10 10
 
 # switch to workspace
-bindcode $mod+10 workspace $workspace1
+bindsym $mod+ampersand workspace $workspace1
 bindsym $mod+7 workspace $workspace2
 bindsym $mod+5 workspace $workspace3
 bindsym $mod+3 workspace $workspace4
+bindsym $mod+1 workspace $workspace5
 bindsym $mod+c workspace $workspace6
 bindsym $mod+s workspace $workspace7
 
 # move focused container to workspace
-bindcode $mod+Shift+10 move container to workspace $workspace1
+bindsym $mod+Shift+ampersand move container to workspace $workspace1
 bindsym $mod+Shift+7 move container to workspace $workspace2
 bindsym $mod+Shift+5 move container to workspace $workspace3
 bindsym $mod+Shift+3 move container to workspace $workspace4
+bindsym $mod+Shift+1 move container to workspace $workspace5
 bindsym $mod+Shift+c move container to workspace $workspace6
 bindsym $mod+Shift+s move container to workspace $workspace7
 
@@ -121,34 +126,58 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# class                 border  bground text    indicator child_border
+client.focused          #6272A4 #6272A4 #F8F8F2 #6272A4   #6272A4
+client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
+client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
+client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
+client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
+client.background       #F8F8F2
+
 # BAR CONFIG
  bar {
-     font pango: Ubuntu Nerd Font 12
+     tray_output primary
+     font pango: Nerd Font 12
      position bottom
      status_command i3blocks -c ~/.config/i3/i3blocks.conf
+
+
+  colors {
+    background #282A36
+    statusline #F8F8F2
+    separator  #44475A
+
+    focused_workspace  #44475A #44475A #F8F8F2
+    active_workspace   #282A36 #44475A #F8F8F2
+    inactive_workspace #282A36 #282A36 #BFBFBF
+    urgent_workspace   #FF5555 #FF5555 #F8F8F2
+    binding_mode       #FF5555 #FF5555 #F8F8F2
+  }
  }
 
 ## i3-gaps CONGFIG ##
 for_window [class=".*"] border pixel 2
-#gaps inner 5
-#gaps horizontal 8
-#gaps top 8
-#gaps bottom 8
+gaps inner 5
+gaps horizontal 8
+gaps top 8
+gaps bottom 8
 smart_borders on
 
-# Dmenu binds
-bindsym $mod+d exec --no-startup-id dmenu_run -fn 'Hack Nerd Font-10'
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute 1 toggle
-bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 5 # increase screen brightness bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 5 # decrease screen brightness
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+#bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute 1 toggle
+bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 5 # increase screen brightness 
+bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 5 # decrease screen brightness
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -D pulse sset Master 5%+ #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer -D pulse sset Master 5%- #decrease sound volume
+
+
 
 # SESSION CONTROLS
 bindsym F9 exec i3lock
-bindsym $mod+Shift+F13 exec xfce4-session-logoutdi
 
 # Media player controls
 bindsym XF86AudioPause exec playerctl play-pause
@@ -178,18 +207,14 @@ exec_always picom --config ~/.config/picom/picom.conf
 # Wallpaper
 exec_always feh --bg-fill ~/.config/i3/wallpaper.png
 
-# Monitor binds
-bindcode 87 exec xrandr --output eDP1 --off && i3-msg restart
-bindcode 88 exec xrandr --output HDMI1 --mode 1980x1080 --refresh 120 --left-of eDP1 && i3-msg restart 
-
 # Custom binds
 bindsym $mod+shift+x exec alacritty -e ranger
 bindsym $mod+shift+a exec ~/.scripts/utils/lazyweeb.sh
-bindsym $mod+shift+f exec ~/.scripts/utils/pdf-opener.sh
-bindsym $mod+shift+p exec passmenu --type -fn 'Hack Nerd Font-10'
+bindsym $mod+shift+p exec passmenu --type -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'Hack Nerd Font-12' -p 'Choose a service'
 bindsym $mod+shift+b exec brave
 
 bindsym $mod+shift+n exec emacsclient -c
 bindsym $mod+shift+m exec emacsclient --eval '(mu4e)' -c
-bindsym $mod+n exec emacsclient -c ~/Dropbox/org/ivches-system/dashboard.org
+bindsym $mod+n exec emacsclient -c ~/Dropbox/org/roam/inbox.org.gpg
 
+exec xrandr --output HDMI1 --mode 1920x1080 -r 120

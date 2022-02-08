@@ -21,12 +21,13 @@ alias cat="bat"
 alias vim="nvim"
 alias r="ranger"
 alias diskspace='ncdu'
-alias tb="nc termbin.com 9999"
+alias tb="nc termbin.com 9999 | xclip -selection clipboard"
 alias genpass='pass generate -c'
 alias doomsync='~/.emacs.d/bin/doom sync && systemctl restart emacs --user'
 alias serv='ssh root@candywatch.net'
 alias h='ssh 192.168.100.40'
-alias emacs='emacsclient -c --nw'
+alias emac='emacsclient -c --nw'
+alias cb="xclip -selection clipboard"
 
 alias tl='todoist sync && todoist list'
 alias ta='todoist sync && todoist add'
