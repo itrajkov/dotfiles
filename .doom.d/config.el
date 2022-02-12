@@ -40,10 +40,10 @@
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'doom-gruvbox-light)
-(set-frame-parameter (selected-frame) 'alpha '(97 . 97))
-(add-to-list 'default-frame-alist '(alpha . (97 . 97)))
-(setq doom-modeline-height 9)
+(setq doom-theme 'doom-snazzy)
+;; (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
+;; (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
+(setq doom-modeline-height 5)
 
 (set-email-account! "All"
   '((user-mail-address . "ivchepro@gmail.com")
@@ -88,7 +88,7 @@
   t)
 
 (setq smtpmail-queue-mail t)  ;; start in queuing mode
-(after! mu4e (setq mu4e-update-interval (* 5 60)))
+(after! mu4e (setq mu4e-update-interval 60))
 
 (setq mu4e-context-policy 'ask-if-none
       mu4e-compose-context-policy 'always-ask)
@@ -237,6 +237,7 @@
 (setq company-idle-delay 0)
 
 (setq org-directory "~/Dropbox/org")
+(setq org-log-done 'time)
 
 (add-hook 'org-mode-hook #'+org-pretty-mode)
 
@@ -262,8 +263,7 @@
 (setq org-fontify-quote-and-verse-blocks t)
 
   (with-eval-after-load 'org
-    (setq org-todo-keywords
-         '((sequence "TODO" "DOING" "WAITING" "REVIEW" "|" "DONE" "ARCHIVED"))))
+    (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)" "REVIEW(r)" "ARCHIVED(a)"))))
 
 (add-to-list 'org-modules 'org-habit t)
 
@@ -279,6 +279,9 @@
      :target (file+head "${slug}.org.gpg"
                         "#+title: ${title}\n")
      :unnarrowed t)))
+
+;; Collapses all sections every time the *org-roam* buffer is updated.
+(add-hook 'org-roam-buffer-postrender-functions #'magit-section-show-level-1-all)
 
 (use-package! websocket
     :after org-roam)
@@ -316,68 +319,16 @@
         org-agenda-start-on-weekday nil)
   (setq org-agenda-custom-commands
         '(("p" "Project view"
-           ((agenda "" ((org-agenda-overriding-header "")
-                        (org-super-agenda-groups
-                         '((:name "Today"
-                            :time-grid t
-                            :date today
-                            :order 1)))))
-            (alltodo "" ((org-agenda-overriding-header "")
-                         (org-super-agenda-groups
-                          '((:log t)
-                            (:name #(" due this week\n" 0 1 (rear-nonsticky t display (raise -0.24) font-lock-face (:family "Material Icons" :height 1.2) face (:family "Material Icons" :height 1.2)))
-                             :deadline past)
-                            (:name "Important"
-                             :priority "A"
-                             :order 6)
-                            (:name "Due soon"
-                             :deadline future)
-                            (:name "Due Today"
-                             :deadline today
-                             :order 2)
-                            (:name "Scheduled Soon"
-                             :scheduled future
-                             :order 8)
-                            (:name "Overdue"
-                             :deadline past
-                             :order 7)
-                            (:name "Meetings"
-                             :and (:todo "MEET" :scheduled future)
-                             :order 10)
-                            (:discard (:not (:todo "TODO"))))))))
+           ((alltodo "" ((org-agenda-overriding-header "Project Tasks"))))
            ((org-agenda-tag-filter-preset '("+project"))))
           ("i" "Inbox view"
-           ((agenda "" ((org-agenda-overriding-header "")
-                        (org-super-agenda-groups
-                         '((:name "Today"
-                            :time-grid t
-                            :date today
-                            :order 1)))))
-            (alltodo "" ((org-agenda-overriding-header "")
-                         (org-super-agenda-groups
-                          '((:log t)
-                            (:name #(" due this week\n" 0 1 (rear-nonsticky t display (raise -0.24) font-lock-face (:family "Material Icons" :height 1.2) face (:family "Material Icons" :height 1.2)))
-                             :deadline past)
-                            (:name "Important"
-                             :priority "A"
-                             :order 6)
-                            (:name "Due soon"
-                             :deadline future)
-                            (:name "Due Today"
-                             :deadline today
-                             :order 2)
-                            (:name "Scheduled Soon"
-                             :scheduled future
-                             :order 8)
-                            (:name "Overdue"
-                             :deadline past
-                             :order 7)
-                            (:name "Meetings"
-                             :and (:todo "MEET" :scheduled future)
-                             :order 10)
-                            (:discard (:not (:todo "TODO"))))))))
+           ((alltodo "" ((org-agenda-overriding-header "Inbox"))))
            ((org-agenda-tag-filter-preset '("+inbox"))))
-          ))
+          ("n" "Next actions"
+           ((alltodo "" ((org-agenda-overriding-header "Inbox"))))
+           ((org-agenda-tag-filter-preset '("+next"))))
+          ("w" todo "WAITING"
+           ((alltodo "")))))
 
   :config
   (org-super-agenda-mode))
@@ -389,9 +340,25 @@
         "* %? [[%:link][%:description]] \nCaptured On: %U")
     ("i" "Inbox" entry (file ,(concat org-directory "/roam/inbox.org.gpg"))
         "* %? \n+ Captured on: %T")
+    ("t" "Todo" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Tasks")
+        "* TODO %? \n+ Captured on: %T")
 ))
 
+(defun org-archive-done (&optional arg)
+  (org-todo 'done))
+
+(advice-add 'org-archive-subtree :before 'org-archive-done)
+
 (setq org-archive-location (concat org-directory "/roam/archive.org.gpg::* 2022"))
+
+(use-package! org-wild-notifier
+  :custom
+  (alert-default-style 'notifications)
+  (org-wild-notifier-alert-time '(5 10 30 60 120))
+  (org-wild-notifier-keyword-whitelist nil)
+  (org-wild-notifier-notification-title "Task reminder!")
+  :config
+  (org-wild-notifier-mode 1))
 
 (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
 

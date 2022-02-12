@@ -8,6 +8,7 @@
 
 ;; Org packages
 (package! org-super-agenda)
+(package! org-wild-notifier)
 
 ;; Tools
 (package! nvm)
