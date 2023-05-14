@@ -8,7 +8,8 @@ floating_modifier $mod
 bindsym $mod+Return exec alacritty
 
 # Run dmenu
-bindsym $mod+d exec "dmenu_run -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'Hack Nerd Font-12' -p 'Run'"
+#bindsym $mod+d exec "dmenu_run -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'Hack Nerd Font-12' -p 'Run'"
+bindsym $mod+d exec "dmenu_run -fn 'Hack Nerd Font-14' -p 'Run'"
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -126,33 +127,12 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# class                 border  bground text    indicator child_border
-client.focused          #6272A4 #6272A4 #F8F8F2 #6272A4   #6272A4
-client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
-client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
-client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
-client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
-client.background       #F8F8F2
-
 # BAR CONFIG
  bar {
      tray_output primary
      font pango: Nerd Font 12
      position bottom
      status_command i3blocks -c ~/.config/i3/i3blocks.conf
-
-
-  colors {
-    background #282A36
-    statusline #F8F8F2
-    separator  #44475A
-
-    focused_workspace  #44475A #44475A #F8F8F2
-    active_workspace   #282A36 #44475A #F8F8F2
-    inactive_workspace #282A36 #282A36 #BFBFBF
-    urgent_workspace   #FF5555 #FF5555 #F8F8F2
-    binding_mode       #FF5555 #FF5555 #F8F8F2
-  }
  }
 
 ## i3-gaps CONGFIG ##
@@ -165,16 +145,14 @@ smart_borders on
 
 
 # Pulse Audio controls
-#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
-#bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute 1 toggle
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute 1 toggle
 bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 5 # increase screen brightness 
 bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 5 # decrease screen brightness
-bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -D pulse sset Master 5%+ #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id amixer -D pulse sset Master 5%- #decrease sound volume
-
-
+# bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -D pulse sset Master 5%+ #increase sound volume
+# bindsym XF86AudioLowerVolume exec --no-startup-id amixer -D pulse sset Master 5%- #decrease sound volume
 
 # SESSION CONTROLS
 bindsym F9 exec i3lock
@@ -189,7 +167,7 @@ bindsym --release Print exec --no-startup-id maim -s -u | xclip -selection clipb
 bindsym Shift+Print exec --no-startup-id scrot '%Y-%m-%d_%T_$wx$h.png' -e 'mv $f ~/Pictures/screenshots'
 
 # Keyboard
-exec_always setxkbmap -layout dvp,us,mk
+exec_always setxkbmap -layout dvp,mk
 exec_always setxkbmap -option 'grp:alt_shift_toggle'
 
 # Disable PC Speaker
@@ -200,6 +178,8 @@ exec nm-applet
 exec blueman-applet
 exec volumeicon
 exec cbatticon
+exec dunst
+exec spotifyd
 
 # Picom compositor
 exec_always picom --config ~/.config/picom/picom.conf
@@ -209,12 +189,8 @@ exec_always feh --bg-fill ~/.config/i3/wallpaper.png
 
 # Custom binds
 bindsym $mod+shift+x exec alacritty -e ranger
+bindsym $mod+shift+m exec alacritty -e gospt
 bindsym $mod+shift+a exec ~/.scripts/utils/lazyweeb.sh
-bindsym $mod+shift+p exec passmenu --type -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'Hack Nerd Font-12' -p 'Choose a service'
-bindsym $mod+shift+b exec brave
-
+bindsym $mod+shift+p exec passmenu --type -fn 'Hack Nerd Font-14' -p 'Choose a service'
+bindsym $mod+shift+b exec qutebrowser
 bindsym $mod+shift+n exec emacsclient -c
-bindsym $mod+shift+m exec emacsclient --eval '(mu4e)' -c
-bindsym $mod+n exec emacsclient -c ~/Dropbox/org/roam/inbox.org.gpg
-
-exec xrandr --output HDMI1 --mode 1920x1080 -r 120

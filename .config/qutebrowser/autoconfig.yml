@@ -13,5 +13,5 @@ settings:
         ',m': spawn umpv {url}
         ',p': open -p
         ;M: hint --rapid links spawn umpv {hint-url}
-  content.notifications:
+  content.notifications.enabled:
     https://www.reddit.com: false
