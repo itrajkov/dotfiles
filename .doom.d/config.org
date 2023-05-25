@@ -9,33 +9,16 @@
 #+END_SRC
 
 * Settings
-** Daemon
-
-#+begin_src emacs-lisp
-(defun greedily-do-daemon-setup ()
-  (require 'org)
-  (when (require 'mu4e nil t)
-    (setq mu4e-confirm-quit t)
-    (setq +mu4e-lock-greedy t)
-    (setq +mu4e-lock-relaxed t)
-    (mu4e~start)))
-
-(when (daemonp)
-  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
-  (add-hook! 'server-after-make-frame-hook
-    (unless (string-match-p "\\*draft" (buffer-name)))))
-#+end_src
-
-#+RESULTS:
-
 ** Authinfo
 
 #+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg"))
 #+end_src
 
-** Custom Keybinds
+#+RESULTS:
+| ~/.authinfo.gpg |
 
+** Custom Keybinds
 *** evil-mode
 #+begin_src emacs-lisp
 (map! :map evil-motion-state-map "C-u" #'my/evil-scroll-up-and-center)
@@ -46,27 +29,21 @@
 (map! :map evil-normal-state-map "C-+" #'doom/increase-font-size)
 #+end_src
 
-*** erc
+#+RESULTS:
+
+** GPG
 #+begin_src emacs-lisp
-(map! :leader
-      :desc "Start ERC"
-      "o i" #'my/erc-start-or-switch
-      "i i" #'erc-switch-to-buffer)
-
-;;(map! :map specific-mode-map :n "J" (cmd! (a-function) (b-function)))
-
-(map! :map erc-mode-map :n "J" #'erc-join-channel)
-(map! :map erc-mode-map :n "qq" #'my/erc-stop)
-(map! :map erc-mode-map :n "c u" #'my/erc-count-users)
-
+(setq epg-pinentry-mode 'loopback)
 #+end_src
-
 * User Interface
 ** Font
 
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Fira Code Nerd Font" :size 18))
+(setq doom-font (font-spec :family "Iosevka Nerd Font Mono" :size 18))
 #+END_SRC
+
+#+RESULTS:
+: #<font-spec nil nil Iosevka\ Nerd\ Font\ Mono nil nil nil nil nil 18 nil nil nil nil>
 
 ** Lines
 
@@ -76,224 +53,25 @@
 (setq scroll-margin 9)
 #+END_SRC
 
+#+RESULTS:
+: 9
+
 ** Theme
 
 #+BEGIN_SRC emacs-lisp
-(setq doom-theme 'doom-snazzy)
-;; (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
-;; (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
+;; (setq doom-theme 'doom-zenburn)
+(setq doom-theme 'catppuccin)
 (setq doom-modeline-height 5)
 #+end_src
 
-** mu4e
-
-#+begin_src emacs-lisp
-(set-email-account! "All"
-  '((user-mail-address . "ivchepro@gmail.com")
-    (user-full-name    . "Беден Буџи")
-    (smtpmail-smtp-server . "smtp.gmail.com")
-    (smtpmail-smtp-service . 465)
-    (smtpmail-stream-type . ssl)
-    (smtpmail-smtp-user . "ivchepro@gmail.com")
-    (mu4e-drafts-folder  . "/ivchepro/[Gmail]/Drafts")
-    (mu4e-sent-folder  . "/ivchepro/[Gmail]/Sent Mail")
-    (mu4e-refile-folder  . "/ivchepro/[Gmail]/All Mail")
-    (mu4e-trash-folder  . "/ivchepro/[Gmail]/Trash")
-    (smtpmail-queue-dir .  "~/Mail/ivchepro/queue/cur")
-    (mu4e-compose-signature . "---\nYours truly\nIvche.")
-    (mu4e-maildir-shortcuts .
-        (("/ivchepro/Inbox"             . ?i)
-        ("/ivchepro/[Gmail]/Sent Mail" . ?s)
-        ("/ivchepro/[Gmail]/Trash"     . ?t)
-        ("/ivchepro/[Gmail]/Drafts"    . ?d)
-        ("/ivchepro/[Gmail]/All Mail"  . ?a))))
-  t)
-
-(set-email-account! "Main"
-  '((user-mail-address . "itrajkov999@gmail.com")
-    (user-full-name    . "Ivan Trajkov")
-    (smtpmail-smtp-server . "smtp.gmail.com")
-    (smtpmail-smtp-service . 465)
-    (smtpmail-stream-type . ssl)
-    (smtpmail-smtp-user . "itrajkov999@gmail.com")
-    (mu4e-drafts-folder  . "/itrajkov999/[Gmail]/Drafts")
-    (mu4e-sent-folder  . "/itrajkov999/[Gmail]/Sent Mail")
-    (mu4e-refile-folder  . "/itrajkov999/[Gmail]/All Mail")
-    (mu4e-trash-folder  . "/itrajkov999/[Gmail]/Trash")
-    (smtpmail-queue-dir .  "~/Mail/itrajkov999/queue/cur")
-    (mu4e-compose-signature . "---\nYours truly\nIvan.")
-    (mu4e-maildir-shortcuts .
-        (("/itrajkov999/Inbox"             . ?i)
-        ("/itrajkov999/[Gmail]/Sent Mail" . ?s)
-        ("/itrajkov999/[Gmail]/Trash"     . ?t)
-        ("/itrajkov999/[Gmail]/Drafts"    . ?d)
-        ("/itrajkov999/[Gmail]/All Mail"  . ?a))))
-  t)
-
-(setq smtpmail-queue-mail t)  ;; start in queuing mode
-(after! mu4e (setq mu4e-update-interval 60))
-
-(setq mu4e-context-policy 'ask-if-none
-      mu4e-compose-context-policy 'always-ask)
-
-;; don't need to run cleanup after indexing for gmail
-(setq mu4e-index-cleanup nil
-      ;; because gmail uses labels as folders we can use lazy check since
-      ;; messages don't really "move"
-      mu4e-index-lazy-check t)
-
-(setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
-
-(setq mu4e-headers-fields
-      '((:flags . 6)
-        (:account-stripe . 2)
-        (:from-or-to . 25)
-        (:folder . 10)
-        (:recipnum . 2)
-        (:subject . 80)
-        (:human-date . 8))
-      +mu4e-min-header-frame-width 142
-      mu4e-headers-date-format "%d/%m/%y"
-      mu4e-headers-time-format "⧖ %H:%M"
-      mu4e-headers-results-limit 1000
-      mu4e-index-cleanup t)
-#+end_src
-
-** erc
-
-#+begin_src emacs-lisp
-(require 'erc-log)
-(require 'erc-notify)
-(require 'erc-nick-notify)
-(require 'erc-spelling)
-(require 'erc-autoaway)
-
-
-(use-package erc
-  :commands erc erc-tls
-  :config
-    ;; Join the a couple of interesting channels whenever connecting to Freenode.
-    (setq erc-autojoin-channels-alist '(("myanonamouse.net"
-                                        "#am-members")
-                                        ("libera.chat"
-                                        "#spodeli")))
-
-    (add-hook 'window-configuration-change-hook
-        '(lambda ()
-            (setq erc-fill-column (- (window-width) 2))))
-
-    ;; Interpret mIRC-style color commands in IRC chats
-    (setq erc-interpret-mirc-color t)
-
-    ;; The following are commented out by default, but users of other
-    ;; non-Emacs IRC clients might find them useful.
-    ;; Kill buffers for channels after /part
-    (setq erc-kill-buffer-on-part t)
-    ;; Kill buffers for private queries after quitting the server
-    (setq erc-kill-queries-on-quit t)
-    ;; Kill buffers for server messages after quitting the server
-    (setq erc-kill-server-buffer-on-quit t)
-
-    ;; open query buffers in the current window
-    (setq erc-query-display 'buffer)
-
-    (setq erc-track-shorten-function nil)
-    ;; exclude boring stuff from tracking
-    (erc-track-mode t)
-    (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-                                    "324" "329" "332" "333" "353" "477"))
-
-    ;; truncate long irc buffers
-    (erc-truncate-mode +1)
-
-    ;; reconnecting
-    (setq erc-server-reconnect-attempts 5)
-    (setq erc-server-reconnect-timeout 30)
-
-    ;; share my real name
-    (setq erc-user-full-name "Ivan Trajkov")
-
-    ;; enable spell checking
-    (erc-spelling-mode 1)
-
-    (defvar erc-notify-timeout 10
-    "Number of seconds that must elapse between notifications from
-    the same person.")
-
-    (defun my/erc-notify (nickname message)
-    "Displays a notification message for ERC."
-    (let* ((channel (buffer-name))
-            (nick (erc-hl-nicks-trim-irc-nick nickname))
-            (title (if (string-match-p (concat "^" nickname) channel)
-                        nick
-                    (concat nick " (" channel ")")))
-            (msg (s-trim (s-collapse-whitespace message))))
-        (alert (concat nick ": " msg) :title title)))
-
-    ;; autoaway setup
-    (setq erc-auto-discard-away t)
-    (setq erc-autoaway-idle-seconds 600)
-    (setq erc-autoaway-use-emacs-idle t)
-    (setq erc-prompt-for-nickserv-password nil)
-
-    ;; utf-8 always and forever
-    (setq erc-server-coding-system '(utf-8 . utf-8))
-
-    (defun my/erc-start-or-switch ()
-    "Connects to ERC, or switch to last active buffer."
-    (interactive)
-    (if (get-buffer "irc.libera.chat:6697")
-        (erc-track-switch-buffer 1)
-        (when (y-or-n-p "Start ERC? ")
-        (erc-tls :server "irc.libera.chat" :port 6697 :nick "ivche")
-        (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "Ivche1337")
-        )))
-
-    (defun my/erc-count-users ()
-    "Displays the number of users connected on the current channel."
-    (interactive)
-    (if (get-buffer "irc.libera.chat:6697")
-        (let ((channel (erc-default-target)))
-            (if (and channel (erc-channel-p channel))
-                (message "%d users are online on %s"
-                        (hash-table-count erc-channel-users)
-                        channel)
-            (user-error "The current buffer is not a channel")))
-        (user-error "You must first start ERC")))
-
-    (defun filter-server-buffers ()
-    (delq nil
-            (mapcar
-            (lambda (x) (and (erc-server-buffer-p x) x))
-            (buffer-list))))
-
-    (defun my/erc-stop ()
-    "Disconnects from all irc servers"
-    (interactive)
-    (dolist (buffer (filter-server-buffers))
-        (message "Server buffer: %s" (buffer-name buffer))
-        (with-current-buffer buffer
-        (erc-quit-server "cya nerds! - sent from ERC"))))
-)
-
-(use-package erc-hl-nicks
-  :after erc)
-#+end_src
-
-** company
-
-#+BEGIN_SRC emacs-lisp
-(setq default-tab-width 4)
-(setq company-minimum-prefix-length 2)
-(setq company-idle-delay 0)
-#+END_SRC
+#+RESULTS:
+: 5
 
 * Org Mode
 ** General
 
 #+begin_src emacs-lisp
-(setq org-directory "~/Dropbox/org")
-(setq org-log-done 'time)
+(setq org-directory "~/Documents/org")
 #+end_src
 
 ** Visuals
@@ -323,24 +101,15 @@
 (setq org-fontify-quote-and-verse-blocks t)
 #+end_src
 
-** org states
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
-    (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)" "REVIEW(r)" "ARCHIVED(a)"))))
-#+end_src
-
-** org-habit
-
-#+begin_src emacs-lisp
-(add-to-list 'org-modules 'org-habit t)
-#+end_src
-
 ** org-roam
 *** Dailies directory
 
 #+begin_src emacs-lisp
 (setq org-roam-dailies-directory "daily/")
 #+end_src
+
+#+RESULTS:
+: daily/
 
 *** Templates
 
@@ -390,82 +159,6 @@
 (require 'org-protocol)
 #+end_src
 
-** org-agenda
-#+begin_src emacs-lisp
-(setq org-super-agenda-header-map (make-sparse-keymap))
-(use-package! org-super-agenda
-  :after org-agenda
-  :custom-face
-  (org-super-agenda-header ((default (:inherit propositum-agenda-heading))))
-
-  :init
-  (setq org-agenda-skip-scheduled-if-done t
-        org-agenda-file-regexp "\\`[^.].*\\.org.gpg\\'"
-        org-agenda-files `(,(concat org-directory "/roam"))
-        org-agenda-skip-deadline-if-done t
-        org-agenda-include-deadlines t
-        org-agenda-block-separator nil
-        org-agenda-compact-blocks t
-        org-agenda-start-day nil ;; i.e. today
-        org-agenda-span 1
-        org-agenda-start-on-weekday nil)
-  (setq org-agenda-custom-commands
-        '(("p" "Project view"
-           ((alltodo "" ((org-agenda-overriding-header "Project Tasks"))))
-           ((org-agenda-tag-filter-preset '("+project"))))
-          ("i" "Inbox view"
-           ((alltodo "" ((org-agenda-overriding-header "Inbox"))))
-           ((org-agenda-tag-filter-preset '("+inbox"))))
-          ("n" "Next actions"
-           ((alltodo "" ((org-agenda-overriding-header "Inbox"))))
-           ((org-agenda-tag-filter-preset '("+next"))))
-          ("w" todo "WAITING"
-           ((alltodo "")))))
-
-  :config
-  (org-super-agenda-mode))
-  #+end_src
-
-** org-capture
-#+begin_src emacs-lisp
-(setq org-capture-templates `(
-    ("p" "Protocol" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Quotes")
-        "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-    ("L" "Protocol Link" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Links")
-        "* %? [[%:link][%:description]] \nCaptured On: %U")
-    ("i" "Inbox" entry (file ,(concat org-directory "/roam/inbox.org.gpg"))
-        "* %? \n+ Captured on: %T")
-    ("t" "Todo" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Tasks")
-        "* TODO %? \n+ Captured on: %T")
-))
-#+end_src
-
-** org-archive
-
-#+begin_src emacs-lisp
-(defun org-archive-done (&optional arg)
-  (org-todo 'done))
-
-(advice-add 'org-archive-subtree :before 'org-archive-done)
-#+end_src
-
-#+begin_src emacs-lisp
-(setq org-archive-location (concat org-directory "/roam/archive.org.gpg::* 2022"))
-#+end_src
-
-** org-wild-notifier
-
-#+begin_src emacs-lisp
-(use-package! org-wild-notifier
-  :custom
-  (alert-default-style 'notifications)
-  (org-wild-notifier-alert-time '(5 10 30 60 120))
-  (org-wild-notifier-keyword-whitelist nil)
-  (org-wild-notifier-notification-title "Task reminder!")
-  :config
-  (org-wild-notifier-mode 1))
-#+end_src
-
 * Packages
 ** elfeed
 
@@ -473,12 +166,37 @@
 (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
 #+end_src
 
-** Treesitter
+** tailwind-css
 
 #+begin_src emacs-lisp
-(use-package! tree-sitter
+(use-package! lsp-tailwindcss)
+#+end_src
+
+** elcord
+
+#+begin_src emacs-lisp
+(use-package! elcord
+  :commands elcord-mode
   :config
-  (require 'tree-sitter-langs)
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  (setq elcord-use-major-mode-as-main-icon t))
+#+end_src
+
+** company
+
+#+BEGIN_SRC emacs-lisp
+(setq default-tab-width 4)
+(setq company-minimum-prefix-length 0)
+(setq company-idle-delay 0)
+#+END_SRC
+
+** Flyspell
+#+begin_src emacs-lisp
+(setq flyspell-default-dictionary "english")
+
+(add-hook 'text-mode-hook 'flyspell-mode)
+#+end_src
+
+** LSP
+#+begin_src emacs-lisp
+(setq lsp-headerline-breadcrumb-enable t)
 #+end_src
