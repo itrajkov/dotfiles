@@ -1,4 +1,4 @@
-# My arch system dotfiles
+# My macos system dotfiles
 
 ## Requirements
 
