@@ -3,26 +3,36 @@
 
 (setq auth-sources '("~/.authinfo.gpg"))
 
-(map! :map evil-motion-state-map "C-u" #'my/evil-scroll-up-and-center)
-(map! :map evil-motion-state-map "C-d" #'my/evil-scroll-down-and-center)
-(map! :map evil-normal-state-map "C-x" #'evil-numbers/dec-at-pt-incremental)
-(map! :map evil-normal-state-map "C-a" #'evil-numbers/inc-at-pt-incremental)
-(map! :map evil-normal-state-map "C--" #'doom/decrease-font-size)
-(map! :map evil-normal-state-map "C-+" #'doom/increase-font-size)
+(use-package! pinentry
+    :init (setq epg-pinentry-mode `loopback)
+    (fset 'epg-wait-for-status 'ignore) ;; Uncertain if there are any side effects.
+    (pinentry-start))
 
-(setq epg-pinentry-mode 'loopback)
-
-(setq doom-font (font-spec :family "Iosevka Nerd Font Mono" :size 18))
+(setq doom-font (font-spec :family "Hack Nerd Font" :size 18))
 
 (setq display-line-numbers-type 'relative)
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-;; (setq doom-theme 'doom-zenburn)
 (setq doom-theme 'catppuccin)
 (setq doom-modeline-height 5)
+(set-frame-parameter (selected-frame) 'alpha '(96 . 96))
+(add-to-list 'default-frame-alist '(alpha . (96 . 96)))
+
+(after! company
+    (setq default-tab-width 4)
+    (setq company-minimum-prefix-length 2)
+    (setq company-idle-delay 0))
+
+(use-package! lsp-tailwindcss)
+
+(use-package! elcord
+  :commands elcord-mode
+  :config
+  (setq elcord-use-major-mode-as-main-icon t))
 
 (setq org-directory "~/Documents/org")
+(setq org-log-done 'time)
 
 (add-hook 'org-mode-hook #'+org-pretty-mode)
 
@@ -47,54 +57,36 @@
 
 (setq org-fontify-quote-and-verse-blocks t)
 
-(setq org-roam-dailies-directory "daily/")
+(setq org-capture-templates `(
+    ("p" "Protocol" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Quotes")
+        "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+    ("L" "Protocol Link" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Links")
+        "* %? [[%:link][%:description]] \nCaptured On: %U")
+    ("i" "Inbox" entry (file ,(concat org-directory "/roam/inbox.org.gpg"))
+        "* %? \n+ Captured on: %T")
+    ("t" "Todo" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Tasks")
+        "* TODO %? \n+ Captured on: %T")
+))
 
-(setq org-roam-dailies-capture-templates
-      '(("d" "default" entry
-         "* %?"
-         :target (file+head "%<%Y-%m-%d>.org"
-                            "#+title: %<%Y-%m-%d>\n"))))
+(defun org-archive-done (&optional arg)
+  (org-todo 'done))
 
-(setq org-roam-capture-templates '(("d" "default" plain "%?"
-     :target (file+head "${slug}.org.gpg"
-                        "#+title: ${title}\n")
-     :unnarrowed t)))
+(advice-add 'org-archive-subtree :before 'org-archive-done)
 
-;; Collapses all sections every time the *org-roam* buffer is updated.
-(add-hook 'org-roam-buffer-postrender-functions #'magit-section-show-level-1-all)
+(setq org-archive-location (concat org-directory "/roam/archive.org.gpg::* 2022"))
 
-(use-package! websocket
-    :after org-roam)
+(after! lsp
+  (add-hook 'python-mode-hook #'lsp)
+    (setq lsp-pylsp-plugins-autopep8-enabled t)
+    (setq lsp-pylsp-plugins-flake8-enabled t)
+    (setq lsp-pylsp-plugins-pycodestyle-enabled t))
 
-(use-package! org-roam-ui
-    :after org-roam ;; or :after org
-;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-;;         a hookable mode anymore, you're advised to pick something yourself
-;;         if you don't care about startup time, use
-;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+(after! flycheck
+  (add-hook 'python-mode-hook
+            (lambda ()
+              ;; Set Flake8 as the first checker
+              (setq-local flycheck-checker 'python-mypy)
+              ;; Chain to MyPy after Flake8
+              (flycheck-add-next-checker 'python-mypy 'python-flake8))))
 
-(require 'org-protocol)
-
-(add-hook! 'elfeed-search-mode-hook 'elfeed-update)
-
-(use-package! lsp-tailwindcss)
-
-(use-package! elcord
-  :commands elcord-mode
-  :config
-  (setq elcord-use-major-mode-as-main-icon t))
-
-(setq default-tab-width 4)
-(setq company-minimum-prefix-length 0)
-(setq company-idle-delay 0)
-
-(setq flyspell-default-dictionary "english")
-
-(add-hook 'text-mode-hook 'flyspell-mode)
-
-(setq lsp-headerline-breadcrumb-enable t)
+(setq dap-python-debugger 'debugpy)
