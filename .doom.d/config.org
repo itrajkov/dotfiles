@@ -35,7 +35,6 @@
 #+end_src
 
 ** Custom Keybinds
-
 *** evil-mode
 #+begin_src emacs-lisp
 (map! :map evil-motion-state-map "C-u" #'my/evil-scroll-up-and-center)
@@ -292,7 +291,7 @@
 ** General
 
 #+begin_src emacs-lisp
-(setq org-directory "~/Dropbox/org")
+(setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
 #+end_src
 
