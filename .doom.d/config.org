@@ -135,20 +135,14 @@
 * Languages
 ** Python
 #+begin_src emacs-lisp
-(after! lsp
-  (add-hook 'python-mode-hook #'lsp)
-    (setq lsp-pylsp-plugins-autopep8-enabled t)
-    (setq lsp-pylsp-plugins-flake8-enabled t)
-    (setq lsp-pylsp-plugins-pycodestyle-enabled t))
-
 (after! flycheck
   (add-hook 'python-mode-hook
             (lambda ()
-              ;; Set Flake8 as the first checker
               (setq-local flycheck-checker 'python-mypy)
-              ;; Chain to MyPy after Flake8
-              (setq flycheck-checker-error-threshold 2000)
-              (flycheck-add-next-checker 'python-mypy 'python-flake8))))
+              (setq flycheck-checker-error-threshold 2000))))
 
-(setq dap-python-debugger 'debugpy)
+(after! dap-mode
+  (setq dap-python-debugger 'debugpy)
+  (setq dap-python-executable "python3"))
+
 #+end_src
