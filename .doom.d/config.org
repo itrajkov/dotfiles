@@ -28,23 +28,7 @@
 
 #+RESULTS:
 
-** Authinfo
-
-#+begin_src emacs-lisp
-(setq auth-sources '("~/.authinfo.gpg"))
-#+end_src
-
 ** Custom Keybinds
-*** evil-mode
-#+begin_src emacs-lisp
-(map! :map evil-motion-state-map "C-u" #'my/evil-scroll-up-and-center)
-(map! :map evil-motion-state-map "C-d" #'my/evil-scroll-down-and-center)
-(map! :map evil-normal-state-map "C-x" #'evil-numbers/dec-at-pt-incremental)
-(map! :map evil-normal-state-map "C-a" #'evil-numbers/inc-at-pt-incremental)
-(map! :map evil-normal-state-map "C--" #'doom/decrease-font-size)
-(map! :map evil-normal-state-map "C-+" #'doom/increase-font-size)
-#+end_src
-
 *** erc
 #+begin_src emacs-lisp
 (map! :leader
@@ -60,11 +44,16 @@
 
 #+end_src
 
-* User Interface
+** Authinfo
+
+#+begin_src emacs-lisp
+(setq auth-sources '("~/.authinfo.gpg"))
+#+end_src
+
 ** Font
 
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Fira Code Nerd Font" :size 18))
+(setq doom-font (font-spec :family "Hack Nerd Font" :size 18))
 #+END_SRC
 
 ** Lines
@@ -78,12 +67,13 @@
 ** Theme
 
 #+BEGIN_SRC emacs-lisp
-(setq doom-theme 'doom-snazzy)
-;; (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
-;; (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
+(setq doom-theme 'catppuccin)
 (setq doom-modeline-height 5)
+(set-frame-parameter (selected-frame) 'alpha '(96 . 96))
+(add-to-list 'default-frame-alist '(alpha . (96 . 96)))
 #+end_src
 
+* Packages
 ** mu4e
 
 #+begin_src emacs-lisp
@@ -282,10 +272,26 @@
 ** company
 
 #+BEGIN_SRC emacs-lisp
-(setq default-tab-width 4)
-(setq company-minimum-prefix-length 2)
-(setq company-idle-delay 0)
+(after! company
+    (setq default-tab-width 4)
+    (setq company-minimum-prefix-length 2)
+    (setq company-idle-delay 0))
 #+END_SRC
+
+** tailwind-css
+
+#+begin_src emacs-lisp
+(use-package! lsp-tailwindcss)
+#+end_src
+
+** elcord
+
+#+begin_src emacs-lisp
+(use-package! elcord
+  :commands elcord-mode
+  :config
+  (setq elcord-use-major-mode-as-main-icon t))
+#+end_src
 
 * Org Mode
 ** General
@@ -322,109 +328,6 @@
 (setq org-fontify-quote-and-verse-blocks t)
 #+end_src
 
-** org states
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
-    (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)" "REVIEW(r)" "ARCHIVED(a)"))))
-#+end_src
-
-** org-habit
-
-#+begin_src emacs-lisp
-(add-to-list 'org-modules 'org-habit t)
-#+end_src
-
-** org-roam
-*** Dailies directory
-
-#+begin_src emacs-lisp
-(setq org-roam-dailies-directory "daily/")
-#+end_src
-
-*** Templates
-
-#+begin_src emacs-lisp
-(setq org-roam-dailies-capture-templates
-      '(("d" "default" entry
-         "* %?"
-         :target (file+head "%<%Y-%m-%d>.org"
-                            "#+title: %<%Y-%m-%d>\n"))))
-
-(setq org-roam-capture-templates '(("d" "default" plain "%?"
-     :target (file+head "${slug}.org.gpg"
-                        "#+title: ${title}\n")
-     :unnarrowed t)))
-
-#+end_src
-
-*** Backlinks are collapsed by default
-
-#+begin_src emacs-lisp
-;; Collapses all sections every time the *org-roam* buffer is updated.
-(add-hook 'org-roam-buffer-postrender-functions #'magit-section-show-level-1-all)
-#+end_src
-
-** org-roam-ui
-
-#+begin_src emacs-lisp
-(use-package! websocket
-    :after org-roam)
-
-(use-package! org-roam-ui
-    :after org-roam ;; or :after org
-;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-;;         a hookable mode anymore, you're advised to pick something yourself
-;;         if you don't care about startup time, use
-;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
-#+end_src
-
-** org-protocol
-
-#+begin_src emacs-lisp
-(require 'org-protocol)
-#+end_src
-
-** org-agenda
-#+begin_src emacs-lisp
-(setq org-super-agenda-header-map (make-sparse-keymap))
-(use-package! org-super-agenda
-  :after org-agenda
-  :custom-face
-  (org-super-agenda-header ((default (:inherit propositum-agenda-heading))))
-
-  :init
-  (setq org-agenda-skip-scheduled-if-done t
-        org-agenda-file-regexp "\\`[^.].*\\.org.gpg\\'"
-        org-agenda-files `(,(concat org-directory "/roam"))
-        org-agenda-skip-deadline-if-done t
-        org-agenda-include-deadlines t
-        org-agenda-block-separator nil
-        org-agenda-compact-blocks t
-        org-agenda-start-day nil ;; i.e. today
-        org-agenda-span 1
-        org-agenda-start-on-weekday nil)
-  (setq org-agenda-custom-commands
-        '(("p" "Project view"
-           ((alltodo "" ((org-agenda-overriding-header "Project Tasks"))))
-           ((org-agenda-tag-filter-preset '("+project"))))
-          ("i" "Inbox view"
-           ((alltodo "" ((org-agenda-overriding-header "Inbox"))))
-           ((org-agenda-tag-filter-preset '("+inbox"))))
-          ("n" "Next actions"
-           ((alltodo "" ((org-agenda-overriding-header "Inbox"))))
-           ((org-agenda-tag-filter-preset '("+next"))))
-          ("w" todo "WAITING"
-           ((alltodo "")))))
-
-  :config
-  (org-super-agenda-mode))
-  #+end_src
-
 ** org-capture
 #+begin_src emacs-lisp
 (setq org-capture-templates `(
@@ -452,32 +355,23 @@
 (setq org-archive-location (concat org-directory "/roam/archive.org.gpg::* 2022"))
 #+end_src
 
-** org-wild-notifier
-
+* Languages
+** Python
 #+begin_src emacs-lisp
-(use-package! org-wild-notifier
-  :custom
-  (alert-default-style 'notifications)
-  (org-wild-notifier-alert-time '(5 10 30 60 120))
-  (org-wild-notifier-keyword-whitelist nil)
-  (org-wild-notifier-notification-title "Task reminder!")
-  :config
-  (org-wild-notifier-mode 1))
-#+end_src
+(after! lsp
+  (add-hook 'python-mode-hook #'lsp)
+    (setq lsp-pylsp-plugins-autopep8-enabled t)
+    (setq lsp-pylsp-plugins-flake8-enabled t)
+    (setq lsp-pylsp-plugins-pycodestyle-enabled t))
 
-* Packages
-** elfeed
+(after! flycheck
+  (add-hook 'python-mode-hook
+            (lambda ()
+              ;; Set Flake8 as the first checker
+              (setq-local flycheck-checker 'python-mypy)
+              ;; Chain to MyPy after Flake8
+              (setq flycheck-checker-error-threshold 2000)
+              (flycheck-add-next-checker 'python-mypy 'python-flake8))))
 
-#+begin_src emacs-lisp
-(add-hook! 'elfeed-search-mode-hook 'elfeed-update)
-#+end_src
-
-** Treesitter
-
-#+begin_src emacs-lisp
-(use-package! tree-sitter
-  :config
-  (require 'tree-sitter-langs)
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+(setq dap-python-debugger 'debugpy)
 #+end_src
