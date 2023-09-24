@@ -147,6 +147,7 @@
               ;; Set Flake8 as the first checker
               (setq-local flycheck-checker 'python-mypy)
               ;; Chain to MyPy after Flake8
+              (setq flycheck-checker-error-threshold 2000)
               (flycheck-add-next-checker 'python-mypy 'python-flake8))))
 
 (setq dap-python-debugger 'debugpy)
