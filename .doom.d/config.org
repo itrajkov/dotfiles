@@ -9,24 +9,11 @@
 #+END_SRC
 
 * Settings
-** Daemon
+** Authinfo
 
 #+begin_src emacs-lisp
-(defun greedily-do-daemon-setup ()
-  (require 'org)
-  (when (require 'mu4e nil t)
-    (setq mu4e-confirm-quit t)
-    (setq +mu4e-lock-greedy t)
-    (setq +mu4e-lock-relaxed t)
-    (mu4e~start)))
-
-(when (daemonp)
-  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
-  (add-hook! 'server-after-make-frame-hook
-    (unless (string-match-p "\\*draft" (buffer-name)))))
+(setq auth-sources '("~/.authinfo.gpg"))
 #+end_src
-
-#+RESULTS:
 
 ** Custom Keybinds
 *** erc
@@ -44,16 +31,11 @@
 
 #+end_src
 
-** Authinfo
-
-#+begin_src emacs-lisp
-(setq auth-sources '("~/.authinfo.gpg"))
-#+end_src
-
+* User Interface
 ** Font
 
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Hack Nerd Font" :size 18))
+(setq doom-font (font-spec :family "Dina Remaster" :size 24))
 #+END_SRC
 
 ** Lines
@@ -68,11 +50,15 @@
 
 #+BEGIN_SRC emacs-lisp
 (setq doom-theme 'catppuccin)
-(setq doom-modeline-height 5)
 (set-frame-parameter (selected-frame) 'alpha '(96 . 96))
 (add-to-list 'default-frame-alist '(alpha . (96 . 96)))
+(setq doom-modeline-height 5)
 #+end_src
 
+** scratch buffer
+#+begin_src emacs-lisp
+(setq initial-scratch-message ";; Happy Hacking")
+#+end_src
 * Packages
 ** mu4e
 
@@ -131,13 +117,12 @@
       ;; messages don't really "move"
       mu4e-index-lazy-check t)
 
-(setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
+(setq mu4e-alert-icon "/usr/share/icons/Adwaita/16x16/status/mail-unread-symbolic.symbolic.png")
 
 (setq mu4e-headers-fields
       '((:flags . 6)
         (:account-stripe . 2)
         (:from-or-to . 25)
-        (:folder . 10)
         (:recipnum . 2)
         (:subject . 80)
         (:human-date . 8))
@@ -146,6 +131,8 @@
       mu4e-headers-time-format "⧖ %H:%M"
       mu4e-headers-results-limit 1000
       mu4e-index-cleanup t)
+
+;;(mu4e t)
 #+end_src
 
 ** erc
@@ -272,10 +259,9 @@
 ** company
 
 #+BEGIN_SRC emacs-lisp
-(after! company
-    (setq default-tab-width 4)
-    (setq company-minimum-prefix-length 2)
-    (setq company-idle-delay 0))
+(setq default-tab-width 4)
+(setq company-minimum-prefix-length 2)
+(setq company-idle-delay 0)
 #+END_SRC
 
 ** tailwind-css
@@ -283,7 +269,6 @@
 #+begin_src emacs-lisp
 (use-package! lsp-tailwindcss)
 #+end_src
-
 ** elcord
 
 #+begin_src emacs-lisp
@@ -292,7 +277,16 @@
   :config
   (setq elcord-use-major-mode-as-main-icon t))
 #+end_src
+** elfeed
 
+#+begin_src emacs-lisp
+(add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+#+end_src
+
+** leetcode
+#+begin_src emacs-lisp
+(setq leetcode-directory "~/Dev/leetcode")
+#+end_src
 * Org Mode
 ** General
 
@@ -328,50 +322,71 @@
 (setq org-fontify-quote-and-verse-blocks t)
 #+end_src
 
-** org-capture
+** org-roam
+*** Dailies directory
+
 #+begin_src emacs-lisp
-(setq org-capture-templates `(
-    ("p" "Protocol" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Quotes")
-        "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-    ("L" "Protocol Link" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Links")
-        "* %? [[%:link][%:description]] \nCaptured On: %U")
-    ("i" "Inbox" entry (file ,(concat org-directory "/roam/inbox.org.gpg"))
-        "* %? \n+ Captured on: %T")
-    ("t" "Todo" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Tasks")
-        "* TODO %? \n+ Captured on: %T")
-))
+(setq org-roam-dailies-directory "daily/")
 #+end_src
 
-** org-archive
+*** Templates
 
 #+begin_src emacs-lisp
-(defun org-archive-done (&optional arg)
-  (org-todo 'done))
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         "* %?"
+         :target (file+head "%<%Y-%m-%d>.org"
+                            "#+title: %<%Y-%m-%d>\n"))))
 
-(advice-add 'org-archive-subtree :before 'org-archive-done)
+(setq org-roam-capture-templates '(("d" "default" plain "%?"
+     :target (file+head "${slug}.org.gpg"
+                        "#+title: ${title}\n")
+     :unnarrowed t)))
+
 #+end_src
 
+*** Backlinks are collapsed by default
+
 #+begin_src emacs-lisp
-(setq org-archive-location (concat org-directory "/roam/archive.org.gpg::* 2022"))
+;; Collapses all sections every time the *org-roam* buffer is updated.
+(add-hook 'org-roam-buffer-postrender-functions #'magit-section-show-level-1-all)
+#+end_src
+
+** org-roam-ui
+
+#+begin_src emacs-lisp
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+#+end_src
+
+** org-protocol
+
+#+begin_src emacs-lisp
+(require 'org-protocol)
 #+end_src
 
 * Languages
 ** Python
 #+begin_src emacs-lisp
-(after! lsp
-  (add-hook 'python-mode-hook #'lsp)
-    (setq lsp-pylsp-plugins-autopep8-enabled t)
-    (setq lsp-pylsp-plugins-flake8-enabled t)
-    (setq lsp-pylsp-plugins-pycodestyle-enabled t))
-
 (after! flycheck
   (add-hook 'python-mode-hook
             (lambda ()
               ;; Set Flake8 as the first checker
               (setq-local flycheck-checker 'python-mypy)
               ;; Chain to MyPy after Flake8
-              (setq flycheck-checker-error-threshold 2000)
-              (flycheck-add-next-checker 'python-mypy 'python-flake8))))
+              (setq flycheck-checker-error-threshold 100))))
 
 (setq dap-python-debugger 'debugpy)
 #+end_src
