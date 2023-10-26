@@ -3,44 +3,44 @@ Expunge Both
 SyncState *
 
 # IMAPAccount main
-IMAPAccount main
-Host imap.gmail.com
-User itrajkov999@gmail.com
-PassCmd "pass itrajkov999\\(device_pass\\)"
+IMAPAccount ivche
+Host mail.trajkov.mk
+User ivche@trajkov.mk
+PassCmd "pass ivchemail"
 SSLType IMAPS
 AuthMechs LOGIN
 
-IMAPStore main-remote
-Account main
+IMAPStore ivche-remote
+Account ivche
 
-MaildirStore main-local
-Path ~/Mail/itrajkov999/
-Inbox ~/Mail/itrajkov999/Inbox
+MaildirStore ivche-local
+Path ~/Mail/ivche/
+Inbox ~/Mail/ivche/Inbox
 SubFolders Verbatim
 
-Channel main
-Far :main-remote:
-Near :main-local:
-Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
+Channel ivche
+Far :ivche-remote:
+Near :ivche-local:
+Patterns "INBOX" "Sent" "Starred" "Trash" "Drafts" "Archive"
 
-# IMAPAccount all
-IMAPAccount all
-Host imap.gmail.com
-User ivchepro@gmail.com
-PassCmd "pass ivchepro\\(device_pass\\)"
+
+# IMAPAccount professional
+IMAPAccount ivan
+Host mail.trajkov.mk
+User ivan@trajkov.mk
+PassCmd "pass ivanmail"
 SSLType IMAPS
 AuthMechs LOGIN
 
-IMAPStore all-remote
-Account all
+IMAPStore ivan-remote
+Account ivan
 
-MaildirStore all-local
-Path ~/Mail/ivchepro/
-Inbox ~/Mail/ivchepro/Inbox
+MaildirStore ivan-local
+Path ~/Mail/ivan/
+Inbox ~/Mail/ivan/Inbox
 SubFolders Verbatim
 
-Channel all
-Far :all-remote:
-Near :all-local:
-Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
-
+Channel ivan
+Far :ivan-remote:
+Near :ivan-local:
+Patterns "INBOX" "Sent" "Starred" "Trash" "Drafts" "Archive"

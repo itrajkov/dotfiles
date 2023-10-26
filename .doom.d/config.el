@@ -1,17 +1,6 @@
-#+TITLE: Ivche's Config
-#+STARTUP: overview
-
-* Personal Info
-
-#+BEGIN_SRC emacs-lisp
 (setq user-full-name "Ivche"
       user-mail-address "itrajkov999@gmail.com")
-#+END_SRC
 
-* Settings
-** Custom Keybinds
-*** erc
-#+begin_src emacs-lisp
 (map! :leader
       :desc "Start ERC"
       "o i" #'my/erc-start-or-switch
@@ -23,44 +12,21 @@
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
 (map! :map erc-mode-map :n "c u" #'my/erc-count-users)
 
-#+end_src
-
-** Authinfo
-
-#+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg"))
-#+end_src
 
-** Scratch Buffer Message
-#+begin_src emacs-lisp
 (setq initial-scratch-message ";; Happy Hacking!\n")
-#+end_src
-** Font
 
-#+BEGIN_SRC emacs-lisp
 (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 18))
-#+END_SRC
 
-** Lines
-
-#+BEGIN_SRC emacs-lisp
 (setq display-line-numbers-type 'relative)
 (setq truncate-lines nil)
 (setq scroll-margin 9)
-#+END_SRC
 
-** Theme
-
-#+BEGIN_SRC emacs-lisp
 (setq doom-theme 'doom-acario-dark)
 (setq doom-modeline-height 4)
 ;; (set-frame-parameter (selected-frame) 'alpha '(96 . 96))
 ;; (add-to-list 'default-frame-alist '(alpha . (96 . 96)))
-#+end_src
 
-* Packages
-** mu4e
-#+begin_src emacs-lisp
 (set-email-account! "Main"
   '((user-mail-address . "ivche@trajkov.mk")
     (user-full-name    . "Ivche")
@@ -131,10 +97,7 @@
       mu4e-index-cleanup t)
 
 (mu4e t)
-#+end_src
-** erc
 
-#+begin_src emacs-lisp
 (require 'erc-log)
 (require 'erc-notify)
 (require 'erc-spelling)
@@ -250,48 +213,24 @@
 
 (use-package erc-hl-nicks
   :after erc)
-#+end_src
 
-#+RESULTS:
-: erc-hl-nicks
-
-** company
-
-#+BEGIN_SRC emacs-lisp
 (after! company
     (setq default-tab-width 4)
     (setq company-minimum-prefix-length 3)
     (setq company-idle-delay 0.3))
-#+END_SRC
 
-** elcord
-
-#+begin_src emacs-lisp
 (use-package! elcord
   :commands elcord-mode
   :config
   (setq elcord-use-major-mode-as-main-icon t))
-#+end_src
 
-** lsp
-
-#+begin_src emacs-lisp
 (setq lsp-headerline-breadcrumb-enable t)
-#+end_src
 
-** leetcode
-
-#+begin_src emacs-lisp
 (after! leetcode
     (setq leetcode-prefer-language "python3")
     (setq leetcode-save-solutions t)
     (setq leetcode-directory "~/Dev/leetcode"))
-#+end_src
 
-* Languages
-** Python
-
-#+begin_src emacs-lisp
 (after! flycheck
   (add-hook 'python-mode-hook
             (lambda ()
@@ -300,19 +239,10 @@
 
 (after! dap-mode
   (setq dap-python-debugger 'debugpy))
-#+end_src
 
-* Org Mode
-** General
-
-#+begin_src emacs-lisp
 (setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
-#+end_src
 
-** Visuals
-
-#+begin_src emacs-lisp
 (add-hook 'org-mode-hook #'+org-pretty-mode)
 
 (custom-set-faces!
@@ -335,10 +265,7 @@
         (0.0 . org-upcoming-distant-deadline)))
 
 (setq org-fontify-quote-and-verse-blocks t)
-#+end_src
 
-** org-capture
-#+begin_src emacs-lisp
 (setq org-capture-templates `(
     ("p" "Protocol" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Quotes")
         "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
@@ -349,4 +276,3 @@
     ("t" "Todo" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Tasks")
         "* TODO %? \n+ Captured on: %T")
 ))
-#+end_src
