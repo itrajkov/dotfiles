@@ -24,13 +24,14 @@ alias diskspace='ncdu'
 alias tb="nc termbin.com 9999 | xclip -selection clipboard"
 alias genpass='pass generate -c'
 alias doomsync='~/.emacs.d/bin/doom sync && systemctl restart emacs --user'
-alias serv='ssh root@candywatch.net'
+alias serv='ssh root@159.223.30.229'
 alias h='ssh 192.168.100.40'
 alias emac='emacsclient -c --nw'
 alias cb="xclip -selection clipboard"
 
-alias tl='todoist sync && todoist list'
-alias ta='todoist sync && todoist add'
 alias jnb='jupyter notebook ~/Dev/notebooks'
 alias vpnup='sudo wg-quick up wg0'
 alias killvpn='sudo wg-quick down wg0'
+
+# SSH
+alias pi='ssh ivche@192.168.100.108'

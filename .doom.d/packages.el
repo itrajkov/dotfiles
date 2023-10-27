@@ -5,4 +5,5 @@
 (package! lsp-tailwindcss :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
 (package! leetcode)
 (package! erc-hl-nicks)
-(package! pythonic)
+(package! smudge)
+(package! gptel)

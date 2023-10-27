@@ -231,6 +231,20 @@
     (setq leetcode-save-solutions t)
     (setq leetcode-directory "~/Dev/leetcode"))
 
+(setq smudge-oauth2-client-secret "8fddb0ee81bf48db9f5bc3bea3d7e4cb")
+(setq smudge-oauth2-client-id "a24417b7653d4974b19b7a07dcf1f7b2")
+(setq smudge-transport 'connect)
+(map! :prefix "C-s"
+        :desc "Toggle Play/Pause" "p" #'smudge-controller-toggle-play
+        :desc "Next Track" "n" #'smudge-controller-next-track
+        :desc "Previous Track" "b" #'smudge-controller-previous-track
+        :desc "Playlists" "P" #'smudge-my-playlists
+        :desc "Track Search" "s" #'smudge-track-search)
+
+(use-package! gptel
+ :config
+ (setq! gptel-api-key "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"))
+
 (after! flycheck
   (add-hook 'python-mode-hook
             (lambda ()
