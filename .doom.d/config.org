@@ -308,6 +308,29 @@
  (setq! gptel-api-key "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"))
  #+end_src
 
+** dap-mode
+#+begin_src emacs-lisp
+(after! dap-mode
+  (setq dap-python-debugger 'debugpy)
+  (require 'dap-python)
+  (dap-register-debug-template "Python :: Remote Attach to Flask"
+    (list :type "python"
+          :request "attach"
+          :connect (list :host "localhost" :port 5061)
+          :mode "remote"
+)))
+#+end_src
+
+#+RESULTS:
+| Python :: Remote Attach to Flask          | :name | Python :: Remote Attach to Flask          | :type    | python         | :request | attach | :connect  | (:host localhost :port 5061) | :mode    | remote    | :cwd         | /opt/Devv-INN/                    |              |                               |             |        |              |     |              |     |              |     |            |     |
+| Java Attach                               | :name | Java Attach                               | :type    | java           | :request | attach | :hostName | localhost                    | :port    | nil       |              |                                 |              |                               |             |        |              |     |              |     |              |     |            |     |
+| Java Run Configuration (compile/attach)   | :type | java                                      | :request | compile_attach | :args    |        | :cwd      | nil                          | :host    | localhost | :request     | launch                          | :modulePaths | []                            | :classPaths | nil    | :name        | Run | :projectName | nil | :mainClass   | nil |            |     |
+| Java Run Configuration                    | :name | Java Run Configuration                    | :type    | java           | :request | launch | :args     |                              | :cwd     | nil       | :stopOnEntry | :json-false                     | :host        | localhost                     | :request    | launch | :modulePaths | []  | :classPaths  | nil | :projectName | nil | :mainClass | nil |
+| Python :: Run pytest (at point)           | :type | python                                    | :args    |                | :program | nil    | :module   | pytest                       | :request | launch    | :name        | Python :: Run pytest (at point) |              |                               |             |        |              |     |              |     |              |     |            |     |
+| Python :: Run pytest (buffer)             | :type | python                                    | :args    |                | :cwd     | nil    | :program  | nil                          | :module  | pytest    | :request     | launch                          | :name        | Python :: Run pytest (buffer) |             |        |              |     |              |     |              |     |            |     |
+| Python :: Run file from project directory | :name | Python :: Run file from project directory | :type    | python         | :args    |        | :cwd      | ${workspaceFolder}           | :module  | nil       | :program     | nil                             | :request     | launch                        |             |        |              |     |              |     |              |     |            |     |
+| Python :: Run file (buffer)               | :type | python                                    | :args    |                | :cwd     | nil    | :module   | nil                          | :program | nil       | :request     | launch                          | :name        | Python :: Run file (buffer)   |             |        |              |     |              |     |              |     |            |     |
+
 * Languages
 ** Python
 
@@ -328,6 +351,11 @@
 #+begin_src emacs-lisp
 (setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
+#+end_src
+
+** elfeed
+#+begin_src emacs-lisp
+(setq rmh-elfeed-org-files (list (concat org-directory "/elfeed.org")))
 #+end_src
 
 ** Visuals
@@ -369,4 +397,9 @@
     ("t" "Todo" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Tasks")
         "* TODO %? \n+ Captured on: %T")
 ))
+#+end_src
+
+** org-roam
+#+begin_src emacs-lisp
+(setq org-roam-directory (concat org-directory "/roam"))
 #+end_src

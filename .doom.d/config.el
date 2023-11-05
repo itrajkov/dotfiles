@@ -245,6 +245,16 @@
  :config
  (setq! gptel-api-key "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"))
 
+(after! dap-mode
+  (setq dap-python-debugger 'debugpy)
+  (require 'dap-python)
+  (dap-register-debug-template "Python :: Remote Attach to Flask"
+    (list :type "python"
+          :request "attach"
+          :connect (list :host "localhost" :port 5061)
+          :mode "remote"
+)))
+
 (after! flycheck
   (add-hook 'python-mode-hook
             (lambda ()
@@ -256,6 +266,8 @@
 
 (setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
+
+(setq rmh-elfeed-org-files (list (concat org-directory "/elfeed.org")))
 
 (add-hook 'org-mode-hook #'+org-pretty-mode)
 
@@ -290,3 +302,5 @@
     ("t" "Todo" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Tasks")
         "* TODO %? \n+ Captured on: %T")
 ))
+
+(setq org-roam-directory (concat org-directory "/roam"))
