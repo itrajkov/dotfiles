@@ -1,0 +1,10 @@
+# This is Git's per-user configuration file.
+[commit]
+	gpgsign = true
+[includeIf "gitdir:~/dev/work/"]
+    path = ~/.config/git/work.gitconfig
+[includeIf "gitdir:~/dev/personal/"]
+    path = ~/.config/git/personal.gitconfig
+
+[user]
+	signingkey = ivche@trajkov.mk
