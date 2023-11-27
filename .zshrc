@@ -22,9 +22,4 @@ bindkey -M menuselect 'j' vi-down-line-or-history
 # Sane defaults
 xset r rate 300 50
 unsetopt BEEP
-afetch
- 
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+afetc
