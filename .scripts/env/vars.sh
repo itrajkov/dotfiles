@@ -8,5 +8,6 @@ export LC_TIME="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export EDITOR="emacsclient -c -nw"
 export GOPATH="$HOME/.go" 
-export PATH="$GOPATH/bin:$HOME/.emacs.d/bin:/var/lib/flatpak/exports/bin:$PATH"
+export PATH="$GOPATH/bin:$HOME/.emacs.d/bin:/var/lib/flatpak/exports/bin:$HOME/.scripts/utils:$PATH"
+export PATH=$PATH:/opt/freefilesync
 export GO111MODULE=on
