@@ -34,3 +34,4 @@ fi
 
 pcmanfm -d
 exec i3
+xrandr --auto

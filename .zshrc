@@ -25,6 +25,5 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
  
 # Sane defaults
-xset r rate 300 50
 unsetopt BEEP
 afetch
