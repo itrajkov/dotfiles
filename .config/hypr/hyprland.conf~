@@ -3,23 +3,11 @@ monitor=,preferred,auto,1
 
 $terminal = alacritty
 $fileManager = pcmanfm
-<<<<<<< HEAD
 $menu = wofi --show drun
 
-
-exec-once = udiskie -T
 exec-once = waybar
 exec-once = hyprpaper
 
-=======
-$menu = bemenu-run
-
-exec-once = waybar
-exec-once = hyprpaper
-
-# mocha
-
->>>>>>> a6e0628 (add hyprland config.)
 env = XCURSOR_SIZE,24
 env = QT_QPA_PLATFORMTHEME,qt5ct # change to qt6ct if you have that
 
@@ -27,11 +15,7 @@ input {
     kb_layout = us
     kb_variant = dvp
     kb_model =
-<<<<<<< HEAD
     kb_options = caps:swapescape
-=======
-    # kb_options = caps:swapescape
->>>>>>> a6e0628 (add hyprland config.)
     kb_rules =
 
     follow_mouse = 1
@@ -44,16 +28,9 @@ input {
 }
 
 xwayland {
-<<<<<<< HEAD
 	force_zero_scaling = true
 }
 
-=======
-    force_zero_scaling = true
-}
-
-
->>>>>>> a6e0628 (add hyprland config.)
 general {
 
     gaps_in = 5
@@ -61,10 +38,7 @@ general {
     border_size = 2
     col.active_border = rgba(004c7899)
     col.inactive_border = rgba(333333FF)
-<<<<<<< HEAD
 
-=======
->>>>>>> a6e0628 (add hyprland config.)
     layout = master
 
     allow_tearing = false
@@ -73,11 +47,7 @@ general {
 decoration {
 
     rounding = 0
-<<<<<<< HEAD
     
-=======
-
->>>>>>> a6e0628 (add hyprland config.)
     blur {
         enabled = true
         size = 3
@@ -106,15 +76,12 @@ master {
     new_is_master = false
 }
 
-<<<<<<< HEAD
-#device:epic-mouse-v1 {
-#    sensitivity = -0.5
-#}
+device:epic-mouse-v1 {
+    sensitivity = -0.5
+}
 
-#windowrulev2 = nomaximizerequest, class:.* # You'll probably like this.
+windowrulev2 = nomaximizerequest, class:.* # You'll probably like this.
 
-=======
->>>>>>> a6e0628 (add hyprland config.)
 
 $mainMod = SUPER
 
@@ -123,33 +90,17 @@ bind = $mainMod_SHIFT, Q, killactive,
 bind = $mainMod_SHIFT, E, exit, 
 bind = $mainMod_SHIFT, SPACE, togglefloating, 
 bind = $mainMod, D, exec, $menu
-<<<<<<< HEAD
-=======
-bind = $mainMod_SHIFT, p, exec, passmenu
->>>>>>> a6e0628 (add hyprland config.)
 
 bind = $mainMod, h, movefocus, l
 bind = $mainMod, l, movefocus, r
 bind = $mainMod, k, movefocus, u
 bind = $mainMod, j, movefocus, d
 
-<<<<<<< HEAD
-=======
-
-bind = $mainMod SHIFT, h, movewindow, l
-bind = $mainMod SHIFT, l, movewindow, r
-bind = $mainMod SHIFT, k, movewindow, u
-bind = $mainMod SHIFT, j, movewindow, d
-
->>>>>>> a6e0628 (add hyprland config.)
 bind=$mainMod SHIFT, F, fullscreen
 bind=$mainMod SHIFT, M, layoutmsg, swapwithmaster
 
 exec-once = i3blocks
-<<<<<<< HEAD
-=======
-
->>>>>>> a6e0628 (add hyprland config.)
+exec-once = i3blocks
 bind=$mainMod, N, layoutmsg, rollnext
 bind=$mainMod_SHIFT, N, layoutmsg, rollprev
 bind=$mainMod, s, layoutmsg, orientationcycle
@@ -179,23 +130,3 @@ bind = $mainMod, mouse_up, workspace, e-1
 # Move/resize windows with mainMod + LMB/RMB and dragging
 bindm = $mainMod, mouse:272, movewindow
 bindm = $mainMod, mouse:273, resizewindow
-<<<<<<< HEAD
-=======
-
-env = LIBVA_DRIVER_NAME,nvidia
-env = XDG_SESSION_TYPE,wayland
-env = GBM_BACKEND,nvidia-drm
-env = __GLX_VENDOR_LIBRARY_NAME=nvidia
-env = WLR_NO_HARDWARE_CURSORS,1
-
-
-monitor=DP-1,1920x1080@240,0x0,1
-monitor=DP-2,1920x1080@165,0x-1080,1
-
-windowrulev2 = opacity 0.0 override 0.0 override,class:^(xwaylandvideobridge)$
-windowrulev2 = noanim,class:^(xwaylandvideobridge)$
-windowrulev2 = noinitialfocus,class:^(xwaylandvideobridge)$
-windowrulev2 = maxsize 1 1,class:^(xwaylandvideobridge)$
-windowrulev2 = noblur,class:^(xwaylandvideobridge)$
-exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
->>>>>>> a6e0628 (add hyprland config.)
