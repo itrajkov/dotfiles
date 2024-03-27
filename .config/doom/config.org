@@ -1,0 +1,427 @@
+#+TITLE: Ivche's Config
+#+STARTUP: overview
+
+* Personal Info
+
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "Ivche"
+      user-mail-address "itrajkov999@gmail.com")
+#+END_SRC
+
+* Settings
+** Daemon
+#+begin_src emacs-lisp
+;; (defun greedily-do-daemon-setup ()
+;;   (require 'org)
+;;   (when (require 'mu4e nil t)
+;;     (setq mu4e-confirm-quit t)
+;;     (setq +mu4e-lock-greedy t)
+;;     (setq +mu4e-lock-relaxed t)
+;;     (mu4e~start)))
+
+;; (when (daemonp)
+;;   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
+;;   (add-hook! 'server-after-make-frame-hook
+;;     (unless (string-match-p "\\*draft" (buffer-name)))))
+#+end_src
+** Custom Keybinds
+*** erc
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Start ERC"
+      "o i" #'my/erc-start-or-switch
+      "i i" #'erc-switch-to-buffer)
+
+;;(map! :map specific-mode-map :n "J" (cmd! (a-function) (b-function)))
+
+(map! :map erc-mode-map :n "J" #'erc-join-channel)
+(map! :map erc-mode-map :n "qq" #'my/erc-stop)
+(map! :map erc-mode-map :n "c u" #'my/erc-count-users)
+
+#+end_src
+
+** Authinfo
+
+#+begin_src emacs-lisp
+(setq auth-sources '("~/.authinfo.gpg"))
+#+end_src
+
+** Scratch Buffer Message
+#+begin_src emacs-lisp
+(setq initial-scratch-message ";; Happy Hacking!\n")
+#+end_src
+** Font
+
+#+BEGIN_SRC emacs-lisp
+(setq doom-font (font-spec :family "SourceCodeVF" :size 18))
+#+END_SRC
+
+#+RESULTS:
+: #<font-spec nil nil SourceCodeVF nil nil nil nil nil 18 nil nil nil nil>
+
+** Lines
+
+#+BEGIN_SRC emacs-lisp
+(setq display-line-numbers-type 'relative)
+(setq truncate-lines nil)
+(setq scroll-margin 9)
+#+END_SRC
+
+** Theme
+
+#+BEGIN_SRC emacs-lisp
+(setq doom-theme 'doom-acario-dark)
+(setq doom-modeline-height 4)
+(set-frame-parameter (selected-frame) 'alpha '(96 . 96))
+(add-to-list 'default-frame-alist '(alpha . (96 . 96)))
+#+end_src
+
+* Packages
+** mu4e
+#+begin_src emacs-lisp
+;; (set-email-account! "Main"
+;;   '((user-mail-address . "ivche@trajkov.mk")
+;;     (user-full-name    . "Ivche")
+;;     (smtpmail-smtp-server . "smtp.gmail.com")
+;;     (smtpmail-smtp-service . 465)
+;;     (smtpmail-stream-type . ssl)
+;;     (smtpmail-smtp-user . "ivche@trajkov.mk")
+;;     (mu4e-drafts-folder  . "/ivche/Drafts")
+;;     (mu4e-sent-folder  . "/ivche/Sent Mail")
+;;     (mu4e-refile-folder  . "/ivche/All Mail")
+;;     (mu4e-trash-folder  . "/ivche/Trash")
+;;     (smtpmail-queue-dir .  "~/Mail/ivche/queue/cur")
+;;     (mu4e-compose-signature . "---\nYours truly\nIvche.")
+;;     (mu4e-maildir-shortcuts .
+;;         (("/ivche/Inbox"             . ?i)
+;;         ("/ivche/Sent Mail" . ?s)
+;;         ("/ivche/Trash"     . ?t)
+;;         ("/ivche/Drafts"    . ?d)
+;;         ("/ivche/All Mail"  . ?a))))
+;;   t)
+
+;; (set-email-account! "Professional"
+;;   '((user-mail-address . "ivan@trajkov.mk")
+;;     (user-full-name    . "Ivan Trajkov")
+;;     (smtpmail-smtp-server . "mail.trajkov.mk")
+;;     (smtpmail-smtp-service . 465)
+;;     (smtpmail-stream-type . ssl)
+;;     (smtpmail-smtp-user . "ivan@trajkov.mk")
+;;     (mu4e-drafts-folder  . "/ivan/[Gmail]/Drafts")
+;;     (mu4e-sent-folder  . "/ivan/[Gmail]/Sent Mail")
+;;     (mu4e-refile-folder  . "/ivan/[Gmail]/All Mail")
+;;     (mu4e-trash-folder  . "/ivan/[Gmail]/Trash")
+;;     (smtpmail-queue-dir .  "~/Mail/ivan/queue/cur")
+;;     (mu4e-compose-signature . "---\nYours truly\nIvan.")
+;;     (mu4e-maildir-shortcuts .
+;;         (("/ivan/Inbox"             . ?i)
+;;         ("/ivan/Sent Mail" . ?s)
+;;         ("/ivan/Trash"     . ?t)
+;;         ("/ivan/Drafts"    . ?d)
+;;         ("/ivan/All Mail"  . ?a))))
+;;   t)
+
+;; (setq smtpmail-queue-mail t)  ;; start in queuing mode
+;; (after! mu4e (setq mu4e-update-interval 60))
+
+;; (setq mu4e-context-policy 'ask-if-none
+;;       mu4e-compose-context-policy 'always-ask)
+
+;; ;; don't need to run cleanup after indexing for gmail
+;; (setq mu4e-index-cleanup nil
+;;       ;; because gmail uses labels as folders we can use lazy check since
+;;       ;; messages don't really "move"
+;;       mu4e-index-lazy-check t)
+
+;; ;; (setq mu4e-alert-icon "/usr/share/icons/Adwaita/16x16/status/mail-unread-symbolic.symbolic.png")
+
+;; (setq mu4e-headers-fields
+;;       '((:flags . 6)
+;;         (:account-stripe . 2)
+;;         (:from-or-to . 25)
+;;         (:recipnum . 2)
+;;         (:subject . 80)
+;;         (:human-date . 8))
+;;       +mu4e-min-header-frame-width 142
+;;       mu4e-headers-date-format "%d/%m/%y"
+;;       mu4e-headers-time-format "⧖ %H:%M"
+;;       mu4e-headers-results-limit 1000
+;;       mu4e-index-cleanup t)
+
+;; (mu4e t)
+#+end_src
+
+** erc
+
+#+begin_src emacs-lisp
+(require 'erc-log)
+(require 'erc-notify)
+(require 'erc-spelling)
+(require 'erc-autoaway)
+
+
+(use-package erc
+  :commands erc erc-tls
+  :config
+    ;; Join the a couple of interesting channels whenever connecting to Freenode.
+    (setq erc-autojoin-channels-alist '(("myanonamouse.net"
+                                        "#am-members")
+                                        ("libera.chat"
+                                        "#spodeli")))
+
+    (add-hook 'window-configuration-change-hook
+        '(lambda ()
+            (setq erc-fill-column (- (window-width) 2))))
+
+    ;; Interpret mIRC-style color commands in IRC chats
+    (setq erc-interpret-mirc-color t)
+
+    ;; The following are commented out by default, but users of other
+    ;; non-Emacs IRC clients might find them useful.
+    ;; Kill buffers for channels after /part
+    (setq erc-kill-buffer-on-part t)
+    ;; Kill buffers for private queries after quitting the server
+    (setq erc-kill-queries-on-quit t)
+    ;; Kill buffers for server messages after quitting the server
+    (setq erc-kill-server-buffer-on-quit t)
+
+    ;; open query buffers in the current window
+    (setq erc-query-display 'buffer)
+
+    (setq erc-track-shorten-function nil)
+    ;; exclude boring stuff from tracking
+    (erc-track-mode t)
+    (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                    "324" "329" "332" "333" "353" "477"))
+
+    ;; truncate long irc buffers
+    (erc-truncate-mode +1)
+
+    ;; reconnecting
+    (setq erc-server-reconnect-attempts 5)
+    (setq erc-server-reconnect-timeout 30)
+
+    ;; share my real name
+    (setq erc-user-full-name "Ivche")
+
+    ;; enable spell checking
+    (erc-spelling-mode 1)
+
+    (defvar erc-notify-timeout 10
+    "Number of seconds that must elapse between notifications from
+    the same person.")
+
+    (defun my/erc-notify (nickname message)
+    "Displays a notification message for ERC."
+    (let* ((channel (buffer-name))
+            (nick (erc-hl-nicks-trim-irc-nick nickname))
+            (title (if (string-match-p (concat "^" nickname) channel)
+                        nick
+                    (concat nick " (" channel ")")))
+            (msg (s-trim (s-collapse-whitespace message))))
+        (alert (concat nick ": " msg) :title title)))
+
+    ;; autoaway setup
+    (setq erc-auto-discard-away t)
+    (setq erc-autoaway-idle-seconds 600)
+    (setq erc-autoaway-use-emacs-idle t)
+    (setq erc-prompt-for-nickserv-password nil)
+
+    ;; utf-8 always and forever
+    (setq erc-server-coding-system '(utf-8 . utf-8))
+
+    (defun my/erc-start-or-switch ()
+    "Connects to ERC, or switch to last active buffer."
+    (interactive)
+    (if (get-buffer "irc.libera.chat:6697")
+        (erc-track-switch-buffer 1)
+        (when (y-or-n-p "Start ERC? ")
+        (erc-tls :server "irc.libera.chat" :port 6697 :nick "ivche")
+        (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "Ivche1337")
+        )))
+
+    (defun my/erc-count-users ()
+    "Displays the number of users connected on the current channel."
+    (interactive)
+    (if (get-buffer "irc.libera.chat:6697")
+        (let ((channel (erc-default-target)))
+            (if (and channel (erc-channel-p channel))
+                (message "%d users are online on %s"
+                        (hash-table-count erc-channel-users)
+                        channel)
+            (user-error "The current buffer is not a channel")))
+        (user-error "You must first start ERC")))
+
+    (defun filter-server-buffers ()
+    (delq nil
+            (mapcar
+            (lambda (x) (and (erc-server-buffer-p x) x))
+            (buffer-list))))
+
+    (defun my/erc-stop ()
+    "Disconnects from all irc servers"
+    (interactive)
+    (dolist (buffer (filter-server-buffers))
+        (message "Server buffer: %s" (buffer-name buffer))
+        (with-current-buffer buffer
+        (erc-quit-server "cya nerds! - sent from ERC"))))
+)
+
+(use-package erc-hl-nicks
+  :after erc)
+#+end_src
+
+#+RESULTS:
+: erc-hl-nicks
+
+** company
+
+#+BEGIN_SRC emacs-lisp
+(after! company
+    (setq default-tab-width 4)
+    (setq company-minimum-prefix-length 3)
+    (setq company-idle-delay 0.3))
+#+END_SRC
+
+** elcord
+
+#+begin_src emacs-lisp
+(use-package! elcord
+  :commands elcord-mode
+  :config
+  (setq elcord-use-major-mode-as-main-icon t))
+#+end_src
+
+** lsp
+
+#+begin_src emacs-lisp
+(setq lsp-headerline-breadcrumb-enable t)
+#+end_src
+
+** leetcode
+
+#+begin_src emacs-lisp
+(after! leetcode
+    (setq leetcode-prefer-language "cpp")
+    (setq leetcode-save-solutions t)
+    (setq leetcode-directory "~/dev/leetcode"))
+#+end_src
+
+** smudge
+#+begin_src emacs-lisp
+(setq smudge-oauth2-client-secret "8fddb0ee81bf48db9f5bc3bea3d7e4cb")
+(setq smudge-oauth2-client-id "a24417b7653d4974b19b7a07dcf1f7b2")
+(setq smudge-transport 'connect)
+(map! :prefix "C-s"
+        :desc "Toggle Play/Pause" "p" #'smudge-controller-toggle-play
+        :desc "Next Track" "n" #'smudge-controller-next-track
+        :desc "Previous Track" "b" #'smudge-controller-previous-track
+        :desc "Playlists" "P" #'smudge-my-playlists
+        :desc "Track Search" "s" #'smudge-track-search)
+#+end_src
+
+** dap-mode
+#+begin_src emacs-lisp
+(after! dap-mode
+  (setq dap-python-debugger 'debugpy)
+  (require 'dap-python)
+  (dap-register-debug-template "Python :: Remote Attach to Flask"
+    (list :type "python"
+          :request "attach"
+          :connect (list :host "localhost" :port 5061)
+          :mode "remote"
+)))
+#+end_src
+
+* Languages
+** Python
+#+begin_src emacs-lisp
+(after! flycheck
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (setq lsp-pylsp-plugins-mccabe-enabled nil)
+              (setq lsp-pylsp-plugins-flake8-enabled nil)
+              (setq lsp-pylsp-plugins-pyflakes-enabled nil)
+              (setq lsp-pylsp-plugins-pydocstyle-enabled nil)
+              (setq flycheck-python-mypy-executable "mypy")
+              (setq-local flycheck-checker 'python-mypy)
+              (setq flycheck-checker-error-threshold 3000)
+              )))
+
+
+(after! dap
+  (setq dap-python-debugger 'debugpy))
+#+end_src
+
+#+RESULTS:
+: debugpy
+
+* Org Mode
+** General
+
+#+begin_src emacs-lisp
+(setq org-directory "/mnt/nas/documents/org")
+(setq org-log-done 'time)
+#+end_src
+
+** elfeed
+#+begin_src emacs-lisp
+(setq rmh-elfeed-org-files (list (concat org-directory "/elfeed.org")))
+#+end_src
+
+** Visuals
+
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook #'+org-pretty-mode)
+
+(custom-set-faces!
+  '(outline-1 :weight extra-bold :height 1.25)
+  '(outline-2 :weight bold :height 1.15)
+  '(outline-3 :weight bold :height 1.12)
+  '(outline-4 :weight semi-bold :height 1.09)
+  '(outline-5 :weight semi-bold :height 1.06)
+  '(outline-6 :weight semi-bold :height 1.03)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
+
+(custom-set-faces!
+  '(org-document-title :height 1.2))
+
+(setq org-agenda-deadline-faces
+      '((1.001 . error)
+        (1.0 . org-warning)
+        (0.5 . org-upcoming-deadline)
+        (0.0 . org-upcoming-distant-deadline)))
+
+(setq org-fontify-quote-and-verse-blocks t)
+#+end_src
+
+** org-capture
+#+begin_src emacs-lisp
+(defun my/org-roam-create-encrypted-file (title)
+  "Create a new Org-roam file with TITLE, encrypted with GPG."
+  (interactive "sTitle: ")
+  (let ((file-path (expand-file-name (concat title ".org.gpg") org-roam-directory)))
+    (unless (file-exists-p file-path)
+      (with-temp-buffer
+        (insert "#+TITLE: " title "\n")
+        (write-file file-path)))))
+#+end_src
+
+#+begin_src emacs-lisp
+(setq org-capture-templates `(
+    ("p" "Protocol" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Quotes")
+     "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+    ("L" "Protocol Link" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Links")
+     "* %? [[%:link][%:description]] \nCaptured On: %U")
+    ("i" "Inbox" entry (file ,(concat org-directory "/roam/inbox.org.gpg"))
+     "* %? \nCaptured on: %T")
+    ;; Modified "d" keybind for Org Roam Dailies with structured headings
+    ("d" "Daily Notes" entry (function org-roam-dailies-capture-today)
+     "* %<%I:%M %p> - %^{Title}\n\n%?\n* Performance\n** University\n** Work\n** Diet\n** Exercise\n** Sleep\n")
+))
+#+end_src
+** org-roam
+#+begin_src emacs-lisp
+(setq org-roam-directory (concat org-directory "/roam"))
+#+end_src
