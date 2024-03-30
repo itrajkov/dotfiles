@@ -3,44 +3,26 @@ Expunge Both
 SyncState *
 
 # IMAPAccount main
-IMAPAccount ivche
-Host mail.trajkov.mk
-User ivche@trajkov.mk
-PassCmd "pass ivchemail"
-SSLType IMAPS
+IMAPAccount icloud
+Host imap.mail.me.com
+PORT 993
+User trajkov.ivan@icloud.com
+PassCmd "pass mail"
 AuthMechs LOGIN
+SSLType IMAPS
+SSLVersion TLSv1.2
 
-IMAPStore ivche-remote
-Account ivche
-
-MaildirStore ivche-local
-Path ~/Mail/ivche/
-Inbox ~/Mail/ivche/Inbox
+MaildirStore icloud-local
+Path ~/Mail/icloud/
+Inbox ~/Mail/icloud/Inbox
 SubFolders Verbatim
+
+IMAPStore icloud-remote
+Account icloud
 
 Channel ivche
-Far :ivche-remote:
-Near :ivche-local:
+Far :icloud-remote:
+Near :icloud-local:
 Patterns "INBOX" "Sent" "Starred" "Trash" "Drafts" "Archive"
 
 
-# IMAPAccount professional
-IMAPAccount ivan
-Host mail.trajkov.mk
-User ivan@trajkov.mk
-PassCmd "pass ivanmail"
-SSLType IMAPS
-AuthMechs LOGIN
-
-IMAPStore ivan-remote
-Account ivan
-
-MaildirStore ivan-local
-Path ~/Mail/ivan/
-Inbox ~/Mail/ivan/Inbox
-SubFolders Verbatim
-
-Channel ivan
-Far :ivan-remote:
-Near :ivan-local:
-Patterns "INBOX" "Sent" "Starred" "Trash" "Drafts" "Archive"

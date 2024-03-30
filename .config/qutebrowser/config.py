@@ -1,3 +1,4 @@
+config.source('qutebrowser-themes/themes/onedark.py')
 config.load_autoconfig()
 
 c.content.private_browsing = False

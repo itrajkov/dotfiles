@@ -18,6 +18,10 @@ settings:
     global: access
   content.notifications.enabled:
     https://www.reddit.com: false
+  tabs.position:
+    global: left
+  tabs.width:
+    global: 10%
   url.default_page:
     global: http://dashy.home
   url.start_pages:

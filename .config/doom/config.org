@@ -79,77 +79,69 @@
 * Packages
 ** mu4e
 #+begin_src emacs-lisp
-;; (set-email-account! "Main"
-;;   '((user-mail-address . "ivche@trajkov.mk")
-;;     (user-full-name    . "Ivche")
-;;     (smtpmail-smtp-server . "smtp.gmail.com")
-;;     (smtpmail-smtp-service . 465)
-;;     (smtpmail-stream-type . ssl)
-;;     (smtpmail-smtp-user . "ivche@trajkov.mk")
-;;     (mu4e-drafts-folder  . "/ivche/Drafts")
-;;     (mu4e-sent-folder  . "/ivche/Sent Mail")
-;;     (mu4e-refile-folder  . "/ivche/All Mail")
-;;     (mu4e-trash-folder  . "/ivche/Trash")
-;;     (smtpmail-queue-dir .  "~/Mail/ivche/queue/cur")
-;;     (mu4e-compose-signature . "---\nYours truly\nIvche.")
-;;     (mu4e-maildir-shortcuts .
-;;         (("/ivche/Inbox"             . ?i)
-;;         ("/ivche/Sent Mail" . ?s)
-;;         ("/ivche/Trash"     . ?t)
-;;         ("/ivche/Drafts"    . ?d)
-;;         ("/ivche/All Mail"  . ?a))))
-;;   t)
+(require 'mu4e)
+(require 'mu4e-contrib)
+(require 'smtpmail)
 
-;; (set-email-account! "Professional"
-;;   '((user-mail-address . "ivan@trajkov.mk")
-;;     (user-full-name    . "Ivan Trajkov")
-;;     (smtpmail-smtp-server . "mail.trajkov.mk")
-;;     (smtpmail-smtp-service . 465)
-;;     (smtpmail-stream-type . ssl)
-;;     (smtpmail-smtp-user . "ivan@trajkov.mk")
-;;     (mu4e-drafts-folder  . "/ivan/[Gmail]/Drafts")
-;;     (mu4e-sent-folder  . "/ivan/[Gmail]/Sent Mail")
-;;     (mu4e-refile-folder  . "/ivan/[Gmail]/All Mail")
-;;     (mu4e-trash-folder  . "/ivan/[Gmail]/Trash")
-;;     (smtpmail-queue-dir .  "~/Mail/ivan/queue/cur")
-;;     (mu4e-compose-signature . "---\nYours truly\nIvan.")
-;;     (mu4e-maildir-shortcuts .
-;;         (("/ivan/Inbox"             . ?i)
-;;         ("/ivan/Sent Mail" . ?s)
-;;         ("/ivan/Trash"     . ?t)
-;;         ("/ivan/Drafts"    . ?d)
-;;         ("/ivan/All Mail"  . ?a))))
-;;   t)
+(set-email-account! "icloud"
+  '((user-mail-address . "trajkov.ivan@icloud.com")
+    (user-full-name    . "Ivan Trajkov")
+    (smtpmail-smtp-server . "smtp.mail.me.com")
+    (smtpmail-smtp-service . 587)
+    (smtpmail-stream-type . ssl)
+    (smtpmail-smtp-user . "trajkov.ivan@icloud.com")
+    (mu4e-drafts-folder  . "/icloud/Drafts")
+    (mu4e-sent-folder  . "/icloud/Sent Mail")
+    (mu4e-refile-folder  . "/icloud/All Mail")
+    (mu4e-trash-folder  . "/icloud/Trash")
+    (smtpmail-queue-dir .  "~/Mail/icloud/queue/cur")
+    (mu4e-compose-signature . "---\nYours truly\nIvan.")
+    (mu4e-maildir-shortcuts .
+        (("/icloud/Inbox"             . ?i)
+        ("/icloud/Sent Mail" . ?s)
+        ("/icloud/Trash"     . ?t)
+        ("/icloud/Drafts"    . ?d)
+        ("/icloud/All Mail"  . ?a))))
+  t)
 
-;; (setq smtpmail-queue-mail t)  ;; start in queuing mode
-;; (after! mu4e (setq mu4e-update-interval 60))
+(setq smtpmail-queue-mail t)  ;; start in queuing mode
 
-;; (setq mu4e-context-policy 'ask-if-none
-;;       mu4e-compose-context-policy 'always-ask)
+(setq message-send-mail-function 'message-send-mail-with-sendmail)
+(setq sendmail-program "/usr/bin/msmtp")
+(setq message-sendmail-extra-arguments '("--read-envelope-from"))
+(setq message-sendmail-f-is-evil 't)
 
-;; ;; don't need to run cleanup after indexing for gmail
-;; (setq mu4e-index-cleanup nil
-;;       ;; because gmail uses labels as folders we can use lazy check since
-;;       ;; messages don't really "move"
-;;       mu4e-index-lazy-check t)
+(after! mu4e
+  (setq mu4e-update-interval 60
+        mu4e-get-mail-command "mbsync -a"
+        mu4e-headers-auto-update t))
 
-;; ;; (setq mu4e-alert-icon "/usr/share/icons/Adwaita/16x16/status/mail-unread-symbolic.symbolic.png")
+(setq mu4e-context-policy 'ask-if-none
+      mu4e-compose-context-policy 'always-ask)
 
-;; (setq mu4e-headers-fields
-;;       '((:flags . 6)
-;;         (:account-stripe . 2)
-;;         (:from-or-to . 25)
-;;         (:recipnum . 2)
-;;         (:subject . 80)
-;;         (:human-date . 8))
-;;       +mu4e-min-header-frame-width 142
-;;       mu4e-headers-date-format "%d/%m/%y"
-;;       mu4e-headers-time-format "⧖ %H:%M"
-;;       mu4e-headers-results-limit 1000
-;;       mu4e-index-cleanup t)
+(setq mu4e-index-cleanup nil
+      mu4e-index-lazy-check t)
+
+(setq mu4e-alert-icon "/usr/share/icons/Papirus-Dark/16x16/mimetypes/mail.svg")
+
+(setq mu4e-headers-fields
+      '((:flags . 6)
+        (:account-stripe . 2)
+        (:from-or-to . 25)
+        (:recipnum . 2)
+        (:subject . 80)
+        (:human-date . 8))
+      +mu4e-min-header-frame-width 142
+      mu4e-headers-date-format "%d/%m/%y"
+      mu4e-headers-time-format "⧖ %H:%M"
+      mu4e-headers-results-limit 1000
+      mu4e-index-cleanup t)
 
 ;; (mu4e t)
 #+end_src
+
+#+RESULTS:
+: t
 
 ** erc
 
@@ -163,11 +155,12 @@
 (use-package erc
   :commands erc erc-tls
   :config
-    ;; Join the a couple of interesting channels whenever connecting to Freenode.
     (setq erc-autojoin-channels-alist '(("myanonamouse.net"
                                         "#am-members")
                                         ("libera.chat"
-                                        "#spodeli")))
+                                        "#spodeli")
+                                        ("orpheus.network"
+                                        "#disabled")))
 
     (add-hook 'window-configuration-change-hook
         '(lambda ()
