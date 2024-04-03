@@ -7,3 +7,4 @@
 (package! erc-hl-nicks)
 (package! smudge)
 (package! dirvish)
+(package! org-caldav)

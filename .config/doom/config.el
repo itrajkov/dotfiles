@@ -254,6 +254,23 @@
           :mode "remote"
 )))
 
+(require 'org-caldav)
+
+;; URL of the caldav server
+(setq org-caldav-url "https://nextcloud.trajkov.mk/remote.php/dav/calendars/ivche")
+
+;; calendar ID on server
+(setq org-caldav-calendar-id "personal")
+
+;; Org filename where new entries from calendar stored
+(setq org-caldav-inbox (concat org-directory "/calendars/personal.org"))
+
+;; Additional Org files to check for calendar events
+(setq org-caldav-files nil)
+
+;; Usually a good idea to set the timezone manually
+(setq org-icalendar-timezone "Europe/Skopje")
+
 (after! flycheck
   (add-hook 'python-mode-hook
             (lambda ()
@@ -320,3 +337,5 @@
 ))
 
 (setq org-roam-directory (concat org-directory "/roam"))
+
+(setq org-agenda-files (list (concat org-directory "/calendars/personal.org")))
