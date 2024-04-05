@@ -35,10 +35,10 @@
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'doom-acario-dark)
+(setq doom-theme 'doom-solarized-dark-high-contrast)
 (setq doom-modeline-height 4)
-(set-frame-parameter (selected-frame) 'alpha '(96 . 96))
-(add-to-list 'default-frame-alist '(alpha . (96 . 96)))
+;; (set-frame-parameter (selected-frame) 'alpha '(96 . 96))
+;; (add-to-list 'default-frame-alist '(alpha . (96 . 96)))
 
 (require 'mu4e)
 (require 'mu4e-contrib)
