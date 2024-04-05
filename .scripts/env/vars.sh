@@ -6,8 +6,12 @@ export LC_MONETARY="en_US.UTF-8"
 export LC_NUMERIC="en_US.UTF-8"
 export LC_TIME="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
-export EDITOR="emacsclient -c -nw"
-export GOPATH="$HOME/.go" 
-export PATH="$GOPATH/bin:$HOME/.emacs.d/bin:/var/lib/flatpak/exports/bin:$HOME/.scripts/utils:$PATH"
-export PATH=$PATH:/opt/freefilesync
+export EDITOR="emacsclient -nw"
+export PATH="$HOME/.emacs.d/bin:$HOME/.scripts/utils:$PATH"
+
+
+# Development
+export GOPATH="$HOME/.go"
 export GO111MODULE=on
+export PATH="$GOPATH/bin:$PATH"
+export PYENV_ROOT="$HOME/.pyenv"
