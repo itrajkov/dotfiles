@@ -5,7 +5,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Ivche"
-      user-mail-address "itrajkov999@gmail.com")
+      user-mail-address "ivche@trajkov.mk")
 #+END_SRC
 
 * Settings
@@ -298,7 +298,7 @@
 (after! leetcode
     (setq leetcode-prefer-language "cpp")
     (setq leetcode-save-solutions t)
-    (setq leetcode-directory "~/dev/leetcode"))
+    (setq leetcode-directory "/mnt/nas/dev/leetcode"))
 #+end_src
 
 ** smudge
@@ -312,19 +312,6 @@
         :desc "Previous Track" "b" #'smudge-controller-previous-track
         :desc "Playlists" "P" #'smudge-my-playlists
         :desc "Track Search" "s" #'smudge-track-search)
-#+end_src
-
-** dap-mode
-#+begin_src emacs-lisp
-(after! dap-mode
-  (setq dap-python-debugger 'debugpy)
-  (require 'dap-python)
-  (dap-register-debug-template "Python :: Remote Attach to Flask"
-    (list :type "python"
-          :request "attach"
-          :connect (list :host "localhost" :port 5061)
-          :mode "remote"
-)))
 #+end_src
 
 ** org-caldav
@@ -346,9 +333,6 @@
 ;; Usually a good idea to set the timezone manually
 (setq org-icalendar-timezone "Europe/Skopje")
 #+end_src
-
-#+RESULTS:
-: Europe/Skopje
 
 * Languages
 ** Python
