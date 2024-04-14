@@ -400,9 +400,9 @@
 ** org-capture
 #+begin_src emacs-lisp
 (setq org-capture-templates `(
-    ("p" "Protocol" entry (file+headline ,(concat org-directory "/inbox.org.gpg") "Captured Quotes")
+    ("p" "Protocol" entry (file+headline ,(concat org-directory "/inbox.org") "Captured Quotes")
      "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-    ("i" "Inbox" entry (file ,(concat org-directory "/inbox.org.gpg"))
+    ("i" "Inbox" entry (file ,(concat org-directory "/inbox.org"))
      "* %? \nCaptured on: %T")
 ))
 #+end_src
