@@ -1,5 +1,5 @@
 (setq user-full-name "Ivche"
-      user-mail-address "itrajkov999@gmail.com")
+      user-mail-address "ivche@trajkov.mk")
 
 ;; (defun greedily-do-daemon-setup ()
 ;;   (require 'org)
@@ -244,16 +244,6 @@
         :desc "Playlists" "P" #'smudge-my-playlists
         :desc "Track Search" "s" #'smudge-track-search)
 
-(after! dap-mode
-  (setq dap-python-debugger 'debugpy)
-  (require 'dap-python)
-  (dap-register-debug-template "Python :: Remote Attach to Flask"
-    (list :type "python"
-          :request "attach"
-          :connect (list :host "localhost" :port 5061)
-          :mode "remote"
-)))
-
 (require 'org-caldav)
 
 ;; URL of the caldav server
@@ -287,7 +277,7 @@
 (after! dap
   (setq dap-python-debugger 'debugpy))
 
-(setq org-directory "/mnt/nas/documents/org")
+(setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
 
 (setq rmh-elfeed-org-files (list (concat org-directory "/elfeed.org")))
@@ -315,27 +305,39 @@
 
 (setq org-fontify-quote-and-verse-blocks t)
 
-(defun my/org-roam-create-encrypted-file (title)
-  "Create a new Org-roam file with TITLE, encrypted with GPG."
-  (interactive "sTitle: ")
-  (let ((file-path (expand-file-name (concat title ".org.gpg") org-roam-directory)))
-    (unless (file-exists-p file-path)
-      (with-temp-buffer
-        (insert "#+TITLE: " title "\n")
-        (write-file file-path)))))
-
 (setq org-capture-templates `(
-    ("p" "Protocol" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Quotes")
+    ("p" "Protocol" entry (file+headline ,(concat org-directory "/inbox.org.gpg") "Captured Quotes")
      "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-    ("L" "Protocol Link" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Links")
-     "* %? [[%:link][%:description]] \nCaptured On: %U")
-    ("i" "Inbox" entry (file ,(concat org-directory "/roam/inbox.org.gpg"))
+    ("i" "Inbox" entry (file ,(concat org-directory "/inbox.org.gpg"))
      "* %? \nCaptured on: %T")
-    ;; Modified "d" keybind for Org Roam Dailies with structured headings
-    ("d" "Daily Notes" entry (function org-roam-dailies-capture-today)
-     "* %<%I:%M %p> - %^{Title}\n\n%?\n* Performance\n** University\n** Work\n** Diet\n** Exercise\n** Sleep\n")
 ))
 
 (setq org-roam-directory (concat org-directory "/roam"))
+
+(setq org-roam-capture-templates
+      '(("l" "literature" plain "%?"
+         :if-new (file+head "literature/${slug}.org" "#+title: ${title}\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("p" "permanent" plain "%?"
+         :if-new (file+head "permanent/${title}.org" "#+title: ${title}\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("a" "article" plain "%?"
+         :if-new (file+head "article/${title}.org" "#+title: ${title}\n#+filetags: :article:\n")
+         :immediate-finish t
+         :unnarrowed t)))
+
+(cl-defmethod org-roam-node-type ((node org-roam-node))
+  "Return the TYPE of NODE."
+  (condition-case nil
+      (file-name-nondirectory
+       (directory-file-name
+        (file-name-directory
+         (file-relative-name (org-roam-node-file node) org-roam-directory))))
+    (error "")))
+
+(setq org-roam-node-display-template
+      (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
 
 (setq org-agenda-files (list (concat org-directory "/calendars/personal.org")))

@@ -71,10 +71,10 @@
 ** Theme
 
 #+BEGIN_SRC emacs-lisp
-(setq doom-theme 'doom-badger)
+(setq doom-theme 'doom-solarized-dark-high-contrast)
 (setq doom-modeline-height 4)
-(set-frame-parameter (selected-frame) 'alpha '(90 . 90))
-(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+;; (set-frame-parameter (selected-frame) 'alpha '(96 . 96))
+;; (add-to-list 'default-frame-alist '(alpha . (96 . 96)))
 #+end_src
 
 * Packages
@@ -298,7 +298,7 @@
 (after! leetcode
     (setq leetcode-prefer-language "cpp")
     (setq leetcode-save-solutions t)
-    (setq leetcode-directory "/mnt/nas/dev/leetcode"))
+    (setq leetcode-directory "~/dev/leetcode"))
 #+end_src
 
 ** smudge
@@ -361,7 +361,7 @@
 ** General
 
 #+begin_src emacs-lisp
-(setq org-directory "/mnt/nas/documents/org")
+(setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
 #+end_src
 
@@ -399,33 +399,45 @@
 
 ** org-capture
 #+begin_src emacs-lisp
-(defun my/org-roam-create-encrypted-file (title)
-  "Create a new Org-roam file with TITLE, encrypted with GPG."
-  (interactive "sTitle: ")
-  (let ((file-path (expand-file-name (concat title ".org.gpg") org-roam-directory)))
-    (unless (file-exists-p file-path)
-      (with-temp-buffer
-        (insert "#+TITLE: " title "\n")
-        (write-file file-path)))))
-#+end_src
-
-#+begin_src emacs-lisp
 (setq org-capture-templates `(
-    ("p" "Protocol" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Quotes")
+    ("p" "Protocol" entry (file+headline ,(concat org-directory "/inbox.org.gpg") "Captured Quotes")
      "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-    ("L" "Protocol Link" entry (file+headline ,(concat org-directory "/roam/inbox.org.gpg") "Captured Links")
-     "* %? [[%:link][%:description]] \nCaptured On: %U")
-    ("i" "Inbox" entry (file ,(concat org-directory "/roam/inbox.org.gpg"))
+    ("i" "Inbox" entry (file ,(concat org-directory "/inbox.org.gpg"))
      "* %? \nCaptured on: %T")
-    ;; Modified "d" keybind for Org Roam Dailies with structured headings
-    ("d" "Daily Notes" entry (function org-roam-dailies-capture-today)
-     "* %<%I:%M %p> - %^{Title}\n\n%?\n* Performance\n** University\n** Work\n** Diet\n** Exercise\n** Sleep\n")
 ))
 #+end_src
+
 ** org-roam
 #+begin_src emacs-lisp
 (setq org-roam-directory (concat org-directory "/roam"))
+
+(setq org-roam-capture-templates
+      '(("l" "literature" plain "%?"
+         :if-new (file+head "literature/${slug}.org" "#+title: ${title}\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("p" "permanent" plain "%?"
+         :if-new (file+head "permanent/${title}.org" "#+title: ${title}\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("a" "article" plain "%?"
+         :if-new (file+head "article/${title}.org" "#+title: ${title}\n#+filetags: :article:\n")
+         :immediate-finish t
+         :unnarrowed t)))
+
+(cl-defmethod org-roam-node-type ((node org-roam-node))
+  "Return the TYPE of NODE."
+  (condition-case nil
+      (file-name-nondirectory
+       (directory-file-name
+        (file-name-directory
+         (file-relative-name (org-roam-node-file node) org-roam-directory))))
+    (error "")))
+
+(setq org-roam-node-display-template
+      (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
 #+end_src
+
 ** org-agenda
 #+begin_src emacs-lisp
 (setq org-agenda-files (list (concat org-directory "/calendars/personal.org")))
