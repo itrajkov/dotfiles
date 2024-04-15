@@ -25,6 +25,17 @@
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
 (map! :map erc-mode-map :n "c u" #'my/erc-count-users)
 
+(defun my/dired-nas () (interactive) (dired "/mnt/nas"))
+(defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
+
+(map! :map global-map
+      :leader
+      :n "j n n" #'my/dired-nas)
+
+(map! :map global-map
+      :leader
+      :n "j n p" #'my/dired-notes)
+
 (setq auth-sources '("~/.authinfo.gpg"))
 
 (setq initial-scratch-message ";; Happy Hacking!\n")
@@ -35,10 +46,10 @@
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'doom-solarized-dark-high-contrast)
+(setq doom-theme 'doom-ayu-dark)
 (setq doom-modeline-height 4)
-;; (set-frame-parameter (selected-frame) 'alpha '(96 . 96))
-;; (add-to-list 'default-frame-alist '(alpha . (96 . 96)))
+(set-frame-parameter (selected-frame) 'alpha '(97 . 97))
+(add-to-list 'default-frame-alist '(alpha . (97 . 97)))
 
 (require 'mu4e)
 (require 'mu4e-contrib)
