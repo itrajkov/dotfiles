@@ -6,9 +6,10 @@ source $HOME/.scripts/env/funcs.sh
 export DISABLE_AUTO_TITLE='true'
 export ZSH="/home/ivche/.oh-my-zsh"
 
-ZSH_THEME=af-magic
-plugins=(git archlinux vi-mode colorize copyfile extract z)
+ZSH_THEME=fino-time
+plugins=(git archlinux vi-mode colorize copyfile extract z zsh-autosuggestions fast-syntax-highlighting zsh-autocomplete)
 
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 source $ZSH/oh-my-zsh.sh
 
 # Vim keys

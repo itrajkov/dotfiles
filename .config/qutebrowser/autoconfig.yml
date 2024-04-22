@@ -10,13 +10,15 @@ settings:
     global:
       normal:
         ',M': hint links spawn umpv {hint-url}
+        ',b': spawn --userscript bookmark.py
         ',m': spawn umpv {url}
         ',p': open -p
         ;M: hint --rapid links spawn umpv {hint-url}
-        xa: config-cycle statusbar.show always never ;; config-cycle tabs.show always
-          switching
+        ;b: spawn --userscript bookmark.py
+        xs: config-cycle statusbar.show always never
         xt: config-cycle tabs.show always switching
-        xx: config-cycle statusbar.show always never
+        xx: config-cycle statusbar.show always never ;; config-cycle tabs.show always
+          switching
   content.javascript.clipboard:
     github.com: access
     global: access
@@ -31,9 +33,9 @@ settings:
   tabs.width:
     global: 200
   url.default_page:
-    global: http://dashy.home
+    global: https://priv.au
   url.searchengines:
     global:
       DEFAULT: https://priv.au/search?q={}
   url.start_pages:
-    global: http://dashy.home
+    global: https://priv.au

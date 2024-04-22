@@ -6,8 +6,8 @@ export LC_MONETARY="en_US.UTF-8"
 export LC_NUMERIC="en_US.UTF-8"
 export LC_TIME="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
-export EDITOR="emacsclient -nw"
-export PATH="$HOME/.emacs.d/bin:$HOME/.scripts/utils:$PATH"
+export EDITOR="emacs"
+export PATH="$HOME/.config/emacs/bin:$HOME/.scripts/utils:$PATH"
 
 
 # Development

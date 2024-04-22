@@ -46,7 +46,7 @@
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'doom-ayu-dark)
+(setq doom-theme 'doom-peacock)
 (setq doom-modeline-height 4)
 (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
 (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
@@ -124,8 +124,8 @@
                                         "#am-members")
                                         ("libera.chat"
                                         "#spodeli")
-                                        ("orpheus.network"
-                                        "#disabled")))
+                                        ("colonq.computer"
+                                        "#cyberspace")))
 
     (add-hook 'window-configuration-change-hook
         '(lambda ()
@@ -195,6 +195,7 @@
         (erc-track-switch-buffer 1)
         (when (y-or-n-p "Start ERC? ")
         (erc-tls :server "irc.libera.chat" :port 6697 :nick "ivche")
+        (erc-tls :server "colonq.computer" :port 26697 :nick "ivche1337")
         (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "Ivche1337")
         )))
 
@@ -230,8 +231,8 @@
 
 (after! company
     (setq default-tab-width 4)
-    (setq company-minimum-prefix-length 3)
-    (setq company-idle-delay 0.3))
+    (setq company-minimum-prefix-length 1)
+    (setq company-idle-delay 0))
 
 (use-package! elcord
   :commands elcord-mode
