@@ -266,6 +266,7 @@
     (setq company-minimum-prefix-length 1)
     (setq company-idle-delay 0))
 #+END_SRC
+
 ** elcord
 #+begin_src emacs-lisp
 (use-package! elcord

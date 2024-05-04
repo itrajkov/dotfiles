@@ -8,6 +8,13 @@ lazynvm() {
   fi
 }
 
+lazypyenv() {
+  unset -f pyenv
+  command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
+}
+
 nvm() {
   lazynvm
   nvm $@
@@ -28,9 +35,14 @@ npx() {
   npx $@
 }
 
+pyenv() {
+  lazypyenv
+  pyenv $@
+}
+
+
 # Utils
 mcd(){
     mkdir -p "$1"
     cd "$1"
 }
-
