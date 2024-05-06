@@ -36,6 +36,40 @@
       :leader
       :n "j n p" #'my/dired-notes)
 
+(defun my/dired-nas () (interactive) (dired "/mnt/nas"))
+(defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
+(defun my/org-retrieve-url-from-point ()
+  "Copies the URL from an org link at the point"
+  (interactive)
+  (let ((plain-url (url-get-url-at-point)))
+    (if plain-url
+        (progn
+          (kill-new plain-url)
+          (message (concat "Copied: " plain-url)))
+      (let* ((link-info (assoc :link (org-context)))
+             (text (when link-info
+                     (buffer-substring-no-properties
+                      (or (cadr link-info) (point-min))
+                      (or (caddr link-info) (point-max))))))
+        (if (not text)
+            (error "Oops! Point isn't in an org link")
+          (string-match org-link-bracket-re text)
+          (let ((url (substring text (match-beginning 1) (match-end 1))))
+            (kill-new url)
+            (message (concat "Copied: " url))))))))
+
+(map! :map global-map
+      :leader
+      :n "j n n" #'my/dired-nas)
+
+(map! :map global-map
+      :leader
+      :n "j n p" #'my/dired-notes)
+
+(map! :map global-map
+      :leader
+      :n "l y" #'my/org-retrieve-url-from-point )
+
 (setq auth-sources '("~/.authinfo.gpg"))
 
 (setq initial-scratch-message ";; Happy Hacking!\n")
@@ -46,10 +80,11 @@
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'doom-peacock)
+(setq doom-theme 'catppuccin)
+(setq catppuccin-flavor 'mocha)
 (setq doom-modeline-height 4)
-(set-frame-parameter (selected-frame) 'alpha '(97 . 97))
-(add-to-list 'default-frame-alist '(alpha . (97 . 97)))
+;; (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
+;; (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
 
 (require 'mu4e)
 (require 'mu4e-contrib)
@@ -273,21 +308,21 @@
 ;; Usually a good idea to set the timezone manually
 (setq org-icalendar-timezone "Europe/Skopje")
 
-(after! flycheck
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (setq lsp-pylsp-plugins-mccabe-enabled nil)
-              (setq lsp-pylsp-plugins-flake8-enabled nil)
-              (setq lsp-pylsp-plugins-pyflakes-enabled nil)
-              (setq lsp-pylsp-plugins-pydocstyle-enabled nil)
-              (setq flycheck-python-mypy-executable "mypy")
-              (setq-local flycheck-checker 'python-mypy)
-              (setq flycheck-checker-error-threshold 3000)
-              )))
+(add-hook 'python-mode-hook
+        (lambda ()
+        (setq lsp-pylsp-plugins-mccabe-enabled nil)
+        (setq lsp-pylsp-plugins-flake8-enabled nil)
+        (setq lsp-pylsp-plugins-pyflakes-enabled nil)
+        (setq lsp-pylsp-plugins-pydocstyle-enabled nil)
+        (setq lsp-pylsp-plugins-mypy-enabled t)
+        (setq lsp-pylsp-plugins-mypy-dmypy t)
+        (setq lsp-pylsp-plugins-mypy-strict t)
+        (setq lsp-pylsp-plugins-ruff-enabled t)
+        ))
 
 
-(after! dap
-  (setq dap-python-debugger 'debugpy))
+;; (after! dap
+;;   (setq dap-python-debugger 'debugpy))
 
 (setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
