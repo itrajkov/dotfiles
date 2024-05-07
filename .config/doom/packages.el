@@ -8,3 +8,4 @@
 (package! smudge)
 (package! dirvish)
 (package! org-caldav)
+(package! catppuccin-theme)

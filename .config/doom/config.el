@@ -25,6 +25,51 @@
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
 (map! :map erc-mode-map :n "c u" #'my/erc-count-users)
 
+(defun my/dired-nas () (interactive) (dired "/mnt/nas"))
+(defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
+
+(map! :map global-map
+      :leader
+      :n "j n n" #'my/dired-nas)
+
+(map! :map global-map
+      :leader
+      :n "j n p" #'my/dired-notes)
+
+(defun my/dired-nas () (interactive) (dired "/mnt/nas"))
+(defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
+(defun my/org-retrieve-url-from-point ()
+  "Copies the URL from an org link at the point"
+  (interactive)
+  (let ((plain-url (url-get-url-at-point)))
+    (if plain-url
+        (progn
+          (kill-new plain-url)
+          (message (concat "Copied: " plain-url)))
+      (let* ((link-info (assoc :link (org-context)))
+             (text (when link-info
+                     (buffer-substring-no-properties
+                      (or (cadr link-info) (point-min))
+                      (or (caddr link-info) (point-max))))))
+        (if (not text)
+            (error "Oops! Point isn't in an org link")
+          (string-match org-link-bracket-re text)
+          (let ((url (substring text (match-beginning 1) (match-end 1))))
+            (kill-new url)
+            (message (concat "Copied: " url))))))))
+
+(map! :map global-map
+      :leader
+      :n "j n n" #'my/dired-nas)
+
+(map! :map global-map
+      :leader
+      :n "j n p" #'my/dired-notes)
+
+(map! :map global-map
+      :leader
+      :n "l y" #'my/org-retrieve-url-from-point )
+
 (setq auth-sources '("~/.authinfo.gpg"))
 
 (setq initial-scratch-message ";; Happy Hacking!\n")
@@ -35,10 +80,11 @@
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'doom-solarized-dark-high-contrast)
+(setq doom-theme 'catppuccin)
+(setq catppuccin-flavor 'mocha)
 (setq doom-modeline-height 4)
-;; (set-frame-parameter (selected-frame) 'alpha '(96 . 96))
-;; (add-to-list 'default-frame-alist '(alpha . (96 . 96)))
+;; (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
+;; (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
 
 (require 'mu4e)
 (require 'mu4e-contrib)
@@ -113,8 +159,8 @@
                                         "#am-members")
                                         ("libera.chat"
                                         "#spodeli")
-                                        ("orpheus.network"
-                                        "#disabled")))
+                                        ("colonq.computer"
+                                        "#cyberspace")))
 
     (add-hook 'window-configuration-change-hook
         '(lambda ()
@@ -184,6 +230,7 @@
         (erc-track-switch-buffer 1)
         (when (y-or-n-p "Start ERC? ")
         (erc-tls :server "irc.libera.chat" :port 6697 :nick "ivche")
+        (erc-tls :server "colonq.computer" :port 26697 :nick "ivche1337")
         (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "Ivche1337")
         )))
 
@@ -219,8 +266,8 @@
 
 (after! company
     (setq default-tab-width 4)
-    (setq company-minimum-prefix-length 3)
-    (setq company-idle-delay 0.3))
+    (setq company-minimum-prefix-length 1)
+    (setq company-idle-delay 0))
 
 (use-package! elcord
   :commands elcord-mode
@@ -232,7 +279,7 @@
 (after! leetcode
     (setq leetcode-prefer-language "cpp")
     (setq leetcode-save-solutions t)
-    (setq leetcode-directory "/mnt/nas/dev/leetcode"))
+    (setq leetcode-directory "~/dev/leetcode"))
 
 (setq smudge-oauth2-client-secret "8fddb0ee81bf48db9f5bc3bea3d7e4cb")
 (setq smudge-oauth2-client-id "a24417b7653d4974b19b7a07dcf1f7b2")
@@ -261,23 +308,23 @@
 ;; Usually a good idea to set the timezone manually
 (setq org-icalendar-timezone "Europe/Skopje")
 
-(after! flycheck
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (setq lsp-pylsp-plugins-mccabe-enabled nil)
-              (setq lsp-pylsp-plugins-flake8-enabled nil)
-              (setq lsp-pylsp-plugins-pyflakes-enabled nil)
-              (setq lsp-pylsp-plugins-pydocstyle-enabled nil)
-              (setq flycheck-python-mypy-executable "mypy")
-              (setq-local flycheck-checker 'python-mypy)
-              (setq flycheck-checker-error-threshold 3000)
-              )))
+(add-hook 'python-mode-hook
+        (lambda ()
+        (setq lsp-pylsp-plugins-mccabe-enabled nil)
+        (setq lsp-pylsp-plugins-flake8-enabled nil)
+        (setq lsp-pylsp-plugins-pyflakes-enabled nil)
+        (setq lsp-pylsp-plugins-pydocstyle-enabled nil)
+        (setq lsp-pylsp-plugins-mypy-enabled t)
+        (setq lsp-pylsp-plugins-mypy-dmypy t)
+        (setq lsp-pylsp-plugins-mypy-strict t)
+        (setq lsp-pylsp-plugins-ruff-enabled t)
+        ))
 
 
-(after! dap
-  (setq dap-python-debugger 'debugpy))
+;; (after! dap
+;;   (setq dap-python-debugger 'debugpy))
 
-(setq org-directory "/mnt/nas/documents/org")
+(setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
 
 (setq rmh-elfeed-org-files (list (concat org-directory "/elfeed.org")))
@@ -306,25 +353,25 @@
 (setq org-fontify-quote-and-verse-blocks t)
 
 (setq org-capture-templates `(
-    ("p" "Protocol" entry (file+headline ,(concat org-directory "/inbox.org.gpg") "Captured Quotes")
+    ("p" "Protocol" entry (file+headline ,(concat org-directory "/inbox.org") "Captured Quotes")
      "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-    ("i" "Inbox" entry (file ,(concat org-directory "/inbox.org.gpg"))
+    ("i" "Inbox" entry (file ,(concat org-directory "/inbox.org"))
      "* %? \nCaptured on: %T")
 ))
 
 (setq org-roam-directory (concat org-directory "/roam"))
 
 (setq org-roam-capture-templates
-      '(("m" "main" plain "%?"
-         :if-new (file+head "main/${slug}.org" "#+title: ${title}\n")
+      '(("l" "literature" plain "%?"
+         :if-new (file+head "literature/${slug}.org" "#+title: ${title}\n")
          :immediate-finish t
          :unnarrowed t)
-        ("r" "reference" plain "%?"
-         :if-new (file+head "reference/${title}.org" "#+title: ${title}\n")
+        ("p" "permanent" plain "%?"
+         :if-new (file+head "permanent/${title}.org" "#+title: ${title}\n")
          :immediate-finish t
          :unnarrowed t)
         ("a" "article" plain "%?"
-         :if-new (file+head "articles/${title}.org" "#+title: ${title}\n#+filetags: :article:\n")
+         :if-new (file+head "article/${title}.org" "#+title: ${title}\n#+filetags: :article:\n")
          :immediate-finish t
          :unnarrowed t)))
 

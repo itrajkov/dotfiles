@@ -1,27 +1,14 @@
-# Navigation
-alias dev="cd ~/dev/"
-alias docs="cd ~/Documents/"
-alias down="cd ~/Downloads/"
-alias pics="cd ~/Pictures/"
-alias uni="cd /nas/documents/uni/"
-alias hdd="cd ~/HDD/"
-alias mail="cd ~/Mail/"
-alias dots="cd ~/dev/dotfiles"
-alias nas="cd /mnt/nas"
-
 # Configs
-alias zshconf='emacs -nw ~/.zshrc'
+alias zshconf='emacsclient -nw ~/.zshrc'
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 # Programs
 alias paru="paru --bottomup"
-alias termpad="http POST https://termpad.trajkov.mk | xclip -selection clipboard"
-echo "Hello World" |
+alias termpad="http POST https://termpad.trajkov.mk | wl-copy"
 alias genpass='pass generate -c'
-alias doomsync='.config/emacs/bin/doom sync'
+alias doomsync='.config/emacs/bin/doom sync && systemctl restart --user emacs'
 alias cb="xclip -selection clipboard"
-alias emacs='emacs -nw'
-alias jnb='jupyter notebook ~/dev/jupyter-notebooks'
+alias emacs='emacsclient -nw -c'
 
 # SSH
 alias h='ssh debian'
