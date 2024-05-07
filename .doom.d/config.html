@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Ivche&rsquo;s Config</title>
+<meta name="author" content="Ivan Trajkov"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="file:///home/ivche/.config/emacs/.local/straight/build-29.2/revealjs/dist/reveal.css"/>
+
+<link rel="stylesheet" href="file:///home/ivche/.config/emacs/.local/straight/build-29.2/revealjs/dist/theme/black.css" id="theme"/>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">Ivche&rsquo;s Config</h1><h2 class="author">Ivan Trajkov</h2><p class="date">Created: 2024-01-30 Tue 03:53</p>
+</section>
+<section id="table-of-contents-section">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#/slide-1">1. Personal Info</a></li>
+<li><a href="#/slide-2">2. Settings</a>
+<ul>
+<li><a href="#/slide-2-1">2.1. Daemon</a></li>
+<li><a href="#/slide-2-2">2.2. Custom Keybinds</a>
+<ul>
+<li><a href="#/slide-2-2-1">2.2.1. erc</a></li>
+</ul>
+</li>
+<li><a href="#/slide-2-3">2.3. Authinfo</a></li>
+<li><a href="#/slide-2-4">2.4. Scratch Buffer Message</a></li>
+<li><a href="#/slide-2-5">2.5. Font</a></li>
+<li><a href="#/slide-2-6">2.6. Lines</a></li>
+<li><a href="#/slide-2-7">2.7. Theme</a></li>
+</ul>
+</li>
+<li><a href="#/slide-3">3. Packages</a>
+<ul>
+<li><a href="#/slide-3-1">3.1. mu4e</a></li>
+<li><a href="#/slide-3-2">3.2. erc</a></li>
+<li><a href="#/slide-3-3">3.3. company</a></li>
+<li><a href="#/slide-3-4">3.4. elcord</a></li>
+<li><a href="#/slide-3-5">3.5. lsp</a></li>
+<li><a href="#/slide-3-6">3.6. leetcode</a></li>
+<li><a href="#/slide-3-7">3.7. smudge</a></li>
+<li><a href="#/slide-3-8">3.8. dap-mode</a></li>
+</ul>
+</li>
+<li><a href="#/slide-4">4. Languages</a>
+<ul>
+<li><a href="#/slide-4-1">4.1. Python</a></li>
+</ul>
+</li>
+<li><a href="#/slide-5">5. Org Mode</a>
+<ul>
+<li><a href="#/slide-5-1">5.1. General</a></li>
+<li><a href="#/slide-5-2">5.2. elfeed</a></li>
+<li><a href="#/slide-5-3">5.3. Visuals</a></li>
+<li><a href="#/slide-5-4">5.4. org-capture</a></li>
+<li><a href="#/slide-5-5">5.5. org-roam</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<section>
+<section id="slide-1">
+<h2 id="1"><span class="section-number-2">1.</span> Personal Info</h2>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">user-full-name</span> <span style="color: #79D836;">"Ivche"</span>
+      <span style="color: #86e7d7;">user-mail-address</span> <span style="color: #79D836;">"itrajkov999@gmail.com"</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-2">
+<h2 id="2"><span class="section-number-2">2.</span> Settings</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+</section>
+<section id="slide-2-1">
+<h3 id="2-1"><span class="section-number-3">2.1.</span> Daemon</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">defun</span> <span style="color: #D8B941;">greedily-do-daemon-setup</span> <span style="color: #8041D8;">()</span>
+  <span style="color: #8041D8;">(</span><span style="color: #8041D8;">require</span> <span style="color: #3679D8;">'</span><span style="color: #8041D8;">org</span><span style="color: #8041D8;">)</span>
+  <span style="color: #8041D8;">(</span><span style="color: #D83441;">when</span> <span style="color: #79D836;">(</span><span style="color: #8041D8;">require</span> <span style="color: #3679D8;">'</span><span style="color: #8041D8;">mu4e</span> nil t<span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">mu4e-confirm-quit</span> t<span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">+mu4e-lock-greedy</span> t<span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">+mu4e-lock-relaxed</span> t<span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span>mu4e~start<span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">when</span> <span style="color: #8041D8;">(</span><span style="color: #8041D8;">daemonp</span><span style="color: #8041D8;">)</span>
+  <span style="color: #8041D8;">(</span><span style="color: #D8B941;">add-hook</span> <span style="color: #3679D8;">'</span><span style="color: #86e7d7;">emacs-startup-hook</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">greedily-do-daemon-setup</span><span style="color: #8041D8;">)</span>
+  <span style="color: #8041D8;">(</span><span style="color: #D83441;">add-hook!</span> <span style="color: #3679D8;">'</span><span style="color: #86e7d7;">server-after-make-frame-hook</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">unless</span> <span style="color: #AB11D8;">(</span><span style="color: #D8B941;">string-match-p</span> <span style="color: #79D836;">"\\*draft"</span> <span style="color: #3679D8;">(</span><span style="color: #8041D8;">buffer-name</span><span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-2-2">
+<h3 id="2-2"><span class="section-number-3">2.2.</span> Custom Keybinds</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+</section>
+<section id="slide-2-2-1">
+<h4 id="2-2-1"><span class="section-number-4">2.2.1.</span> erc</h4>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">map!</span> <span style="color: #3679D8;">:leader</span>
+      <span style="color: #3679D8;">:desc</span> <span style="color: #79D836;">"Start ERC"</span>
+      <span style="color: #79D836;">"o i"</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">my/erc-start-or-switch</span>
+      <span style="color: #79D836;">"i i"</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">erc-switch-to-buffer</span><span style="color: #3679D8;">)</span>
+
+<span style="color: #767676; font-style: italic;">;;</span><span style="color: #767676; font-style: italic;">(map! :map specific-mode-map :n "J" (cmd! (a-function) (b-function)))</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">map!</span> <span style="color: #3679D8;">:map</span> <span style="color: #86e7d7;">erc-mode-map</span> <span style="color: #3679D8;">:n</span> <span style="color: #79D836;">"J"</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">erc-join-channel</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">map!</span> <span style="color: #3679D8;">:map</span> <span style="color: #86e7d7;">erc-mode-map</span> <span style="color: #3679D8;">:n</span> <span style="color: #79D836;">"qq"</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">my/erc-stop</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">map!</span> <span style="color: #3679D8;">:map</span> <span style="color: #86e7d7;">erc-mode-map</span> <span style="color: #3679D8;">:n</span> <span style="color: #79D836;">"c u"</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">my/erc-count-users</span><span style="color: #3679D8;">)</span>
+
+</pre>
+</div>
+</section>
+<section id="slide-2-3">
+<h3 id="2-3"><span class="section-number-3">2.3.</span> Authinfo</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">auth-sources</span> <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span><span style="color: #79D836;">"~/.authinfo.gpg"</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-2-4">
+<h3 id="2-4"><span class="section-number-3">2.4.</span> Scratch Buffer Message</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">initial-scratch-message</span> <span style="color: #79D836;">";; Happy Hacking!\n"</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-2-5">
+<h3 id="2-5"><span class="section-number-3">2.5.</span> Font</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">doom-font</span> <span style="color: #8041D8;">(</span><span style="color: #8041D8;">font-spec</span> <span style="color: #3679D8;">:family</span> <span style="color: #79D836;">"FiraCode Nerd Font"</span> <span style="color: #3679D8;">:size</span> <span style="color: #D85F00; font-weight: bold;">14</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-2-6">
+<h3 id="2-6"><span class="section-number-3">2.6.</span> Lines</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">display-line-numbers-type</span> <span style="color: #3679D8;">'</span><span style="color: #3679D8;">relative</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">truncate-lines</span> nil<span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">scroll-margin</span> <span style="color: #D85F00; font-weight: bold;">9</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-2-7">
+<h3 id="2-7"><span class="section-number-3">2.7.</span> Theme</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">doom-theme</span> <span style="color: #3679D8;">'</span><span style="color: #3679D8;">doom-acario-dark</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">doom-modeline-height</span> <span style="color: #D85F00; font-weight: bold;">4</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D8B941;">set-frame-parameter</span> <span style="color: #8041D8;">(</span><span style="color: #8041D8;">selected-frame</span><span style="color: #8041D8;">)</span> <span style="color: #3679D8;">'</span><span style="color: #3679D8;">alpha</span> <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span><span style="color: #D85F00; font-weight: bold;">96</span> . <span style="color: #D85F00; font-weight: bold;">96</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D8B941;">add-to-list</span> <span style="color: #3679D8;">'</span><span style="color: #86e7d7;">default-frame-alist</span> <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span>alpha . <span style="color: #79D836;">(</span><span style="color: #D85F00; font-weight: bold;">96</span> . <span style="color: #D85F00; font-weight: bold;">96</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-3">
+<h2 id="3"><span class="section-number-2">3.</span> Packages</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+</section>
+<section id="slide-3-1">
+<h3 id="3-1"><span class="section-number-3">3.1.</span> mu4e</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D8B941;">set-email-account!</span> <span style="color: #79D836;">"Main"</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span><span style="color: #79D836;">(</span><span style="color: #86e7d7;">user-mail-address</span> . <span style="color: #79D836;">"ivche@trajkov.mk"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">user-full-name</span>    . <span style="color: #79D836;">"Ivche"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">smtpmail-smtp-server</span> . <span style="color: #79D836;">"smtp.gmail.com"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">smtpmail-smtp-service</span> . <span style="color: #D85F00; font-weight: bold;">465</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">smtpmail-stream-type</span> . ssl<span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">smtpmail-smtp-user</span> . <span style="color: #79D836;">"ivche@trajkov.mk"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-drafts-folder</span>  . <span style="color: #79D836;">"/ivche/Drafts"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-sent-folder</span>  . <span style="color: #79D836;">"/ivche/Sent Mail"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-refile-folder</span>  . <span style="color: #79D836;">"/ivche/All Mail"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-trash-folder</span>  . <span style="color: #79D836;">"/ivche/Trash"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">smtpmail-queue-dir</span> .  <span style="color: #79D836;">"~/Mail/ivche/queue/cur"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-compose-signature</span> . <span style="color: #79D836;">"---\nYours truly\nIvche."</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-maildir-shortcuts</span> .
+        <span style="color: #AB11D8;">(</span><span style="color: #3679D8;">(</span><span style="color: #79D836;">"/ivche/Inbox"</span>             . ?i<span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #79D836;">"/ivche/Sent Mail"</span> . ?s<span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #79D836;">"/ivche/Trash"</span>     . ?t<span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #79D836;">"/ivche/Drafts"</span>    . ?d<span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #79D836;">"/ivche/All Mail"</span>  . ?a<span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+  t<span style="color: #3679D8;">)</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D8B941;">set-email-account!</span> <span style="color: #79D836;">"Professional"</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span><span style="color: #79D836;">(</span><span style="color: #86e7d7;">user-mail-address</span> . <span style="color: #79D836;">"ivan@trajkov.mk"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">user-full-name</span>    . <span style="color: #79D836;">"Ivan Trajkov"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">smtpmail-smtp-server</span> . <span style="color: #79D836;">"mail.trajkov.mk"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">smtpmail-smtp-service</span> . <span style="color: #D85F00; font-weight: bold;">465</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">smtpmail-stream-type</span> . ssl<span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">smtpmail-smtp-user</span> . <span style="color: #79D836;">"ivan@trajkov.mk"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-drafts-folder</span>  . <span style="color: #79D836;">"/ivan/[Gmail]/Drafts"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-sent-folder</span>  . <span style="color: #79D836;">"/ivan/[Gmail]/Sent Mail"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-refile-folder</span>  . <span style="color: #79D836;">"/ivan/[Gmail]/All Mail"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-trash-folder</span>  . <span style="color: #79D836;">"/ivan/[Gmail]/Trash"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">smtpmail-queue-dir</span> .  <span style="color: #79D836;">"~/Mail/ivan/queue/cur"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-compose-signature</span> . <span style="color: #79D836;">"---\nYours truly\nIvan."</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #86e7d7;">mu4e-maildir-shortcuts</span> .
+        <span style="color: #AB11D8;">(</span><span style="color: #3679D8;">(</span><span style="color: #79D836;">"/ivan/Inbox"</span>             . ?i<span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #79D836;">"/ivan/Sent Mail"</span> . ?s<span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #79D836;">"/ivan/Trash"</span>     . ?t<span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #79D836;">"/ivan/Drafts"</span>    . ?d<span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #79D836;">"/ivan/All Mail"</span>  . ?a<span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+  t<span style="color: #3679D8;">)</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">smtpmail-queue-mail</span> t<span style="color: #3679D8;">)</span>  <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">start in queuing mode</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">after!</span> mu4e <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">mu4e-update-interval</span> <span style="color: #D85F00; font-weight: bold;">60</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">mu4e-context-policy</span> <span style="color: #3679D8;">'</span><span style="color: #3679D8;">ask-if-none</span>
+      <span style="color: #86e7d7;">mu4e-compose-context-policy</span> <span style="color: #3679D8;">'</span><span style="color: #3679D8;">always-ask</span><span style="color: #3679D8;">)</span>
+
+<span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">don't need to run cleanup after indexing for gmail</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">mu4e-index-cleanup</span> nil
+      <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">because gmail uses labels as folders we can use lazy check since</span>
+      <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">messages don't really "move"</span>
+      <span style="color: #86e7d7;">mu4e-index-lazy-check</span> t<span style="color: #3679D8;">)</span>
+
+<span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">(setq mu4e-alert-icon "/usr/share/icons/Adwaita/16x16/status/mail-unread-symbolic.symbolic.png")</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">mu4e-headers-fields</span>
+      <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span><span style="color: #79D836;">(</span><span style="color: #3679D8;">:flags</span> . <span style="color: #D85F00; font-weight: bold;">6</span><span style="color: #79D836;">)</span>
+        <span style="color: #79D836;">(</span><span style="color: #3679D8;">:account-stripe</span> . <span style="color: #D85F00; font-weight: bold;">2</span><span style="color: #79D836;">)</span>
+        <span style="color: #79D836;">(</span><span style="color: #3679D8;">:from-or-to</span> . <span style="color: #D85F00; font-weight: bold;">25</span><span style="color: #79D836;">)</span>
+        <span style="color: #79D836;">(</span><span style="color: #3679D8;">:recipnum</span> . <span style="color: #D85F00; font-weight: bold;">2</span><span style="color: #79D836;">)</span>
+        <span style="color: #79D836;">(</span><span style="color: #3679D8;">:subject</span> . <span style="color: #D85F00; font-weight: bold;">80</span><span style="color: #79D836;">)</span>
+        <span style="color: #79D836;">(</span><span style="color: #3679D8;">:human-date</span> . <span style="color: #D85F00; font-weight: bold;">8</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+      <span style="color: #86e7d7;">+mu4e-min-header-frame-width</span> <span style="color: #D85F00; font-weight: bold;">142</span>
+      <span style="color: #86e7d7;">mu4e-headers-date-format</span> <span style="color: #79D836;">"%d/%m/%y"</span>
+      <span style="color: #86e7d7;">mu4e-headers-time-format</span> <span style="color: #79D836;">"&#10710; %H:%M"</span>
+      <span style="color: #86e7d7;">mu4e-headers-results-limit</span> <span style="color: #D85F00; font-weight: bold;">1000</span>
+      <span style="color: #86e7d7;">mu4e-index-cleanup</span> t<span style="color: #3679D8;">)</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D8B941;">mu4e</span> t<span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-3-2">
+<h3 id="3-2"><span class="section-number-3">3.2.</span> erc</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #8041D8;">require</span> <span style="color: #3679D8;">'</span><span style="color: #8041D8;">erc-log</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #8041D8;">require</span> <span style="color: #3679D8;">'</span><span style="color: #8041D8;">erc-notify</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #8041D8;">require</span> <span style="color: #3679D8;">'</span><span style="color: #8041D8;">erc-spelling</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #8041D8;">require</span> <span style="color: #3679D8;">'</span><span style="color: #8041D8;">erc-autoaway</span><span style="color: #3679D8;">)</span>
+
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">use-package</span> erc
+  <span style="color: #3679D8;">:commands</span> erc erc-tls
+  <span style="color: #3679D8;">:config</span>
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">Join the a couple of interesting channels whenever connecting to Freenode.</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> erc-autojoin-channels-alist <span style="color: #3679D8;">'</span><span style="color: #79D836;">(</span><span style="color: #AB11D8;">(</span><span style="color: #79D836;">"myanonamouse.net"</span>
+                                        <span style="color: #79D836;">"#am-members"</span><span style="color: #AB11D8;">)</span>
+                                        <span style="color: #AB11D8;">(</span><span style="color: #79D836;">"libera.chat"</span>
+                                        <span style="color: #79D836;">"#spodeli"</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #8041D8;">(</span><span style="color: #D8B941;">add-hook</span> <span style="color: #3679D8;">'</span><span style="color: #86e7d7;">window-configuration-change-hook</span>
+        <span style="color: #3679D8;">'</span><span style="color: #79D836;">(</span>lambda <span style="color: #AB11D8;">()</span>
+            <span style="color: #AB11D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-fill-column</span> <span style="color: #3679D8;">(</span><span style="color: #8041D8;">-</span> <span style="color: #8041D8;">(</span><span style="color: #8041D8;">window-width</span><span style="color: #8041D8;">)</span> <span style="color: #D85F00; font-weight: bold;">2</span><span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">Interpret mIRC-style color commands in IRC chats</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-interpret-mirc-color</span> t<span style="color: #8041D8;">)</span>
+
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">The following are commented out by default, but users of other</span>
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">non-Emacs IRC clients might find them useful.</span>
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">Kill buffers for channels after /part</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-kill-buffer-on-part</span> t<span style="color: #8041D8;">)</span>
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">Kill buffers for private queries after quitting the server</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-kill-queries-on-quit</span> t<span style="color: #8041D8;">)</span>
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">Kill buffers for server messages after quitting the server</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-kill-server-buffer-on-quit</span> t<span style="color: #8041D8;">)</span>
+
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">open query buffers in the current window</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-query-display</span> <span style="color: #3679D8;">'</span><span style="color: #3679D8;">buffer</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-track-shorten-function</span> nil<span style="color: #8041D8;">)</span>
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">exclude boring stuff from tracking</span>
+    <span style="color: #8041D8;">(</span><span style="color: #86e7d7;">erc-track-mode</span> t<span style="color: #8041D8;">)</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-track-exclude-types</span> <span style="color: #3679D8;">'</span><span style="color: #79D836;">(</span><span style="color: #79D836;">"JOIN"</span> <span style="color: #79D836;">"NICK"</span> <span style="color: #79D836;">"PART"</span> <span style="color: #79D836;">"QUIT"</span> <span style="color: #79D836;">"MODE"</span>
+                                    <span style="color: #79D836;">"324"</span> <span style="color: #79D836;">"329"</span> <span style="color: #79D836;">"332"</span> <span style="color: #79D836;">"333"</span> <span style="color: #79D836;">"353"</span> <span style="color: #79D836;">"477"</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">truncate long irc buffers</span>
+    <span style="color: #8041D8;">(</span><span style="color: #86e7d7;">erc-truncate-mode</span> <span style="color: #D85F00; font-weight: bold;">+1</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">reconnecting</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-server-reconnect-attempts</span> <span style="color: #D85F00; font-weight: bold;">5</span><span style="color: #8041D8;">)</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-server-reconnect-timeout</span> <span style="color: #D85F00; font-weight: bold;">30</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">share my real name</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-user-full-name</span> <span style="color: #79D836;">"Ivche"</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">enable spell checking</span>
+    <span style="color: #8041D8;">(</span><span style="color: #86e7d7;">erc-spelling-mode</span> <span style="color: #D85F00; font-weight: bold;">1</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">defvar</span> <span style="color: #86e7d7;">erc-notify-timeout</span> <span style="color: #D85F00; font-weight: bold;">10</span>
+    <span style="color: #9ae168; font-style: italic;">"Number of seconds that must elapse between notifications from</span>
+<span style="color: #9ae168; font-style: italic;">    the same person."</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">defun</span> <span style="color: #D8B941;">my/erc-notify</span> <span style="color: #79D836;">(</span>nickname message<span style="color: #79D836;">)</span>
+    <span style="color: #9ae168; font-style: italic;">"Displays a notification message for ERC."</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">let*</span> <span style="color: #AB11D8;">(</span><span style="color: #3679D8;">(</span>channel <span style="color: #8041D8;">(</span><span style="color: #8041D8;">buffer-name</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+            <span style="color: #3679D8;">(</span>nick <span style="color: #8041D8;">(</span><span style="color: #D8B941;">erc-hl-nicks-trim-irc-nick</span> nickname<span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+            <span style="color: #3679D8;">(</span>title <span style="color: #8041D8;">(</span><span style="color: #D83441;">if</span> <span style="color: #79D836;">(</span><span style="color: #D8B941;">string-match-p</span> <span style="color: #AB11D8;">(</span><span style="color: #8041D8;">concat</span> <span style="color: #79D836;">"^"</span> nickname<span style="color: #AB11D8;">)</span> channel<span style="color: #79D836;">)</span>
+                        nick
+                    <span style="color: #79D836;">(</span><span style="color: #8041D8;">concat</span> nick <span style="color: #79D836;">" ("</span> channel <span style="color: #79D836;">")"</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+            <span style="color: #3679D8;">(</span>msg <span style="color: #8041D8;">(</span><span style="color: #D8B941;">s-trim</span> <span style="color: #79D836;">(</span><span style="color: #D8B941;">s-collapse-whitespace</span> message<span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span>
+        <span style="color: #AB11D8;">(</span><span style="color: #D8B941;">alert</span> <span style="color: #3679D8;">(</span><span style="color: #8041D8;">concat</span> nick <span style="color: #79D836;">": "</span> msg<span style="color: #3679D8;">)</span> <span style="color: #3679D8;">:title</span> title<span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">autoaway setup</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-auto-discard-away</span> t<span style="color: #8041D8;">)</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-autoaway-idle-seconds</span> <span style="color: #D85F00; font-weight: bold;">600</span><span style="color: #8041D8;">)</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> erc-autoaway-use-emacs-idle t<span style="color: #8041D8;">)</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> erc-prompt-for-nickserv-password nil<span style="color: #8041D8;">)</span>
+
+    <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">utf-8 always and forever</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">erc-server-coding-system</span> <span style="color: #3679D8;">'</span><span style="color: #79D836;">(</span>utf-8 . utf-8<span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">defun</span> <span style="color: #D8B941;">my/erc-start-or-switch</span> <span style="color: #79D836;">()</span>
+    <span style="color: #9ae168; font-style: italic;">"Connects to ERC, or switch to last active buffer."</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">interactive</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">if</span> <span style="color: #AB11D8;">(</span><span style="color: #8041D8;">get-buffer</span> <span style="color: #79D836;">"irc.libera.chat:6697"</span><span style="color: #AB11D8;">)</span>
+        <span style="color: #AB11D8;">(</span><span style="color: #D8B941;">erc-track-switch-buffer</span> <span style="color: #D85F00; font-weight: bold;">1</span><span style="color: #AB11D8;">)</span>
+        <span style="color: #AB11D8;">(</span><span style="color: #D83441;">when</span> <span style="color: #3679D8;">(</span><span style="color: #D8B941;">y-or-n-p</span> <span style="color: #79D836;">"Start ERC? "</span><span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #D8B941;">erc-tls</span> <span style="color: #3679D8;">:server</span> <span style="color: #79D836;">"irc.libera.chat"</span> <span style="color: #3679D8;">:port</span> <span style="color: #D85F00; font-weight: bold;">6697</span> <span style="color: #3679D8;">:nick</span> <span style="color: #79D836;">"ivche"</span><span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #D8B941;">erc-tls</span> <span style="color: #3679D8;">:server</span> <span style="color: #79D836;">"irc.myanonamouse.net"</span> <span style="color: #3679D8;">:port</span> <span style="color: #D85F00; font-weight: bold;">6697</span> <span style="color: #3679D8;">:nick</span> <span style="color: #79D836;">"Ivche1337"</span><span style="color: #3679D8;">)</span>
+        <span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">defun</span> <span style="color: #D8B941;">my/erc-count-users</span> <span style="color: #79D836;">()</span>
+    <span style="color: #9ae168; font-style: italic;">"Displays the number of users connected on the current channel."</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">interactive</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">if</span> <span style="color: #AB11D8;">(</span><span style="color: #8041D8;">get-buffer</span> <span style="color: #79D836;">"irc.libera.chat:6697"</span><span style="color: #AB11D8;">)</span>
+        <span style="color: #AB11D8;">(</span><span style="color: #D83441;">let</span> <span style="color: #3679D8;">(</span><span style="color: #8041D8;">(</span>channel <span style="color: #79D836;">(</span><span style="color: #D8B941;">erc-default-target</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+            <span style="color: #3679D8;">(</span><span style="color: #D83441;">if</span> <span style="color: #8041D8;">(</span><span style="color: #D83441;">and</span> channel <span style="color: #79D836;">(</span><span style="color: #D8B941;">erc-channel-p</span> channel<span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+                <span style="color: #8041D8;">(</span><span style="color: #8041D8;">message</span> <span style="color: #79D836;">"%d users are online on %s"</span>
+                        <span style="color: #79D836;">(</span><span style="color: #8041D8;">hash-table-count</span> <span style="color: #86e7d7;">erc-channel-users</span><span style="color: #79D836;">)</span>
+                        channel<span style="color: #8041D8;">)</span>
+            <span style="color: #8041D8;">(</span><span style="color: #D8B941;">user-error</span> <span style="color: #79D836;">"The current buffer is not a channel"</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span>
+        <span style="color: #AB11D8;">(</span><span style="color: #D8B941;">user-error</span> <span style="color: #79D836;">"You must first start ERC"</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">defun</span> <span style="color: #D8B941;">filter-server-buffers</span> <span style="color: #79D836;">()</span>
+    <span style="color: #79D836;">(</span><span style="color: #8041D8;">delq</span> nil
+            <span style="color: #AB11D8;">(</span><span style="color: #8041D8;">mapcar</span>
+            <span style="color: #3679D8;">(</span><span style="color: #D83441;">lambda</span> <span style="color: #8041D8;">(</span>x<span style="color: #8041D8;">)</span> <span style="color: #8041D8;">(</span><span style="color: #D83441;">and</span> <span style="color: #79D836;">(</span><span style="color: #D8B941;">erc-server-buffer-p</span> x<span style="color: #79D836;">)</span> x<span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+            <span style="color: #3679D8;">(</span><span style="color: #8041D8;">buffer-list</span><span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">defun</span> <span style="color: #D8B941;">my/erc-stop</span> <span style="color: #79D836;">()</span>
+    <span style="color: #9ae168; font-style: italic;">"Disconnects from all irc servers"</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">interactive</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">dolist</span> <span style="color: #AB11D8;">(</span>buffer <span style="color: #3679D8;">(</span><span style="color: #D8B941;">filter-server-buffers</span><span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span>
+        <span style="color: #AB11D8;">(</span><span style="color: #8041D8;">message</span> <span style="color: #79D836;">"Server buffer: %s"</span> <span style="color: #3679D8;">(</span><span style="color: #8041D8;">buffer-name</span> buffer<span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span>
+        <span style="color: #AB11D8;">(</span><span style="color: #D83441;">with-current-buffer</span> buffer
+        <span style="color: #3679D8;">(</span><span style="color: #D8B941;">erc-quit-server</span> <span style="color: #79D836;">"cya nerds! - sent from ERC"</span><span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span>
+<span style="color: #3679D8;">)</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">use-package</span> erc-hl-nicks
+  <span style="color: #3679D8;">:after</span> erc<span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-3-3">
+<h3 id="3-3"><span class="section-number-3">3.3.</span> company</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">after!</span> company
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> default-tab-width <span style="color: #D85F00; font-weight: bold;">4</span><span style="color: #8041D8;">)</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">company-minimum-prefix-length</span> <span style="color: #D85F00; font-weight: bold;">3</span><span style="color: #8041D8;">)</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">company-idle-delay</span> <span style="color: #D85F00; font-weight: bold;">0.3</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-3-4">
+<h3 id="3-4"><span class="section-number-3">3.4.</span> elcord</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">use-package!</span> elcord
+  <span style="color: #3679D8;">:commands</span> <span style="color: #86e7d7;">elcord-mode</span>
+  <span style="color: #3679D8;">:config</span>
+  <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> elcord-use-major-mode-as-main-icon t<span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-3-5">
+<h3 id="3-5"><span class="section-number-3">3.5.</span> lsp</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">lsp-headerline-breadcrumb-enable</span> t<span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-3-6">
+<h3 id="3-6"><span class="section-number-3">3.6.</span> leetcode</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">after!</span> leetcode
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> leetcode-prefer-language <span style="color: #79D836;">"python3"</span><span style="color: #8041D8;">)</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> leetcode-save-solutions t<span style="color: #8041D8;">)</span>
+    <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> leetcode-directory <span style="color: #79D836;">"~/dev/leetcode"</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-3-7">
+<h3 id="3-7"><span class="section-number-3">3.7.</span> smudge</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> smudge-oauth2-client-secret <span style="color: #79D836;">"8fddb0ee81bf48db9f5bc3bea3d7e4cb"</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> smudge-oauth2-client-id <span style="color: #79D836;">"a24417b7653d4974b19b7a07dcf1f7b2"</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> smudge-transport <span style="color: #3679D8;">'</span><span style="color: #3679D8;">connect</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">map!</span> <span style="color: #3679D8;">:prefix</span> <span style="color: #79D836;">"C-s"</span>
+        <span style="color: #3679D8;">:desc</span> <span style="color: #79D836;">"Toggle Play/Pause"</span> <span style="color: #79D836;">"p"</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">smudge-controller-toggle-play</span>
+        <span style="color: #3679D8;">:desc</span> <span style="color: #79D836;">"Next Track"</span> <span style="color: #79D836;">"n"</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">smudge-controller-next-track</span>
+        <span style="color: #3679D8;">:desc</span> <span style="color: #79D836;">"Previous Track"</span> <span style="color: #79D836;">"b"</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">smudge-controller-previous-track</span>
+        <span style="color: #3679D8;">:desc</span> <span style="color: #79D836;">"Playlists"</span> <span style="color: #79D836;">"P"</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">smudge-my-playlists</span>
+        <span style="color: #3679D8;">:desc</span> <span style="color: #79D836;">"Track Search"</span> <span style="color: #79D836;">"s"</span> <span style="color: #3679D8;">#'</span><span style="color: #3679D8;">smudge-track-search</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-3-8">
+<h3 id="3-8"><span class="section-number-3">3.8.</span> dap-mode</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">after!</span> <span style="color: #86e7d7;">dap-mode</span>
+  <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">dap-python-debugger</span> <span style="color: #3679D8;">'</span><span style="color: #3679D8;">debugpy</span><span style="color: #8041D8;">)</span>
+  <span style="color: #8041D8;">(</span><span style="color: #8041D8;">require</span> <span style="color: #3679D8;">'</span><span style="color: #8041D8;">dap-python</span><span style="color: #8041D8;">)</span>
+  <span style="color: #8041D8;">(</span><span style="color: #D8B941;">dap-register-debug-template</span> <span style="color: #79D836;">"Python :: Remote Attach to Flask"</span>
+    <span style="color: #79D836;">(</span><span style="color: #8041D8;">list</span> <span style="color: #3679D8;">:type</span> <span style="color: #79D836;">"python"</span>
+          <span style="color: #3679D8;">:request</span> <span style="color: #79D836;">"attach"</span>
+          <span style="color: #3679D8;">:connect</span> <span style="color: #AB11D8;">(</span><span style="color: #8041D8;">list</span> <span style="color: #3679D8;">:host</span> <span style="color: #79D836;">"localhost"</span> <span style="color: #3679D8;">:port</span> <span style="color: #D85F00; font-weight: bold;">5061</span><span style="color: #AB11D8;">)</span>
+          <span style="color: #3679D8;">:mode</span> <span style="color: #79D836;">"remote"</span>
+<span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-4">
+<h2 id="4"><span class="section-number-2">4.</span> Languages</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+</section>
+<section id="slide-4-1">
+<h3 id="4-1"><span class="section-number-3">4.1.</span> Python</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">after!</span> flycheck
+  <span style="color: #8041D8;">(</span><span style="color: #D8B941;">add-hook</span> <span style="color: #3679D8;">'</span><span style="color: #86e7d7;">python-mode-hook</span>
+            <span style="color: #79D836;">(</span><span style="color: #D83441;">lambda</span> <span style="color: #AB11D8;">()</span>
+              <span style="color: #AB11D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">lsp-pylsp-plugins-mccabe-enabled</span> nil<span style="color: #AB11D8;">)</span>
+              <span style="color: #AB11D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">lsp-pylsp-plugins-flake8-enabled</span> nil<span style="color: #AB11D8;">)</span>
+              <span style="color: #AB11D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">lsp-pylsp-plugins-pyflakes-enabled</span> nil<span style="color: #AB11D8;">)</span>
+              <span style="color: #AB11D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">lsp-pylsp-plugins-pydocstyle-enabled</span> nil<span style="color: #AB11D8;">)</span>
+              <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">(setq flycheck-python-mypy-executable "mypy")</span>
+              <span style="color: #767676; font-style: italic;">;; </span><span style="color: #767676; font-style: italic;">(setq-local flycheck-checker 'python-mypy)</span>
+              <span style="color: #767676; font-style: italic;">;;</span><span style="color: #767676; font-style: italic;">(setq flycheck-checker-error-threshold 3000)</span>
+              <span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">after!</span> <span style="color: #86e7d7;">dap-mode</span>
+  <span style="color: #8041D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">dap-python-debugger</span> <span style="color: #3679D8;">'</span><span style="color: #3679D8;">debugpy</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-5">
+<h2 id="5"><span class="section-number-2">5.</span> Org Mode</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+</section>
+<section id="slide-5-1">
+<h3 id="5-1"><span class="section-number-3">5.1.</span> General</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">org-directory</span> <span style="color: #79D836;">"~/Documents/org"</span><span style="color: #3679D8;">)</span>
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">org-log-done</span> <span style="color: #3679D8;">'</span><span style="color: #3679D8;">time</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-5-2">
+<h3 id="5-2"><span class="section-number-3">5.2.</span> elfeed</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> rmh-elfeed-org-files <span style="color: #8041D8;">(</span><span style="color: #8041D8;">list</span> <span style="color: #79D836;">(</span><span style="color: #8041D8;">concat</span> <span style="color: #86e7d7;">org-directory</span> <span style="color: #79D836;">"/elfeed.org"</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-5-3">
+<h3 id="5-3"><span class="section-number-3">5.3.</span> Visuals</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D8B941;">add-hook</span> <span style="color: #3679D8;">'</span><span style="color: #86e7d7;">org-mode-hook</span> <span style="color: #3679D8;">#'</span><span style="color: #86e7d7;">+org-pretty-mode</span><span style="color: #3679D8;">)</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">custom-set-faces!</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span>outline-1 <span style="color: #3679D8;">:weight</span> extra-bold <span style="color: #3679D8;">:height</span> <span style="color: #D85F00; font-weight: bold;">1.25</span><span style="color: #8041D8;">)</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span>outline-2 <span style="color: #3679D8;">:weight</span> bold <span style="color: #3679D8;">:height</span> <span style="color: #D85F00; font-weight: bold;">1.15</span><span style="color: #8041D8;">)</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span>outline-3 <span style="color: #3679D8;">:weight</span> bold <span style="color: #3679D8;">:height</span> <span style="color: #D85F00; font-weight: bold;">1.12</span><span style="color: #8041D8;">)</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span>outline-4 <span style="color: #3679D8;">:weight</span> semi-bold <span style="color: #3679D8;">:height</span> <span style="color: #D85F00; font-weight: bold;">1.09</span><span style="color: #8041D8;">)</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span>outline-5 <span style="color: #3679D8;">:weight</span> semi-bold <span style="color: #3679D8;">:height</span> <span style="color: #D85F00; font-weight: bold;">1.06</span><span style="color: #8041D8;">)</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span>outline-6 <span style="color: #3679D8;">:weight</span> semi-bold <span style="color: #3679D8;">:height</span> <span style="color: #D85F00; font-weight: bold;">1.03</span><span style="color: #8041D8;">)</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span>outline-8 <span style="color: #3679D8;">:weight</span> semi-bold<span style="color: #8041D8;">)</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span>outline-9 <span style="color: #3679D8;">:weight</span> semi-bold<span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">custom-set-faces!</span>
+  <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span>org-document-title <span style="color: #3679D8;">:height</span> <span style="color: #D85F00; font-weight: bold;">1.2</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">org-agenda-deadline-faces</span>
+      <span style="color: #3679D8;">'</span><span style="color: #8041D8;">(</span><span style="color: #79D836;">(</span><span style="color: #D85F00; font-weight: bold;">1.001</span> . error<span style="color: #79D836;">)</span>
+        <span style="color: #79D836;">(</span><span style="color: #D85F00; font-weight: bold;">1.0</span> . org-warning<span style="color: #79D836;">)</span>
+        <span style="color: #79D836;">(</span><span style="color: #D85F00; font-weight: bold;">0.5</span> . org-upcoming-deadline<span style="color: #79D836;">)</span>
+        <span style="color: #79D836;">(</span><span style="color: #D85F00; font-weight: bold;">0.0</span> . org-upcoming-distant-deadline<span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+
+<span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">org-fontify-quote-and-verse-blocks</span> t<span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-5-4">
+<h3 id="5-4"><span class="section-number-3">5.4.</span> org-capture</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">defun</span> <span style="color: #D8B941;">my/org-roam-create-encrypted-file</span> <span style="color: #8041D8;">(</span>title<span style="color: #8041D8;">)</span>
+  <span style="color: #9ae168; font-style: italic;">"Create a new Org-roam file with TITLE, encrypted with GPG."</span>
+  <span style="color: #8041D8;">(</span><span style="color: #D83441;">interactive</span> <span style="color: #79D836;">"sTitle: "</span><span style="color: #8041D8;">)</span>
+  <span style="color: #8041D8;">(</span><span style="color: #D83441;">let</span> <span style="color: #79D836;">(</span><span style="color: #AB11D8;">(</span>file-path <span style="color: #3679D8;">(</span><span style="color: #8041D8;">expand-file-name</span> <span style="color: #8041D8;">(</span><span style="color: #8041D8;">concat</span> title <span style="color: #79D836;">".org.gpg"</span><span style="color: #8041D8;">)</span> <span style="color: #86e7d7;">org-roam-directory</span><span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #D83441;">unless</span> <span style="color: #AB11D8;">(</span><span style="color: #8041D8;">file-exists-p</span> file-path<span style="color: #AB11D8;">)</span>
+      <span style="color: #AB11D8;">(</span><span style="color: #D83441;">with-temp-buffer</span>
+        <span style="color: #3679D8;">(</span><span style="color: #8041D8;">insert</span> <span style="color: #79D836;">"#+TITLE: "</span> title <span style="color: #79D836;">"\n"</span><span style="color: #3679D8;">)</span>
+        <span style="color: #3679D8;">(</span><span style="color: #D8B941;">write-file</span> file-path<span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">org-capture-templates</span> <span style="color: #3679D8;">`</span><span style="color: #8041D8;">(</span>
+    <span style="color: #79D836;">(</span><span style="color: #79D836;">"p"</span> <span style="color: #79D836;">"Protocol"</span> entry <span style="color: #AB11D8;">(</span>file+headline ,<span style="color: #3679D8;">(</span><span style="color: #8041D8;">concat</span> <span style="color: #86e7d7;">org-directory</span> <span style="color: #79D836;">"/roam/inbox.org.gpg"</span><span style="color: #3679D8;">)</span> <span style="color: #79D836;">"Captured Quotes"</span><span style="color: #AB11D8;">)</span>
+        <span style="color: #79D836;">"* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #79D836;">"L"</span> <span style="color: #79D836;">"Protocol Link"</span> entry <span style="color: #AB11D8;">(</span>file+headline ,<span style="color: #3679D8;">(</span><span style="color: #8041D8;">concat</span> <span style="color: #86e7d7;">org-directory</span> <span style="color: #79D836;">"/roam/inbox.org.gpg"</span><span style="color: #3679D8;">)</span> <span style="color: #79D836;">"Captured Links"</span><span style="color: #AB11D8;">)</span>
+        <span style="color: #79D836;">"* %? [[%:link][%:description]] \nCaptured On: %U"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #79D836;">"i"</span> <span style="color: #79D836;">"Inbox"</span> entry <span style="color: #AB11D8;">(</span>file ,<span style="color: #3679D8;">(</span><span style="color: #8041D8;">concat</span> <span style="color: #86e7d7;">org-directory</span> <span style="color: #79D836;">"/roam/inbox.org.gpg"</span><span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span>
+        <span style="color: #79D836;">"* %? \n+ Captured on: %T"</span><span style="color: #79D836;">)</span>
+    <span style="color: #79D836;">(</span><span style="color: #79D836;">"d"</span> <span style="color: #79D836;">"default"</span> plain <span style="color: #AB11D8;">(</span><span style="color: #D83441;">function</span> org-roam--capture-get-point<span style="color: #AB11D8;">)</span>
+         <span style="color: #79D836;">"%?"</span>
+         <span style="color: #3679D8;">:file-name</span> <span style="color: #79D836;">"%&lt;%Y%m%d%H%M%S&gt;-${slug}"</span>
+         <span style="color: #3679D8;">:head</span> <span style="color: #79D836;">"#+title: ${title}\n"</span>
+         <span style="color: #3679D8;">:unnarrowed</span> t
+         <span style="color: #3679D8;">:immediate-finish</span> t
+         <span style="color: #3679D8;">:empty-lines</span> <span style="color: #D85F00; font-weight: bold;">1</span>
+         <span style="color: #3679D8;">:preformat</span> t
+         <span style="color: #3679D8;">:jump-to-captured</span> t
+         <span style="color: #3679D8;">:hook</span> <span style="color: #AB11D8;">(</span><span style="color: #D83441;">lambda</span> <span style="color: #3679D8;">()</span> <span style="color: #3679D8;">(</span><span style="color: #D8B941;">my/org-roam-create-encrypted-file</span> <span style="color: #8041D8;">(</span><span style="color: #D8B941;">org-roam-capture--get</span> <span style="color: #3679D8;">:title</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span><span style="color: #AB11D8;">)</span><span style="color: #79D836;">)</span>
+<span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-5-5">
+<h3 id="5-5"><span class="section-number-3">5.5.</span> org-roam</h3>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #3679D8;">(</span><span style="color: #D83441;">setq</span> <span style="color: #86e7d7;">org-roam-directory</span> <span style="color: #8041D8;">(</span><span style="color: #8041D8;">concat</span> <span style="color: #86e7d7;">org-directory</span> <span style="color: #79D836;">"/roam"</span><span style="color: #8041D8;">)</span><span style="color: #3679D8;">)</span>
+</pre>
+</div>
+</section>
+</section>
+</div>
+</div>
+<script src="file:///home/ivche/.config/emacs/.local/straight/build-29.2/revealjs/dist/reveal.js"></script>
+<script src="file:///home/ivche/.config/emacs/.local/straight/build-29.2/revealjs/plugin/markdown/markdown.js"></script>
+<script src="file:///home/ivche/.config/emacs/.local/straight/build-29.2/revealjs/plugin/notes/notes.js"></script>
+<script src="file:///home/ivche/.config/emacs/.local/straight/build-29.2/revealjs/plugin/search/search.js"></script>
+<script src="file:///home/ivche/.config/emacs/.local/straight/build-29.2/revealjs/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+overview: true,
+
+transition: 'convex',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>

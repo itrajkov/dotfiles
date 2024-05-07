@@ -1,14 +1,6 @@
-#+TITLE: Ivche's Config
-#+STARTUP: overview
-
-* Personal Info
-#+BEGIN_SRC emacs-lisp
 (setq user-full-name "Ivche"
       user-mail-address "ivche@trajkov.mk")
-#+END_SRC
-* Settings
-** Daemon
-#+begin_src emacs-lisp
+
 ;; (defun greedily-do-daemon-setup ()
 ;;   (require 'org)
 ;;   (when (require 'mu4e nil t)
@@ -21,10 +13,7 @@
 ;;   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
 ;;   (add-hook! 'server-after-make-frame-hook
 ;;     (unless (string-match-p "\\*draft" (buffer-name)))))
-#+end_src
-** Custom Keybinds
-*** erc
-#+begin_src emacs-lisp
+
 (map! :leader
       :desc "Start ERC"
       "o i" #'my/erc-start-or-switch
@@ -36,9 +25,6 @@
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
 (map! :map erc-mode-map :n "c u" #'my/erc-count-users)
 
-#+end_src
-*** dired
-#+begin_src emacs-lisp
 (defun my/dired-nas () (interactive) (dired "/mnt/nas"))
 (defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
 
@@ -50,9 +36,6 @@
       :leader
       :n "j n p" #'my/dired-notes)
 
-#+end_src
-*** evil
-#+begin_src emacs-lisp
 (defun my/dired-nas () (interactive) (dired "/mnt/nas"))
 (defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
 (defun my/org-retrieve-url-from-point ()
@@ -87,36 +70,22 @@
       :leader
       :n "l y" #'my/org-retrieve-url-from-point )
 
-#+end_src
-** Authinfo
-#+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg"))
-#+end_src
-** Scratch Buffer Message
-#+begin_src emacs-lisp
+
 (setq initial-scratch-message ";; Happy Hacking!\n")
-#+end_src
-** Font
-#+BEGIN_SRC emacs-lisp
+
 (setq doom-font (font-spec :family "SourceCodeVF" :size 18))
-#+END_SRC
-** Lines
-#+BEGIN_SRC emacs-lisp
+
 (setq display-line-numbers-type 'relative)
 (setq truncate-lines nil)
 (setq scroll-margin 9)
-#+END_SRC
-** Theme
-#+BEGIN_SRC emacs-lisp
+
 (setq doom-theme 'catppuccin)
 (setq catppuccin-flavor 'mocha)
 (setq doom-modeline-height 4)
 ;; (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
 ;; (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
-#+end_src
-* Packages
-** mu4e
-#+begin_src emacs-lisp
+
 (require 'mu4e)
 (require 'mu4e-contrib)
 (require 'smtpmail)
@@ -176,9 +145,7 @@
       mu4e-index-cleanup t)
 
 ;; (mu4e t)
-#+end_src
-** erc
-#+begin_src emacs-lisp
+
 (require 'erc-log)
 (require 'erc-notify)
 (require 'erc-spelling)
@@ -296,35 +263,24 @@
 
 (use-package erc-hl-nicks
   :after erc)
-#+end_src
-** company
-#+BEGIN_SRC emacs-lisp
+
 (after! company
     (setq default-tab-width 4)
     (setq company-minimum-prefix-length 1)
     (setq company-idle-delay 0))
-#+END_SRC
 
-** elcord
-#+begin_src emacs-lisp
 (use-package! elcord
   :commands elcord-mode
   :config
   (setq elcord-use-major-mode-as-main-icon t))
-#+end_src
-** lsp
-#+begin_src emacs-lisp
+
 (setq lsp-headerline-breadcrumb-enable t)
-#+end_src
-** leetcode
-#+begin_src emacs-lisp
+
 (after! leetcode
     (setq leetcode-prefer-language "cpp")
     (setq leetcode-save-solutions t)
     (setq leetcode-directory "~/dev/leetcode"))
-#+end_src
-** smudge
-#+begin_src emacs-lisp
+
 (setq smudge-oauth2-client-secret "8fddb0ee81bf48db9f5bc3bea3d7e4cb")
 (setq smudge-oauth2-client-id "a24417b7653d4974b19b7a07dcf1f7b2")
 (setq smudge-transport 'connect)
@@ -334,9 +290,7 @@
         :desc "Previous Track" "b" #'smudge-controller-previous-track
         :desc "Playlists" "P" #'smudge-my-playlists
         :desc "Track Search" "s" #'smudge-track-search)
-#+end_src
-** org-caldav
-#+begin_src emacs-lisp
+
 (require 'org-caldav)
 
 ;; URL of the caldav server
@@ -353,10 +307,7 @@
 
 ;; Usually a good idea to set the timezone manually
 (setq org-icalendar-timezone "Europe/Skopje")
-#+end_src
-* Languages
-** Python
-#+begin_src emacs-lisp
+
 (add-hook 'python-mode-hook
         (lambda ()
         (setq lsp-pylsp-plugins-mccabe-enabled nil)
@@ -372,25 +323,12 @@
 
 ;; (after! dap
 ;;   (setq dap-python-debugger 'debugpy))
-#+end_src
 
-#+RESULTS:
-| doom-modeline-env-setup-python | (lambda nil (setq lsp-pylsp-plugins-mccabe-enabled nil) (setq lsp-pylsp-plugins-flake8-enabled nil) (setq lsp-pylsp-plugins-pyflakes-enabled nil) (setq lsp-pylsp-plugins-pydocstyle-enabled nil) (setq lsp-pylsp-plugins-mypy-enabled t) (setq lsp-pylsp-plugins-mypy-dmypy t) (setq lsp-pylsp-plugins-mypy-strict t) (setq lsp-pylsp-plugins-ruff-enabled t)) | doom--enable-+web-django-mode-in-python-mode-h | pipenv-mode |
-
-
-* Org Mode
-** General
-#+begin_src emacs-lisp
 (setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
-#+end_src
 
-** elfeed
-#+begin_src emacs-lisp
 (setq rmh-elfeed-org-files (list (concat org-directory "/elfeed.org")))
-#+end_src
-** Visuals
-#+begin_src emacs-lisp
+
 (add-hook 'org-mode-hook #'+org-pretty-mode)
 
 (custom-set-faces!
@@ -413,18 +351,14 @@
         (0.0 . org-upcoming-distant-deadline)))
 
 (setq org-fontify-quote-and-verse-blocks t)
-#+end_src
-** org-capture
-#+begin_src emacs-lisp
+
 (setq org-capture-templates `(
     ("p" "Protocol" entry (file+headline ,(concat org-directory "/inbox.org") "Captured Quotes")
      "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
     ("i" "Inbox" entry (file ,(concat org-directory "/inbox.org"))
      "* %? \nCaptured on: %T")
 ))
-#+end_src
-** org-roam
-#+begin_src emacs-lisp
+
 (setq org-roam-directory (concat org-directory "/roam"))
 
 (setq org-roam-capture-templates
@@ -452,8 +386,5 @@
 
 (setq org-roam-node-display-template
       (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-#+end_src
-** org-agenda
-#+begin_src emacs-lisp
+
 (setq org-agenda-files (list (concat org-directory "/calendars/personal.org")))
-#+end_src
