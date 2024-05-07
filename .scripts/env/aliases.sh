@@ -4,7 +4,7 @@ alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 # Programs
 alias paru="paru --bottomup"
-alias termpad="http POST https://termpad.trajkov.mk | xclip -selection clipboard"
+alias termpad="http POST https://termpad.trajkov.mk | wl-copy"
 alias genpass='pass generate -c'
 alias doomsync='.config/emacs/bin/doom sync && systemctl restart --user emacs'
 alias cb="xclip -selection clipboard"
