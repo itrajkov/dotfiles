@@ -9,34 +9,33 @@
 * Settings
 ** Daemon
 #+begin_src emacs-lisp
-;; (defun greedily-do-daemon-setup ()
-;;   (require 'org)
-;;   (when (require 'mu4e nil t)
-;;     (setq mu4e-confirm-quit t)
-;;     (setq +mu4e-lock-greedy t)
-;;     (setq +mu4e-lock-relaxed t)
-;;     (mu4e~start)))
+ (defun greedily-do-daemon-setup ()
+   (require 'org)
+   (when (require 'mu4e nil t)
+     (setq mu4e-confirm-quit t)
+     (setq +mu4e-lock-greedy t)
+     (setq +mu4e-lock-relaxed t)
+     (mu4e~start)))
 
-;; (when (daemonp)
-;;   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
-;;   (add-hook! 'server-after-make-frame-hook
-;;     (unless (string-match-p "\\*draft" (buffer-name)))))
+ (when (daemonp)
+   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
+   (add-hook! 'server-after-make-frame-hook
+     (unless (string-match-p "\\*draft" (buffer-name)))))
 #+end_src
 ** Custom Keybinds
 *** erc
 #+begin_src emacs-lisp
 (map! :leader
       :desc "Start ERC"
-      "o i" #'my/erc-start-or-switch
+      "o i" #'znc-all
       "i i" #'erc-switch-to-buffer)
 
 ;;(map! :map specific-mode-map :n "J" (cmd! (a-function) (b-function)))
 
 (map! :map erc-mode-map :n "J" #'erc-join-channel)
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
-(map! :map erc-mode-map :n "c u" #'my/erc-count-users)
-
 #+end_src
+
 *** dired
 #+begin_src emacs-lisp
 (defun my/dired-nas () (interactive) (dired "/mnt/nas"))
@@ -154,7 +153,7 @@
         mu4e-get-mail-command "mbsync -a"
         mu4e-headers-auto-update t))
 
-(setq mu4e-context-policy 'ask-if-none
+(setq mu4e-context-policy 'pick-first
       mu4e-compose-context-policy 'always-ask)
 
 (setq mu4e-index-cleanup nil
@@ -175,8 +174,12 @@
       mu4e-headers-results-limit 1000
       mu4e-index-cleanup t)
 
-;; (mu4e t)
+(mu4e t)
 #+end_src
+
+#+RESULTS:
+: (1 . 0)
+
 ** erc
 #+begin_src emacs-lisp
 (require 'erc-log)
@@ -184,17 +187,8 @@
 (require 'erc-spelling)
 (require 'erc-autoaway)
 
-
 (use-package erc
-  :commands erc erc-tls
   :config
-    (setq erc-autojoin-channels-alist '(("myanonamouse.net"
-                                        "#am-members")
-                                        ("libera.chat"
-                                        "#spodeli")
-                                        ("colonq.computer"
-                                        "#cyberspace")))
-
     (add-hook 'window-configuration-change-hook
         '(lambda ()
             (setq erc-fill-column (- (window-width) 2))))
@@ -202,12 +196,12 @@
     ;; Interpret mIRC-style color commands in IRC chats
     (setq erc-interpret-mirc-color t)
 
-    ;; The following are commented out by default, but users of other
-    ;; non-Emacs IRC clients might find them useful.
     ;; Kill buffers for channels after /part
     (setq erc-kill-buffer-on-part t)
+
     ;; Kill buffers for private queries after quitting the server
     (setq erc-kill-queries-on-quit t)
+
     ;; Kill buffers for server messages after quitting the server
     (setq erc-kill-server-buffer-on-quit t)
 
@@ -222,13 +216,6 @@
 
     ;; truncate long irc buffers
     (erc-truncate-mode +1)
-
-    ;; reconnecting
-    (setq erc-server-reconnect-attempts 5)
-    (setq erc-server-reconnect-timeout 30)
-
-    ;; share my real name
-    (setq erc-user-full-name "Ivche")
 
     ;; enable spell checking
     (erc-spelling-mode 1)
@@ -251,39 +238,9 @@
     (setq erc-auto-discard-away t)
     (setq erc-autoaway-idle-seconds 600)
     (setq erc-autoaway-use-emacs-idle t)
-    (setq erc-prompt-for-nickserv-password nil)
 
     ;; utf-8 always and forever
     (setq erc-server-coding-system '(utf-8 . utf-8))
-
-    (defun my/erc-start-or-switch ()
-    "Connects to ERC, or switch to last active buffer."
-    (interactive)
-    (if (get-buffer "irc.libera.chat:6697")
-        (erc-track-switch-buffer 1)
-        (when (y-or-n-p "Start ERC? ")
-        (erc-tls :server "irc.libera.chat" :port 6697 :nick "ivche")
-        (erc-tls :server "colonq.computer" :port 26697 :nick "ivche1337")
-        (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "Ivche1337")
-        )))
-
-    (defun my/erc-count-users ()
-    "Displays the number of users connected on the current channel."
-    (interactive)
-    (if (get-buffer "irc.libera.chat:6697")
-        (let ((channel (erc-default-target)))
-            (if (and channel (erc-channel-p channel))
-                (message "%d users are online on %s"
-                        (hash-table-count erc-channel-users)
-                        channel)
-            (user-error "The current buffer is not a channel")))
-        (user-error "You must first start ERC")))
-
-    (defun filter-server-buffers ()
-    (delq nil
-            (mapcar
-            (lambda (x) (and (erc-server-buffer-p x) x))
-            (buffer-list))))
 
     (defun my/erc-stop ()
     "Disconnects from all irc servers"
@@ -297,6 +254,19 @@
 (use-package erc-hl-nicks
   :after erc)
 #+end_src
+
+** znc
+#+begin_src emacs-lisp
+(require 'znc)
+(defvar znc-password (password-store-get "znc"))
+(setq znc-servers
+    `(("znc.trajkov.mk" 27444 t
+      ((mam "ivche/mam" ,znc-password)
+       (libera "ivche/libera" ,znc-password))
+)))
+
+#+end_src
+
 ** company
 #+BEGIN_SRC emacs-lisp
 (after! company
@@ -325,8 +295,8 @@
 #+end_src
 ** smudge
 #+begin_src emacs-lisp
-(setq smudge-oauth2-client-secret "8fddb0ee81bf48db9f5bc3bea3d7e4cb")
-(setq smudge-oauth2-client-id "a24417b7653d4974b19b7a07dcf1f7b2")
+(setq smudge-oauth2-client-secret (password-store-get "smudge-secret"))
+(setq smudge-oauth2-client-id (password-store-get "smudge-id"))
 (setq smudge-transport 'connect)
 (map! :prefix "C-s"
         :desc "Toggle Play/Pause" "p" #'smudge-controller-toggle-play
@@ -335,6 +305,9 @@
         :desc "Playlists" "P" #'smudge-my-playlists
         :desc "Track Search" "s" #'smudge-track-search)
 #+end_src
+
+#+RESULTS:
+
 ** org-caldav
 #+begin_src emacs-lisp
 (require 'org-caldav)
@@ -373,10 +346,6 @@
 ;; (after! dap
 ;;   (setq dap-python-debugger 'debugpy))
 #+end_src
-
-#+RESULTS:
-| doom-modeline-env-setup-python | (lambda nil (setq lsp-pylsp-plugins-mccabe-enabled nil) (setq lsp-pylsp-plugins-flake8-enabled nil) (setq lsp-pylsp-plugins-pyflakes-enabled nil) (setq lsp-pylsp-plugins-pydocstyle-enabled nil) (setq lsp-pylsp-plugins-mypy-enabled t) (setq lsp-pylsp-plugins-mypy-dmypy t) (setq lsp-pylsp-plugins-mypy-strict t) (setq lsp-pylsp-plugins-ruff-enabled t)) | doom--enable-+web-django-mode-in-python-mode-h | pipenv-mode |
-
 
 * Org Mode
 ** General
