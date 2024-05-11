@@ -1,29 +1,14 @@
 (setq user-full-name "Ivche"
       user-mail-address "ivche@trajkov.mk")
 
-;; (defun greedily-do-daemon-setup ()
-;;   (require 'org)
-;;   (when (require 'mu4e nil t)
-;;     (setq mu4e-confirm-quit t)
-;;     (setq +mu4e-lock-greedy t)
-;;     (setq +mu4e-lock-relaxed t)
-;;     (mu4e~start)))
-
-;; (when (daemonp)
-;;   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
-;;   (add-hook! 'server-after-make-frame-hook
-;;     (unless (string-match-p "\\*draft" (buffer-name)))))
-
 (map! :leader
       :desc "Start ERC"
-      "o i" #'my/erc-start-or-switch
+      "o i" #'znc-all
       "i i" #'erc-switch-to-buffer)
 
 ;;(map! :map specific-mode-map :n "J" (cmd! (a-function) (b-function)))
-
 (map! :map erc-mode-map :n "J" #'erc-join-channel)
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
-(map! :map erc-mode-map :n "c u" #'my/erc-count-users)
 
 (defun my/dired-nas () (interactive) (dired "/mnt/nas"))
 (defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
@@ -36,8 +21,6 @@
       :leader
       :n "j n p" #'my/dired-notes)
 
-(defun my/dired-nas () (interactive) (dired "/mnt/nas"))
-(defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
 (defun my/org-retrieve-url-from-point ()
   "Copies the URL from an org link at the point"
   (interactive)
@@ -57,14 +40,6 @@
           (let ((url (substring text (match-beginning 1) (match-end 1))))
             (kill-new url)
             (message (concat "Copied: " url))))))))
-
-(map! :map global-map
-      :leader
-      :n "j n n" #'my/dired-nas)
-
-(map! :map global-map
-      :leader
-      :n "j n p" #'my/dired-notes)
 
 (map! :map global-map
       :leader
@@ -123,7 +98,7 @@
         mu4e-get-mail-command "mbsync -a"
         mu4e-headers-auto-update t))
 
-(setq mu4e-context-policy 'ask-if-none
+(setq mu4e-context-policy 'pick-first
       mu4e-compose-context-policy 'always-ask)
 
 (setq mu4e-index-cleanup nil
@@ -144,24 +119,49 @@
       mu4e-headers-results-limit 1000
       mu4e-index-cleanup t)
 
-;; (mu4e t)
+(after! company
+    (setq default-tab-width 4)
+    (setq company-minimum-prefix-length 1)
+    (setq company-idle-delay 0))
+
+(use-package! elcord
+  :commands elcord-mode
+  :config
+  (setq elcord-use-major-mode-as-main-icon t))
+
+(elcord-mode)
+
+(after! leetcode
+    (setq leetcode-prefer-language "cpp")
+    (setq leetcode-save-solutions t)
+    (setq leetcode-directory "~/dev/leetcode"))
+
+(require 'org-caldav)
+
+;; URL of the caldav server
+(setq org-caldav-url "https://nextcloud.trajkov.mk/remote.php/dav/calendars/ivche")
+
+;; calendar ID on server
+(setq org-caldav-calendar-id "personal")
+
+;; Org filename where new entries from calendar stored
+(setq org-caldav-inbox (concat org-directory "/calendars/personal.org"))
+
+;; Additional Org files to check for calendar events
+(setq org-caldav-files nil)
+
+;; Usually a good idea to set the timezone manually
+(setq org-icalendar-timezone "Europe/Skopje")
+
+(setq lsp-headerline-breadcrumb-enable t)
 
 (require 'erc-log)
 (require 'erc-notify)
 (require 'erc-spelling)
 (require 'erc-autoaway)
 
-
 (use-package erc
-  :commands erc erc-tls
   :config
-    (setq erc-autojoin-channels-alist '(("myanonamouse.net"
-                                        "#am-members")
-                                        ("libera.chat"
-                                        "#spodeli")
-                                        ("colonq.computer"
-                                        "#cyberspace")))
-
     (add-hook 'window-configuration-change-hook
         '(lambda ()
             (setq erc-fill-column (- (window-width) 2))))
@@ -169,12 +169,12 @@
     ;; Interpret mIRC-style color commands in IRC chats
     (setq erc-interpret-mirc-color t)
 
-    ;; The following are commented out by default, but users of other
-    ;; non-Emacs IRC clients might find them useful.
     ;; Kill buffers for channels after /part
     (setq erc-kill-buffer-on-part t)
+
     ;; Kill buffers for private queries after quitting the server
     (setq erc-kill-queries-on-quit t)
+
     ;; Kill buffers for server messages after quitting the server
     (setq erc-kill-server-buffer-on-quit t)
 
@@ -189,13 +189,6 @@
 
     ;; truncate long irc buffers
     (erc-truncate-mode +1)
-
-    ;; reconnecting
-    (setq erc-server-reconnect-attempts 5)
-    (setq erc-server-reconnect-timeout 30)
-
-    ;; share my real name
-    (setq erc-user-full-name "Ivche")
 
     ;; enable spell checking
     (erc-spelling-mode 1)
@@ -218,39 +211,9 @@
     (setq erc-auto-discard-away t)
     (setq erc-autoaway-idle-seconds 600)
     (setq erc-autoaway-use-emacs-idle t)
-    (setq erc-prompt-for-nickserv-password nil)
 
     ;; utf-8 always and forever
     (setq erc-server-coding-system '(utf-8 . utf-8))
-
-    (defun my/erc-start-or-switch ()
-    "Connects to ERC, or switch to last active buffer."
-    (interactive)
-    (if (get-buffer "irc.libera.chat:6697")
-        (erc-track-switch-buffer 1)
-        (when (y-or-n-p "Start ERC? ")
-        (erc-tls :server "irc.libera.chat" :port 6697 :nick "ivche")
-        (erc-tls :server "colonq.computer" :port 26697 :nick "ivche1337")
-        (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "Ivche1337")
-        )))
-
-    (defun my/erc-count-users ()
-    "Displays the number of users connected on the current channel."
-    (interactive)
-    (if (get-buffer "irc.libera.chat:6697")
-        (let ((channel (erc-default-target)))
-            (if (and channel (erc-channel-p channel))
-                (message "%d users are online on %s"
-                        (hash-table-count erc-channel-users)
-                        channel)
-            (user-error "The current buffer is not a channel")))
-        (user-error "You must first start ERC")))
-
-    (defun filter-server-buffers ()
-    (delq nil
-            (mapcar
-            (lambda (x) (and (erc-server-buffer-p x) x))
-            (buffer-list))))
 
     (defun my/erc-stop ()
     "Disconnects from all irc servers"
@@ -264,25 +227,16 @@
 (use-package erc-hl-nicks
   :after erc)
 
-(after! company
-    (setq default-tab-width 4)
-    (setq company-minimum-prefix-length 1)
-    (setq company-idle-delay 0))
+(require 'znc)
+(setq znc-password (password-store-get "znc"))
+(setq znc-servers
+    `(("znc.trajkov.mk" 27444 t
+      ((mam "ivche/mam" ,znc-password)
+       (libera "ivche/libera" ,znc-password))
+)))
 
-(use-package! elcord
-  :commands elcord-mode
-  :config
-  (setq elcord-use-major-mode-as-main-icon t))
-
-(setq lsp-headerline-breadcrumb-enable t)
-
-(after! leetcode
-    (setq leetcode-prefer-language "cpp")
-    (setq leetcode-save-solutions t)
-    (setq leetcode-directory "~/dev/leetcode"))
-
-(setq smudge-oauth2-client-secret "8fddb0ee81bf48db9f5bc3bea3d7e4cb")
-(setq smudge-oauth2-client-id "a24417b7653d4974b19b7a07dcf1f7b2")
+(setq smudge-oauth2-client-secret (password-store-get "smudge-secret"))
+(setq smudge-oauth2-client-id (password-store-get "smudge-id"))
 (setq smudge-transport 'connect)
 (map! :prefix "C-s"
         :desc "Toggle Play/Pause" "p" #'smudge-controller-toggle-play
@@ -290,23 +244,6 @@
         :desc "Previous Track" "b" #'smudge-controller-previous-track
         :desc "Playlists" "P" #'smudge-my-playlists
         :desc "Track Search" "s" #'smudge-track-search)
-
-(require 'org-caldav)
-
-;; URL of the caldav server
-(setq org-caldav-url "https://nextcloud.trajkov.mk/remote.php/dav/calendars/ivche")
-
-;; calendar ID on server
-(setq org-caldav-calendar-id "personal")
-
-;; Org filename where new entries from calendar stored
-(setq org-caldav-inbox (concat org-directory "/calendars/personal.org"))
-
-;; Additional Org files to check for calendar events
-(setq org-caldav-files nil)
-
-;; Usually a good idea to set the timezone manually
-(setq org-icalendar-timezone "Europe/Skopje")
 
 (add-hook 'python-mode-hook
         (lambda ()
@@ -326,8 +263,6 @@
 
 (setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
-
-(setq rmh-elfeed-org-files (list (concat org-directory "/elfeed.org")))
 
 (add-hook 'org-mode-hook #'+org-pretty-mode)
 
@@ -352,6 +287,8 @@
 
 (setq org-fontify-quote-and-verse-blocks t)
 
+(setq rmh-elfeed-org-files (list (concat org-directory "/elfeed.org")))
+
 (setq org-capture-templates `(
     ("p" "Protocol" entry (file+headline ,(concat org-directory "/inbox.org") "Captured Quotes")
      "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
@@ -359,6 +296,7 @@
      "* %? \nCaptured on: %T")
 ))
 
+(require 'org-roam)
 (setq org-roam-directory (concat org-directory "/roam"))
 
 (setq org-roam-capture-templates
