@@ -326,3 +326,13 @@
       (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
 
 (setq org-agenda-files (list (concat org-directory "/calendars/personal.org")))
+
+(after! org-pomodoro
+        (setq org-pomodoro-length 50)
+        (setq org-pomodoro-short-break-length 10)
+        (setq org-pomodoro-long-break-length 30)
+        (setq org-pomodoro-long-break-frequency 4)
+        (setq org-pomodoro-short-break-sound "~/.config/doom/org-pomodoro-break.wav")
+        (setq org-pomodoro-long-break-sound "~/.config/doom/org-pomodoro-break.wav")
+        (setq org-pomodoro-finished-sound "~/.config/doom/org-pomodoro-finished.wav")
+)
