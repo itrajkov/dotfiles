@@ -2,12 +2,13 @@
 #+STARTUP: overview
 
 * Personal Info
+
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Ivche"
       user-mail-address "ivche@trajkov.mk")
 #+END_SRC
+
 * Settings
-#+end_src
 ** Custom Keybinds
 *** erc
 #+begin_src emacs-lisp
@@ -17,7 +18,6 @@
       "i i" #'erc-switch-to-buffer)
 
 ;;(map! :map specific-mode-map :n "J" (cmd! (a-function) (b-function)))
-
 (map! :map erc-mode-map :n "J" #'erc-join-channel)
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
 #+end_src
@@ -36,10 +36,9 @@
       :n "j n p" #'my/dired-notes)
 
 #+end_src
+
 *** evil
 #+begin_src emacs-lisp
-(defun my/dired-nas () (interactive) (dired "/mnt/nas"))
-(defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
 (defun my/org-retrieve-url-from-point ()
   "Copies the URL from an org link at the point"
   (interactive)
@@ -62,17 +61,10 @@
 
 (map! :map global-map
       :leader
-      :n "j n n" #'my/dired-nas)
-
-(map! :map global-map
-      :leader
-      :n "j n p" #'my/dired-notes)
-
-(map! :map global-map
-      :leader
       :n "l y" #'my/org-retrieve-url-from-point )
 
 #+end_src
+
 ** Authinfo
 #+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg"))
@@ -99,6 +91,7 @@
 ;; (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
 ;; (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
 #+end_src
+
 * Packages
 ** mu4e
 #+begin_src emacs-lisp
@@ -161,8 +154,56 @@
       mu4e-index-cleanup t)
 #+end_src
 
-#+RESULTS:
-: (1 . 0)
+** company
+#+BEGIN_SRC emacs-lisp
+(after! company
+    (setq default-tab-width 4)
+    (setq company-minimum-prefix-length 1)
+    (setq company-idle-delay 0))
+#+END_SRC
+
+** elcord
+#+begin_src emacs-lisp
+(use-package! elcord
+  :commands elcord-mode
+  :config
+  (setq elcord-use-major-mode-as-main-icon t))
+
+(elcord-mode)
+#+end_src
+
+** leetcode
+#+begin_src src
+(after! leetcode
+    (setq leetcode-prefer-language "cpp")
+    (setq leetcode-save-solutions t)
+    (setq leetcode-directory "~/dev/leetcode"))
+#+end_src
+
+** org-caldav
+#+begin_src emacs-lisp
+(require 'org-caldav)
+
+;; URL of the caldav server
+(setq org-caldav-url "https://nextcloud.trajkov.mk/remote.php/dav/calendars/ivche")
+
+;; calendar ID on server
+(setq org-caldav-calendar-id "personal")
+
+;; Org filename where new entries from calendar stored
+(setq org-caldav-inbox (concat org-directory "/calendars/personal.org"))
+
+;; Additional Org files to check for calendar events
+(setq org-caldav-files nil)
+
+;; Usually a good idea to set the timezone manually
+(setq org-icalendar-timezone "Europe/Skopje")
+#+end_src
+
+** lsp
+#+begin_src emacs-lisp
+(setq lsp-headerline-breadcrumb-enable t)
+#+end_src
 
 ** erc
 #+begin_src emacs-lisp
@@ -243,40 +284,13 @@
 #+begin_src emacs-lisp
 (require 'znc)
 (setq znc-password (password-store-get "znc"))
-(message "%s" znc-password)
 (setq znc-servers
     `(("znc.trajkov.mk" 27444 t
       ((mam "ivche/mam" ,znc-password)
        (libera "ivche/libera" ,znc-password))
 )))
+#+end_src
 
-#+end_src
-** company
-#+BEGIN_SRC emacs-lisp
-(after! company
-    (setq default-tab-width 4)
-    (setq company-minimum-prefix-length 1)
-    (setq company-idle-delay 0))
-#+END_SRC
-
-** elcord
-#+begin_src emacs-lisp
-(use-package! elcord
-  :commands elcord-mode
-  :config
-  (setq elcord-use-major-mode-as-main-icon t))
-#+end_src
-** lsp
-#+begin_src emacs-lisp
-(setq lsp-headerline-breadcrumb-enable t)
-#+end_src
-** leetcode
-#+begin_src emacs-lisp
-(after! leetcode
-    (setq leetcode-prefer-language "cpp")
-    (setq leetcode-save-solutions t)
-    (setq leetcode-directory "~/dev/leetcode"))
-#+end_src
 ** smudge
 #+begin_src emacs-lisp
 (setq smudge-oauth2-client-secret (password-store-get "smudge-secret"))
@@ -290,25 +304,6 @@
         :desc "Track Search" "s" #'smudge-track-search)
 #+end_src
 
-** org-caldav
-#+begin_src emacs-lisp
-(require 'org-caldav)
-
-;; URL of the caldav server
-(setq org-caldav-url "https://nextcloud.trajkov.mk/remote.php/dav/calendars/ivche")
-
-;; calendar ID on server
-(setq org-caldav-calendar-id "personal")
-
-;; Org filename where new entries from calendar stored
-(setq org-caldav-inbox (concat org-directory "/calendars/personal.org"))
-
-;; Additional Org files to check for calendar events
-(setq org-caldav-files nil)
-
-;; Usually a good idea to set the timezone manually
-(setq org-icalendar-timezone "Europe/Skopje")
-#+end_src
 * Languages
 ** Python
 #+begin_src emacs-lisp
@@ -336,10 +331,6 @@
 (setq org-log-done 'time)
 #+end_src
 
-** elfeed
-#+begin_src emacs-lisp
-(setq rmh-elfeed-org-files (list (concat org-directory "/elfeed.org")))
-#+end_src
 ** Visuals
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook #'+org-pretty-mode)
@@ -365,6 +356,12 @@
 
 (setq org-fontify-quote-and-verse-blocks t)
 #+end_src
+
+** elfeed
+#+begin_src emacs-lisp
+(setq rmh-elfeed-org-files (list (concat org-directory "/elfeed.org")))
+#+end_src
+
 ** org-capture
 #+begin_src emacs-lisp
 (setq org-capture-templates `(
@@ -374,8 +371,10 @@
      "* %? \nCaptured on: %T")
 ))
 #+end_src
+
 ** org-roam
 #+begin_src emacs-lisp
+(require 'org-roam)
 (setq org-roam-directory (concat org-directory "/roam"))
 
 (setq org-roam-capture-templates
@@ -404,6 +403,7 @@
 (setq org-roam-node-display-template
       (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
 #+end_src
+
 ** org-agenda
 #+begin_src emacs-lisp
 (setq org-agenda-files (list (concat org-directory "/calendars/personal.org")))
