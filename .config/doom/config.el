@@ -12,6 +12,7 @@
 
 (defun my/dired-nas () (interactive) (dired "/mnt/nas"))
 (defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
+(defun my/dev () (interactive) (dired "~/dev"))
 
 (map! :map global-map
       :leader
@@ -20,6 +21,10 @@
 (map! :map global-map
       :leader
       :n "j n p" #'my/dired-notes)
+
+(map! :map global-map
+      :leader
+      :n "j d" #'my/dev)
 
 (defun my/org-retrieve-url-from-point ()
   "Copies the URL from an org link at the point"
@@ -141,17 +146,26 @@
 ;; URL of the caldav server
 (setq org-caldav-url "https://nextcloud.trajkov.mk/remote.php/dav/calendars/ivche")
 
+(setq org-icalendar-include-todo 'all
+    org-caldav-sync-todo t)
+
 ;; calendar ID on server
 (setq org-caldav-calendar-id "personal")
 
-;; Org filename where new entries from calendar stored
-(setq org-caldav-inbox (concat org-directory "/calendars/personal.org"))
-
-;; Additional Org files to check for calendar events
-(setq org-caldav-files nil)
-
 ;; Usually a good idea to set the timezone manually
 (setq org-icalendar-timezone "Europe/Skopje")
+
+(setq org-caldav-calendars
+  `((:calendar-id  "personal"
+     :files (,(concat org-directory "/calendars/personal.org"))
+     :inbox ,(concat org-directory "/calendars/personal.org"))
+    (:calendar-id  "work"
+     :files (,(concat org-directory "/calendars/work.org"))
+     :inbox ,(concat org-directory "/calendars/work.org"))
+    (:calendar-id  "uni"
+     :files (,(concat org-directory "/calendars/uni.org"))
+     :inbox ,(concat org-directory "/calendars/uni.org"))
+    ))
 
 (setq lsp-headerline-breadcrumb-enable t)
 
@@ -325,14 +339,17 @@
 (setq org-roam-node-display-template
       (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
 
-(setq org-agenda-files (list (concat org-directory "/calendars/personal.org")))
+(setq org-agenda-files (list
+                        (concat org-directory "/calendars/personal.org")
+                        (concat org-directory "/calendars/work.org")
+                        (concat org-directory "/calendars/uni.org")))
 
-(after! org-pomodoro
-        (setq org-pomodoro-length 50)
-        (setq org-pomodoro-short-break-length 10)
-        (setq org-pomodoro-long-break-length 30)
-        (setq org-pomodoro-long-break-frequency 4)
-        (setq org-pomodoro-short-break-sound "~/.config/doom/org-pomodoro-break.wav")
-        (setq org-pomodoro-long-break-sound "~/.config/doom/org-pomodoro-break.wav")
-        (setq org-pomodoro-finished-sound "~/.config/doom/org-pomodoro-finished.wav")
-)
+(setq org-pomodoro-length 50)
+(setq org-pomodoro-short-break-length 10)
+(setq org-pomodoro-long-break-length 30)
+(setq org-pomodoro-long-break-frequency 4)
+(setq org-pomodoro-start-sound "~/.config/doom/sounds/org-pomodoro-break.wav")
+(setq org-pomodoro-short-break-sound "~/.config/doom/sounds/org-pomodoro-break.wav")
+(setq org-pomodoro-short-break-sound "~/.config/doom/sounds/org-pomodoro-break.wav")
+(setq org-pomodoro-long-break-sound "~/.config/doom/sounds/org-pomodoro-break.wav")
+(setq org-pomodoro-finished-sound "~/.config/doom/sounds/org-pomodoro-finished.wav")
