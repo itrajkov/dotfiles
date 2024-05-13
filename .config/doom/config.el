@@ -353,3 +353,5 @@
 (setq org-pomodoro-short-break-sound "~/.config/doom/sounds/org-pomodoro-break.wav")
 (setq org-pomodoro-long-break-sound "~/.config/doom/sounds/org-pomodoro-break.wav")
 (setq org-pomodoro-finished-sound "~/.config/doom/sounds/org-pomodoro-finished.wav")
+
+(setq org-todo-keywords '((sequence "TODO(t)" "DOING(n)" "DONE(d)" "BLOCKED(b)")))
