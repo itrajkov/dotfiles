@@ -15,3 +15,4 @@ export GOPATH="$HOME/.go"
 export GO111MODULE=on
 export PATH="$GOPATH/bin:$PATH"
 export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$HOME/.cargo/bin/:$PATH"

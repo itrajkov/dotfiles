@@ -1,12 +1,12 @@
 {
     // "layer": "bottom", // Waybar at top layer
-    "position": "bottom", // Waybar position (top|bottom|left|right)
+    "position": "top", // Waybar position (top|bottom|left|right)
     "height": 10, // Waybar height (to be removed for auto height)
     // "width": 1280, // Waybar width
     "spacing": 0, // Gaps between modules (4px)
     // Choose the order of the modules
     "modules-left": ["hyprland/workspaces", "custom/media"],
-    "modules-center": ["hyprland/window"],
+    "modules-center": ["custom/event"],
     "modules-right": ["pulseaudio", "keyboard-state", "clock", "tray"],
     // Modules configuration
      "hyprland/workspaces": {
@@ -25,6 +25,11 @@
              "default": ""
          }
      },
+    "custom/event": {
+        "format": "{}",
+        "interval": 5,
+        "exec": "~/.scripts/utils/current_event.sh"
+    },
     "keyboard-state": {
         "numlock": true,
         "capslock": true,
@@ -164,4 +169,3 @@
         // "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name
     }
 }
-
