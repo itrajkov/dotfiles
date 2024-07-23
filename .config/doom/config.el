@@ -6,12 +6,20 @@
       "o i" #'znc-all
       "i i" #'erc-switch-to-buffer)
 
+(map! :leader
+      :desc "DAP"
+      "d d" #'dap-breakpoint-toggle
+      "d n" #'dap-next
+      "d c" #'dap-continue
+      "d q" #'dap-ui-disconnect
+      "d i" #'dap-step-in)
+
 ;;(map! :map specific-mode-map :n "J" (cmd! (a-function) (b-function)))
 (map! :map erc-mode-map :n "J" #'erc-join-channel)
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
 
 (defun my/dired-nas () (interactive) (dired "/mnt/nas"))
-(defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
+(defun my/dired-notes () (interactive) (dired "~/Documents/org/personal"))
 (defun my/dev () (interactive) (dired "~/dev"))
 
 (map! :map global-map
@@ -54,17 +62,17 @@
 
 (setq initial-scratch-message ";; Happy Hacking!\n")
 
-(setq doom-font (font-spec :family "SourceCodeVF" :size 18))
+;; (setq doom-font (font-spec :family "SourceCodeVF" :size 18))
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 14))
 
 (setq display-line-numbers-type 'relative)
 (setq truncate-lines nil)
 (setq scroll-margin 9)
 
-(setq doom-theme 'catppuccin)
-(setq catppuccin-flavor 'mocha)
+(setq doom-theme 'doom-homage-black)
+;; (setq doom-theme 'catppuccin)
+;; (setq catppuccin-flavor 'mocha)
 (setq doom-modeline-height 4)
-;; (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
-;; (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
 
 (require 'mu4e)
 (require 'mu4e-contrib)
@@ -126,15 +134,8 @@
 
 (after! company
     (setq default-tab-width 4)
-    (setq company-minimum-prefix-length 1)
-    (setq company-idle-delay 0))
-
-(use-package! elcord
-  :commands elcord-mode
-  :config
-  (setq elcord-use-major-mode-as-main-icon t))
-
-(elcord-mode)
+    (setq company-minimum-prefix-length 2)
+    (setq company-idle-delay 0.5))
 
 (after! leetcode
     (setq leetcode-prefer-language "cpp")
@@ -168,6 +169,7 @@
     ))
 
 (setq lsp-headerline-breadcrumb-enable t)
+(use-package! lsp-tailwindcss)
 
 (require 'erc-log)
 (require 'erc-notify)
@@ -271,10 +273,6 @@
         (setq lsp-pylsp-plugins-ruff-enabled t)
         ))
 
-
-;; (after! dap
-;;   (setq dap-python-debugger 'debugpy))
-
 (setq org-directory "~/Documents/org")
 (setq org-log-done 'time)
 
@@ -354,4 +352,4 @@
 (setq org-pomodoro-long-break-sound "~/.config/doom/sounds/org-pomodoro-break.wav")
 (setq org-pomodoro-finished-sound "~/.config/doom/sounds/org-pomodoro-finished.wav")
 
-(setq org-todo-keywords '((sequence "TODO(t)" "DOING(n)" "DONE(d)" "BLOCKED(b)")))
+(setq org-todo-keywords '((sequence "TODO(t)" "DOING(n)" "BLOCKED(d)" "DONE(d)")))

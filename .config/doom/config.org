@@ -18,6 +18,14 @@
       "o i" #'znc-all
       "i i" #'erc-switch-to-buffer)
 
+(map! :leader
+      :desc "DAP"
+      "d d" #'dap-breakpoint-toggle
+      "d n" #'dap-next
+      "d c" #'dap-continue
+      "d q" #'dap-ui-disconnect
+      "d i" #'dap-step-in)
+
 ;;(map! :map specific-mode-map :n "J" (cmd! (a-function) (b-function)))
 (map! :map erc-mode-map :n "J" #'erc-join-channel)
 (map! :map erc-mode-map :n "qq" #'my/erc-stop)
@@ -26,7 +34,7 @@
 *** dired
 #+begin_src emacs-lisp
 (defun my/dired-nas () (interactive) (dired "/mnt/nas"))
-(defun my/dired-notes () (interactive) (dired "/mnt/nas/documents/org/personal"))
+(defun my/dired-notes () (interactive) (dired "~/Documents/org/personal"))
 (defun my/dev () (interactive) (dired "~/dev"))
 
 (map! :map global-map
@@ -81,7 +89,8 @@
 #+end_src
 ** Font
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "SourceCodeVF" :size 18))
+;; (setq doom-font (font-spec :family "SourceCodeVF" :size 18))
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 14))
 #+END_SRC
 ** Lines
 #+BEGIN_SRC emacs-lisp
@@ -91,12 +100,14 @@
 #+END_SRC
 ** Theme
 #+BEGIN_SRC emacs-lisp
-(setq doom-theme 'catppuccin)
-(setq catppuccin-flavor 'mocha)
+(setq doom-theme 'doom-homage-black)
+;; (setq doom-theme 'catppuccin)
+;; (setq catppuccin-flavor 'mocha)
 (setq doom-modeline-height 4)
-;; (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
-;; (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
 #+end_src
+
+#+RESULTS:
+: ((alpha-background . 100) (buffer-predicate . doom-buffer-frame-predicate) (right-divider-width . 1) (bottom-divider-width . 1) (alpha-background . 50) (vertical-scroll-bars) (tool-bar-lines . 0) (menu-bar-lines . 0) (left-fringe . 8) (right-fringe . 8))
 
 * Packages
 ** mu4e
@@ -164,20 +175,9 @@
 #+BEGIN_SRC emacs-lisp
 (after! company
     (setq default-tab-width 4)
-    (setq company-minimum-prefix-length 1)
-    (setq company-idle-delay 0))
+    (setq company-minimum-prefix-length 2)
+    (setq company-idle-delay 0.5))
 #+END_SRC
-
-** elcord
-#+begin_src emacs-lisp
-(use-package! elcord
-  :commands elcord-mode
-  :config
-  (setq elcord-use-major-mode-as-main-icon t))
-
-(elcord-mode)
-#+end_src
-
 ** leetcode
 #+begin_src emacs-lisp
 (after! leetcode
@@ -214,13 +214,11 @@
      :inbox ,(concat org-directory "/calendars/uni.org"))
     ))
 #+end_src
-
-
 ** lsp
 #+begin_src emacs-lisp
 (setq lsp-headerline-breadcrumb-enable t)
+(use-package! lsp-tailwindcss)
 #+end_src
-
 ** erc
 #+begin_src emacs-lisp
 (require 'erc-log)
@@ -334,10 +332,6 @@
         (setq lsp-pylsp-plugins-mypy-strict t)
         (setq lsp-pylsp-plugins-ruff-enabled t)
         ))
-
-
-;; (after! dap
-;;   (setq dap-python-debugger 'debugpy))
 #+end_src
 
 * Org Mode
@@ -443,5 +437,5 @@
 
 ** org-todo
 #+begin_src emacs-lisp
-(setq org-todo-keywords '((sequence "TODO(t)" "DOING(n)" "DONE(d)" "BLOCKED(b)")))
+(setq org-todo-keywords '((sequence "TODO(t)" "DOING(n)" "BLOCKED(d)" "DONE(d)")))
 #+end_src
